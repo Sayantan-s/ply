@@ -1,15 +1,10 @@
-from typing import Union
-
 from fastapi import FastAPI
-
-app = FastAPI()
-
-
-@app.get("/")
-def read_root():
-    return {"Hello": "World"}
+from app.api.v1.api import api_router
 
 
-@app.get("/items/{item_id}")
-def read_item(item_id: int, q: Union[str, None] = None):
-    return {"item_id": item_id, "q": q}
+app = FastAPI(title="Ply Assistant APIs")
+
+app.include_router(
+    api_router,
+    prefix="/api/v1"
+)

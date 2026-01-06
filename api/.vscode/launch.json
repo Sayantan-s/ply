@@ -2,7 +2,7 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "RC Server - Local (FastAPI)",
+      "name": "Ply Server - Local (FastAPI)",
       "type": "debugpy",
       "request": "launch",
       "module": "uvicorn",
