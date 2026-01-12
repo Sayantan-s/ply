@@ -1,13 +1,16 @@
 from uuid import uuid4
 from app.core.config import settings
-from typing import Annotated, Optional
+from typing import Optional, Annotated
 from fastapi import File
+from app.modules.jdmatch.repo import parse_resume
 
 def jd_match(file: Optional[Annotated[bytes, File()]] = None):
       file_id = uuid4().hex
       target_url = f"{settings.API_URL}/jdmatch/consumer"
 
-      return {"file_size": len(file) if file else 'No file uploaded'}
+      resume_info = parse_resume(file, file_id)
+
+      return resume_info
 
 
 def consumer():
