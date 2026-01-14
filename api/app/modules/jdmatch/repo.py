@@ -12,7 +12,7 @@ def save_file(
     file_content: bytes,
     filename: str,
     file_id: str
-):
+) -> ParseResumeJDInformation:
     logger.info(f"starting save_file()")
     
     if not file_content:
