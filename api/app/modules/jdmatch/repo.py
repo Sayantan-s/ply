@@ -1,13 +1,13 @@
 import os
 from typing import Annotated, Optional
-from fastapi import File
+from fastapi import UploadFile
 from app.modules.jdmatch.schemas import ParseResumeJDInformation
 from app.core.logging.logger import get_logger
 
 logger = get_logger("jdmatch.repo")
 
 def parse_resume(
-    file_content: Optional[Annotated[bytes, File()]],
+    file_content: UploadFile,
     file_id: str
 ):
     logger.info(f"starting parse_resume()")
@@ -27,7 +27,7 @@ def parse_resume(
     candidate_resume_path = os.path.join(upload_dir, file_name)
     
     with open(candidate_resume_path, "wb") as f:
-        f.write(file_content)
+        f.write(file_content.file.read())
         
     logger.info(f"fetched setItemRaw() > {file_name}")
 

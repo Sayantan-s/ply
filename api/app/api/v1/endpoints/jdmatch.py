@@ -1,9 +1,9 @@
-from fastapi import APIRouter, File
+from fastapi import APIRouter, UploadFile
 from app.modules.jdmatch.service import jd_match
 from typing import Annotated, Optional
 
 router = APIRouter()
 
 @router.post("")
-def jdmatch(file: Optional[Annotated[bytes, File()]] = None):
-   return jd_match(file)
+async def jdmatch(file: UploadFile):
+   return await jd_match(file)
