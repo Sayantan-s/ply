@@ -8,6 +8,7 @@ class Settings(BaseSettings):
     DB_URI:str    
     DB_SECRET:str
     PORT:int
+    DOC_TO_PDF_API_URL:str
     QSTASH_URL:str
     QSTASH_TOKEN:str
     QSTASH_CURRENT_SIGNING_KEY:str

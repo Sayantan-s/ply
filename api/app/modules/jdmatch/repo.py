@@ -1,10 +1,14 @@
 import os
+import tempfile
+from urllib.parse import urlparse, unquote
 from typing import Annotated, Optional
 from app.modules.jdmatch.schemas import ParseResumeJDInformation
 from app.core.logging.logger import get_logger
 import httpx
 import re
 from fastapi import HTTPException
+from app.core.config import settings
+
 
 logger = get_logger("jdmatch.repo")
 
@@ -47,6 +51,8 @@ async def init_file(file, resume_url):
     
     file_content = None
     filename = "downloaded_resume.pdf" # Default fallback
+    file_id = None
+
     
     if file:
           logger.info(f"Processing uploaded file: {file.filename}")
@@ -80,10 +86,10 @@ async def init_file(file, resume_url):
                       # Validate Content-Type
                       content_type = response.headers.get("content-type", "")
                       logger.debug(f"Download Content-Type: {content_type}")
-                      if "application/pdf" not in content_type and "application/octet-stream" not in content_type:
+                      if "application/pdf" not in content_type and "application/octet-stream" not in content_type and "officedocument" not in content_type and "msword" not in content_type:
                             logger.error(f"Invalid Content-Type: {content_type}")
                             # Only loose check for octet-stream as some servers might misconfigure
-                            raise HTTPException(status_code=400, detail="URL did not return a PDF file")
+                            raise HTTPException(status_code=400, detail="URL did not return a supported file (PDF, DOC, DOCX)")
     
                       file_content = response.content
     
@@ -95,14 +101,66 @@ async def init_file(file, resume_url):
                                   filename = fname_match.group(1)
     
                       # Fallback if filename is still default and we have a path in url
-                      if filename == "downloaded_resume.pdf" and response.url.path:
-                            path_filename = response.url.path.split("/")[-1]
-                            if path_filename and path_filename.lower().endswith(".pdf"):
-                                  filename = path_filename
+                      if filename == "downloaded_resume.pdf":
+                            # Try from response URL
+                            if response.url.path:
+                                  path_filename = unquote(response.url.path.split("/")[-1])
+                                  if path_filename and path_filename.lower().endswith((".pdf", ".doc", ".docx")):
+                                        filename = path_filename
+                            
+                            # If still default, try from original download_url
+                            if filename == "downloaded_resume.pdf":
+                                  try:
+                                      parsed_url = urlparse(download_url)
+                                      path_filename = unquote(parsed_url.path.split("/")[-1])
+                                      if path_filename and path_filename.lower().endswith((".pdf", ".doc", ".docx")):
+                                            filename = path_filename
+                                  except Exception as e:
+                                      logger.warning(f"Failed to parse filename from download_url: {e}")
     
                 except HTTPException as he:
                       raise he
                 except Exception as e:
                       logger.error(f"Download failed: {str(e)}")
                       raise HTTPException(status_code=400, detail=f"Failed to download resume from URL: {str(e)}")
+    # Convert doc/docx to pdf if needed
+    lower_filename = filename.lower()
+    if lower_filename.endswith((".doc", ".docx")):
+          logger.info(f"Converting {filename} to PDF")
+          try:
+                with tempfile.NamedTemporaryFile(suffix=os.path.splitext(filename)[1], delete=False) as tmp:
+                      tmp.write(file_content)
+                      tmp_path = tmp.name
+                
+                try:
+                      pdf_content = await doc_to_pdf(tmp_path)
+                      file_content = pdf_content
+                      filename = os.path.splitext(filename)[0] + ".pdf"
+                finally:
+                      if os.path.exists(tmp_path):
+                            os.remove(tmp_path)
+                            logger.debug(f"Cleaned up temp file {tmp_path}")
+
+          except Exception as e:
+                logger.error(f"Conversion failed: {str(e)}")
+                raise HTTPException(status_code=500, detail=f"Failed to convert document to PDF: {str(e)}")
+
     return file_content, filename, file_id
+
+async def doc_to_pdf(file_path: str) -> bytes:
+     """
+     Convert .doc, .docx to pdf
+     """ 
+     url = f"{settings.DOC_TO_PDF_API_URL}/forms/libreoffice/convert"
+     
+     async with httpx.AsyncClient() as client:
+          try:
+               with open(file_path, "rb") as f:
+                    files = {"files": (os.path.basename(file_path), f)}
+                    logger.info(f"Converting {file_path} to PDF via {url}")
+                    response = await client.post(url, files=files)
+                    response.raise_for_status()
+                    return response.content
+          except Exception as e:
+               logger.error(f"Failed to convert doc to pdf: {str(e)}")
+               raise e 

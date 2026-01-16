@@ -9,6 +9,9 @@ from qstash.client import QStash
 
 async def jd_match(file: Optional[UploadFile] = None, resume_url: Optional[str] = None, qstash: QStash = Depends(get_qstash_client)):
       file_content, filename, file_id = await init_file(file, resume_url)
+      
+      if not file_id:
+            file_id = str(uuid4())
 
       resume_info = save_file(file_content, filename, file_id)
 
