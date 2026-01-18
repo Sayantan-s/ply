@@ -10,7 +10,9 @@ Built to reduce application fatigue and help you focus on roles where you’re g
 
 ### 🛠️ Languages and Tools
 
-<img src="https://cdn.svgporn.com/logos/typescript-icon.svg" width="42">&nbsp;<img src=https://nuxt.com/assets/design-kit/icon-green.png width="48">
+<img src="https://cdn.svgporn.com/logos/typescript-icon.svg" width="42">
+&nbsp;<img src=https://cdn.svglogos.dev/logos/vue.svg width="42">
+&nbsp;<img src=https://cdn.svglogos.dev/logos/vue.svg width="42">
 &nbsp;<img src="https://cdn.svgporn.com/logos/postgresql.svg" width="42">
 &nbsp;<img src="https://cdn.svgporn.com/logos/redis.svg" width="42">
 &nbsp;<img src="https://raw.githubusercontent.com/browserbase/stagehand/main/media/dark_logo.png" width="120" alt="stagehand">
