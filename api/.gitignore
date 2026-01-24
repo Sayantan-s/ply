@@ -1,0 +1,46 @@
+# --- Python Environment ---
+.venv/
+venv/
+ENV/
+env/
+bin/
+lib/
+include/
+
+# --- Byte-compiled / optimized / DLL files ---
+__pycache__/
+*.py[cod]
+*$py.class
+
+# --- FastAPI / App Specific ---
+.env
+.flaskenv
+*.log
+data.db
+sql_app.db
+
+# --- Testing ---
+.pytest_cache/
+.coverage
+htmlcov/
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+
+# --- Build & Distribution ---
+dist/
+build/
+*.egg-info/
+*.spec
+
+# --- Static Assets / Frontend (if applicable) ---
+node_modules/
+npm-debug.log*
+
+# --- OS / Editor Specific ---
+.DS_Store
+.vscode/
+.idea/
+*.swp
+*.swo
