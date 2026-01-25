@@ -1,6 +1,6 @@
 from fastapi import APIRouter, UploadFile, Form, Depends, Request
 from app.modules.jdmatch.service import jd_match
-from typing import Optional
+from typing import Optional, Annotated
 from app.integrations.upstash.qstash import get_qstash_client, get_qstash_consumer
 from app.modules.jdmatch.schemas import ParseResumeJDInformation
 from qstash.client import QStash

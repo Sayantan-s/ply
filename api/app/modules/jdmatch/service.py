@@ -1,13 +1,15 @@
 from uuid import uuid4
 from app.core.config import settings
 from typing import Optional, Annotated
-from fastapi import UploadFile, HTTPException, Depends
+from fastapi import UploadFile, Depends
 from app.modules.jdmatch.repo import save_file, init_file
 from app.integrations.upstash.qstash import get_qstash_client
 from qstash.client import QStash
 
 
-async def jd_match(file: Optional[UploadFile] = None, resume_url: Optional[str] = None, qstash: QStash = Depends(get_qstash_client)):
+qstash_dependency = Annotated[QStash, Depends(get_qstash_client)]
+
+async def jd_match(file: Optional[UploadFile] = None, resume_url: Optional[str] = None, qstash = qstash_dependency):
       file_content, filename, file_id = await init_file(file, resume_url)
       
       if not file_id:
