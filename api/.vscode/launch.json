@@ -2,6 +2,13 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "Ply Server with Ngrok (Script)",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "${workspaceFolder}/dev.sh",
+      "cwd": "${workspaceFolder}"
+    },
+    {
       "name": "Ply Server - Local (FastAPI)",
       "type": "debugpy",
       "request": "launch",
