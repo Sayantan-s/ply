@@ -1,38 +1,64 @@
-from uuid import uuid4
 from app.core.config import settings
-from typing import Optional, Annotated
-from fastapi import UploadFile, Depends
-from app.modules.jdmatch.repo import save_file, init_file
-from app.integrations.upstash.qstash import get_qstash_client
-from qstash.client import QStash
+from typing import Optional
+from fastapi import UploadFile
+from app.modules.jdmatch.repo import (
+    save_file,
+    init_file,
+    init_file_identity,
+)
 from app.core.logging.logger import get_logger
 from app.modules.jdmatch.schemas import ParseResumeJDInformation
+from app.modules.jdmatch.constants import JdMatchStatus
 
-qstash_dependency = Annotated[QStash, Depends(get_qstash_client)]
+from redis import asyncio as aioredis
+from qstash.client import QStash
+
+
+# qstash_dependency removed since it's passed from API layer
+
 logger = get_logger("jdmatch.service")
 
 
-async def jd_match(file: Optional[UploadFile] = None, resume_url: Optional[str] = None, qstash = qstash_dependency):
-      logger.info("starting jd_match()")
-      file_content, filename, file_id = await init_file(file, resume_url)
-      
-      if not file_id:
-            file_id = str(uuid4())
+async def jd_match(
+    resume_file: Optional[UploadFile] = None,
+    resume_url: Optional[str] = None,
+    jd_info: str = None,
+    qstash: QStash = None,
+    store: aioredis.Redis = None,
+):
+    logger.info("starting jd_match()")
 
-      resume_info = save_file(file_content, filename, file_id)
+    file_id = init_file_identity(resume_url)
 
-      target_url = f"{settings.API_URL}/jdmatch/consumer"
+    await store.set(f"jdmatch:{file_id}", JdMatchStatus.PARSING.value)
 
-      qstash.message.publish_json(
-            url=target_url,
-            body=resume_info.model_dump(),
-      )
+    file_content, filename, file_id = await init_file(
+        resume_file, resume_url, file_id=file_id
+    )
 
-      logger.info("ending jd_match()")
-      return file_id
+    resume_info = save_file(file_content, jd_info, filename, file_id)
+
+    target_url = f"{settings.API_URL}/jdmatch/consumer"
+
+    qstash.message.publish_json(
+        url=target_url,
+        body=resume_info.model_dump(),
+    )
+
+    await store.set(f"jdmatch:{file_id}", JdMatchStatus.QUEUED.value)
+
+    logger.info("ending jd_match()")
+
+    return file_id
 
 
-async def jd_match_consumer(payload: ParseResumeJDInformation):
-      logger.info("starting jd_match_consumer()")
-      logger.info(f'Consuming.... {payload}')
-      logger.info("ending jd_match_consumer()")
+async def jd_match_consumer(
+    payload: ParseResumeJDInformation, store: aioredis.Redis = None
+):
+    logger.info("starting jd_match_consumer()")
+
+    file_id = payload.file_name.split("-")[0]
+
+    await store.set(f"jdmatch:{file_id}", JdMatchStatus.PROCESSING.value)
+
+    logger.info("ending jd_match_consumer()")
