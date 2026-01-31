@@ -6,6 +6,7 @@ from qstash.client import QStash
 from redis import asyncio as aioredis
 from stagehand import AsyncStagehand
 
+from app.api.v1.dto.jdmatch import JdMatchResponse
 from app.core.config import settings
 from app.core.logging.logger import get_logger
 from app.modules.jdmatch.agents.analyze_jd_text_structure import (
@@ -37,7 +38,7 @@ async def jd_match(
     jd_info: str | None = None,
     qstash: QStash | None = None,
     store: aioredis.Redis | None = None,
-):
+) -> JdMatchResponse:
     logger.info("starting jd_match()")
 
     file_id = init_file_identity(resume_url)
@@ -61,7 +62,7 @@ async def jd_match(
 
     logger.info("ending jd_match()")
 
-    return file_id
+    return JdMatchResponse(file_id=file_id)
 
 
 async def jd_match_consumer(

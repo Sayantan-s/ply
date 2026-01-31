@@ -43,7 +43,7 @@ async def agent_extract_jd(jd_url: str, stagehand_client: AsyncStagehand):
     logger.info(f"Starting agent_extract_jd() for {jd_url}")
     session = await stagehand_client.sessions.start(model_name=GeminiModel.pro)
     logger.info(f"Navigating to {jd_url}")
-    await session.navigate(jd_url, timeout=_TIMEOUT)
+    await session.navigate(url=jd_url)
     logger.success(f"Navigated to {jd_url}")
 
     await session.act(_ACTION_PROMPT)

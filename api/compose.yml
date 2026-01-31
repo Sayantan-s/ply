@@ -4,6 +4,17 @@ services:
     ports:
       - "3001:3000"
 
+  # --- Browserless Chrome ---
+  chrome:
+    image: browserless/chrome:latest
+    ports:
+      - "3002:3000"
+    environment:
+      - CONNECTION_TIMEOUT=300000
+      - MAX_CONCURRENT_SESSIONS=10
+      - CHROME_REFRESH_SECONDS=3600
+    restart: always
+
   # --- Redis Stack ---
   redis:
     image: redis:7-alpine
