@@ -22,6 +22,9 @@ class Settings(BaseSettings):
     REDIS_HOST: str
     REDIS_PORT: str
 
+    BROWSERBASE_API_KEY: str
+    BROWSERBASE_PROJECT_ID: str
+
     def get_redis_url(self) -> str:
         return f"redis://{self.REDIS_HOST}:{self.REDIS_PORT}/{self.REDIS_DB}"
 

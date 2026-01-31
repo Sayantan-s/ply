@@ -3,11 +3,13 @@ from google import genai
 from qstash.client import QStash
 from qstash.receiver import Receiver
 from redis import asyncio as aioredis
+from stagehand import AsyncStagehand
 
 from app.api.v1.dto.jdmatch import JdMatchResponse
 from app.core.logging.logger import get_logger
 from app.integrations.llm.gemini import get_gemini_client
 from app.integrations.redis.store import get_redis_store
+from app.integrations.stagehand.agent import get_stagehand_client
 from app.integrations.upstash.qstash import get_qstash_client, get_qstash_consumer
 from app.modules.jdmatch.schemas import ParseResumeJDInformation
 from app.modules.jdmatch.service import jd_match, jd_match_consumer
@@ -37,6 +39,7 @@ async def jdmatch_consumer(
     receiver: Receiver = Depends(get_qstash_consumer),
     store: aioredis.Redis = Depends(get_redis_store),
     gemini_client: genai.Client = Depends(get_gemini_client),
+    stagehand_client: AsyncStagehand = Depends(get_stagehand_client),
 ):
     logger.info("starting jdmatch_consumer()")
 
@@ -46,7 +49,7 @@ async def jdmatch_consumer(
     receiver.verify(body=req_body, signature=signature)
 
     payload = ParseResumeJDInformation.model_validate_json(req_body)
-    await jd_match_consumer(payload, store, gemini_client)
+    await jd_match_consumer(payload, store, gemini_client, stagehand_client)
     logger.info("ending jdmatch_consumer()")
 
     return {"status": "received", "payload": payload}
