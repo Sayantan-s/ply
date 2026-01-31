@@ -1,20 +1,20 @@
 import os
+import re
 import tempfile
-from urllib.parse import urlparse, unquote
-from typing import Optional
-from app.modules.jdmatch.schemas import ParseResumeJDInformation
+import uuid
+from urllib.parse import unquote, urlparse
+
+import httpx
+from fastapi import HTTPException
+
+from app.core.config import settings
 from app.core.logging.logger import get_logger
 from app.modules.jdmatch.constants import (
-    GDRIVE_PATTERN,
-    DROPBOX_PATTERN,
     DEFAULT_FILENAME,
+    DROPBOX_PATTERN,
+    GDRIVE_PATTERN,
 )
-import httpx
-import re
-from fastapi import HTTPException
-from app.core.config import settings
-import uuid
-
+from app.modules.jdmatch.schemas import ParseResumeJDInformation
 
 logger = get_logger("jdmatch.repo")
 
@@ -30,7 +30,7 @@ def save_file(
 
     file_name = f"{file_id}-{filename}"
 
-    logger.info(f"getting setItemRaw() > {file_name}")
+    logger.info("getting setItemRaw() > {file_name}")
 
     root_project_path = os.getcwd()
     upload_dir = os.path.join(root_project_path, "public", "uploads")
@@ -50,7 +50,7 @@ def save_file(
     )
 
 
-def _transform_download_url(resume_url: str) -> tuple[str, Optional[str]]:
+def _transform_download_url(resume_url: str) -> tuple[str, str | None]:
     """Handle URL transformations for direct download (Dropbox, Google Drive)."""
     download_url = resume_url
     file_id = None
@@ -104,7 +104,7 @@ def _extract_filename_from_response(response: httpx.Response, original_url: str)
     return filename
 
 
-async def _download_resume(resume_url: str) -> tuple[bytes, str, Optional[str]]:
+async def _download_resume(resume_url: str) -> tuple[bytes, str, str | None]:
     """Download resume from URL and determine filename/file_id."""
     download_url, file_id = _transform_download_url(resume_url)
 
@@ -137,9 +137,9 @@ async def _download_resume(resume_url: str) -> tuple[bytes, str, Optional[str]]:
         except HTTPException:
             raise
         except Exception as e:
-            logger.error(f"Download failed: {str(e)}")
+            logger.error(f"Download failed: {e!s}")
             raise HTTPException(
-                status_code=400, detail=f"Failed to download resume from URL: {str(e)}"
+                status_code=400, detail=f"Failed to download resume from URL: {e!s}"
             )
 
 
@@ -168,9 +168,9 @@ async def _convert_doc_to_pdf_if_needed(
                 logger.debug(f"Cleaned up temp file {tmp_path}")
 
     except Exception as e:
-        logger.error(f"Conversion failed: {str(e)}")
+        logger.error(f"Conversion failed: {e!s}")
         raise HTTPException(
-            status_code=500, detail=f"Failed to convert document to PDF: {str(e)}"
+            status_code=500, detail=f"Failed to convert document to PDF: {e!s}"
         )
 
 
@@ -193,7 +193,7 @@ def init_file_identity(resume_url: str):
     return file_id
 
 
-async def init_file(file, resume_url, file_id: Optional[str] = None):
+async def init_file(file, resume_url, file_id: str | None = None):
     logger.info(
         f"starting init_file() > file={file.filename if file else 'None'}, resume_url={resume_url}"
     )
@@ -235,5 +235,5 @@ async def doc_to_pdf(file_path: str) -> bytes:
                 response.raise_for_status()
                 return response.content
         except Exception as e:
-            logger.error(f"Failed to convert doc to pdf: {str(e)}")
+            logger.error(f"Failed to convert doc to pdf: {e!s}")
             raise e

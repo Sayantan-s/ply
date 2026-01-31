@@ -1,10 +1,11 @@
-from typing import Optional
-from sqlmodel import Field, SQLModel
 import uuid
 from datetime import datetime
 
+from sqlmodel import Field, SQLModel
+
+
 class JDMatchDtl(SQLModel, table=True):
-    id: Optional[int] = Field(default=uuid.uuid4(), primary_key=True)
+    id: int | None = Field(default=uuid.uuid4(), primary_key=True)
     file_id: str = Field(index=True)
     jd: str
     score: int

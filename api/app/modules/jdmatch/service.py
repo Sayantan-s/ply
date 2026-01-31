@@ -1,18 +1,16 @@
-from app.core.config import settings
-from typing import Optional
 from fastapi import UploadFile
+from qstash.client import QStash
+from redis import asyncio as aioredis
+
+from app.core.config import settings
+from app.core.logging.logger import get_logger
+from app.modules.jdmatch.constants import JdMatchStatus
 from app.modules.jdmatch.repo import (
-    save_file,
     init_file,
     init_file_identity,
+    save_file,
 )
-from app.core.logging.logger import get_logger
 from app.modules.jdmatch.schemas import ParseResumeJDInformation
-from app.modules.jdmatch.constants import JdMatchStatus
-
-from redis import asyncio as aioredis
-from qstash.client import QStash
-
 
 # qstash_dependency removed since it's passed from API layer
 
@@ -20,8 +18,8 @@ logger = get_logger("jdmatch.service")
 
 
 async def jd_match(
-    resume_file: Optional[UploadFile] = None,
-    resume_url: Optional[str] = None,
+    resume_file: UploadFile | None = None,
+    resume_url: str | None = None,
     jd_info: str = None,
     qstash: QStash = None,
     store: aioredis.Redis = None,
