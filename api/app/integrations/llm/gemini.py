@@ -19,3 +19,4 @@ class GeminiModel:
     flash = "gemini-flash-lite-latest"
     flash_preview = "gemini-3-flash-preview"
     pro = "gemini-3-pro-preview"
+    computer_use = "gemini-2.5-computer-use-preview-10-2025"

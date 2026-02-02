@@ -4,7 +4,6 @@ from fastapi import UploadFile
 from google import genai
 from qstash.client import QStash
 from redis import asyncio as aioredis
-from stagehand import AsyncStagehand
 
 from app.api.v1.dto.jdmatch import JdMatchResponse
 from app.core.config import settings
@@ -69,7 +68,6 @@ async def jd_match_consumer(
     payload: ParseResumeJDInformation,
     store: aioredis.Redis = None,
     gemini_client: genai.Client = None,
-    stagehand_client: AsyncStagehand = None,
 ):
     logger.info("starting jd_match_consumer()")
 
@@ -92,7 +90,7 @@ async def jd_match_consumer(
 
         # Extract or Analyze JD
         if is_jd_link:
-            jd = await agent_extract_jd(jd_data, stagehand_client)
+            jd = await agent_extract_jd(jd_data, gemini_client)
         else:
             jd = agent_analyze_jd_text_structure(jd_data, gemini_client)
 
