@@ -90,7 +90,7 @@ async def jd_match_consumer(
 
         # Extract or Analyze JD
         if is_jd_link:
-            jd = await agent_extract_jd(jd_data, gemini_client)
+            jd = await agent_extract_jd(jd_data)
         else:
             jd = agent_analyze_jd_text_structure(jd_data, gemini_client)
 
