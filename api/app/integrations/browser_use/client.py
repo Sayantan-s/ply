@@ -1,6 +1,7 @@
 from functools import lru_cache
+
 from browser_use import Browser
-from app.core.config import settings
+
 
 @lru_cache(maxsize=1)
 def get_browser() -> Browser:
