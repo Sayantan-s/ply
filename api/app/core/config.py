@@ -1,7 +1,7 @@
 from pydantic_settings import BaseSettings
 
 
-class Settings(BaseSettings):
+class Settings(BaseSettings):  # type: ignore[misc]
     APP_NAME: str
     PORT: int
 
@@ -24,6 +24,8 @@ class Settings(BaseSettings):
 
     BROWSERBASE_API_KEY: str
     BROWSERBASE_PROJECT_ID: str
+
+    BROWSER_USE_API_KEY: str
 
     def get_redis_url(self) -> str:
         return f"redis://{self.REDIS_HOST}:{self.REDIS_PORT}/{self.REDIS_DB}"

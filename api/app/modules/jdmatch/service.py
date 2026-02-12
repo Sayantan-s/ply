@@ -40,7 +40,13 @@ async def jd_match(
 ) -> JdMatchResponse:
     logger.info("starting jd_match()")
 
-    file_id = init_file_identity(resume_url)
+    if not store:
+        raise ValueError("Redis store is not available")
+
+    if not qstash:
+        raise ValueError("QStash client is not available")
+
+    file_id = init_file_identity(resume_url or "")
 
     await store.set(f"jdmatch:{file_id}", JdMatchStatus.PARSING.value)
 
@@ -48,7 +54,7 @@ async def jd_match(
         resume_file, resume_url, file_id=file_id
     )
 
-    resume_info = save_file(file_content, jd_info, filename, file_id)
+    resume_info = save_file(file_content, jd_info or "", filename, file_id)
 
     target_url = f"{settings.API_URL}/jdmatch/consumer"
 
@@ -66,10 +72,16 @@ async def jd_match(
 
 async def jd_match_consumer(
     payload: ParseResumeJDInformation,
-    store: aioredis.Redis = None,
-    gemini_client: genai.Client = None,
-):
+    store: aioredis.Redis | None = None,
+    gemini_client: genai.Client | None = None,
+) -> None:
     logger.info("starting jd_match_consumer()")
+
+    if not store:
+        raise ValueError("Redis store is not available")
+
+    if not gemini_client:
+        raise ValueError("Gemini client is not available")
 
     file_name = payload.file_name
     file_id = file_name.split("-")[0]
@@ -90,7 +102,7 @@ async def jd_match_consumer(
 
         # Extract or Analyze JD
         if is_jd_link:
-            jd = await agent_extract_jd(jd_data, gemini_client)
+            jd = await agent_extract_jd(jd_data)
         else:
             jd = agent_analyze_jd_text_structure(jd_data, gemini_client)
 

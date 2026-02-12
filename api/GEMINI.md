@@ -22,6 +22,8 @@ This document provides context for the `ply/api` project, a FastAPI-based backen
     *   **Gotenberg:** PDF/Document processing
     *   **Redis:** Caching/Storage
     *   **Ngrok:** Exposing local server for QStash webhooks
+    *   **Google GenAI SDK:** Interaction with Gemini models.
+    *   **Stagehand:** Browser automation for data extraction.
 *   **Package Manager:** `uv` (implied by `uv.lock`)
 
 ## Architecture
@@ -31,7 +33,7 @@ The project follows a **Modular Monolith** structure with a clear separation of 
 *   **`app/modules/`**: Contains domain-specific logic.
     *   *Example:* `jdmatch` module handles resume parsing and matching logic.
 *   **`app/integrations/`**: Encapsulates external service interactions.
-    *   *Example:* `db` (SQLModel setup), `upstash` (QStash client).
+    *   *Example:* `db` (SQLModel setup), `upstash` (QStash client), `llm` (Gemini), `stagehand` (Browser Automation).
 *   **`app/core/`**: Cross-cutting concerns like configuration and logging.
 *   **`app/api/`**: API route definitions.
 
@@ -49,6 +51,8 @@ Long-running tasks (like resume parsing/matching) are handled asynchronously:
 *   `app/modules/jdmatch/`: Core domain logic for matching.
     *   `service.py`: Business logic, QStash publishing.
     *   `repo.py`: Data persistence/file handling.
+    *   `agents/`: Specialized logic for AI tasks (e.g., JD extraction, analysis).
+    *   `utils/`: Helper functions for file processing and downloads.
 *   `dev.sh`: Development startup script (starts Uvicorn + Ngrok).
 *   `compose.yml`: Docker services (Postgres, Redis, Gotenberg).
 
