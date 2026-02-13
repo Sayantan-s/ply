@@ -39,7 +39,7 @@ _safety_settings = [
 ]
 
 
-def _prompt(text: str):
+def _prompt(text: str) -> str:
     return f"""
       You are recruiter who can understand the JD of a job.
       You are given a text structure from which you have to understand that it's a JD or not.
@@ -65,8 +65,11 @@ def _prompt(text: str):
 
 
 def agent_analyze_jd_text_structure(
-    text: str, gemini_client: genai.Client = None
+    text: str, gemini_client: genai.Client | None = None
 ) -> str:
+    if not gemini_client:
+        raise ValueError("Gemini client is not available")
+
     contents = [
         types.Content(
             role="user",

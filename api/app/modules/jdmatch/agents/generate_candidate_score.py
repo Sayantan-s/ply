@@ -1,8 +1,12 @@
 from google import genai
 from google.genai import types
 
+from app.core.logging.logger import get_logger
 from app.integrations.llm.gemini import GeminiModel
 from app.modules.jdmatch.schemas import AgentResponseCandidateScore
+
+logger = get_logger("generate_candidate_score.agent")
+
 
 _ai_so_type = genai.types.Schema(
     type=genai.types.Type.OBJECT,
@@ -45,7 +49,7 @@ _safety_settings = [
 ]
 
 
-def _prompt(jd: str):
+def _prompt(jd: str) -> str:
     return f"""
       You are an ATS machine that judges candidates based on JDs provided to you.
       Below is the JD of the job.
@@ -63,15 +67,15 @@ def _prompt(jd: str):
 
 
 def agent_generate_candidate_score(
-    jd: str, resume_path: str, gemini_client: genai.Client = None
+    jd: str, resume_path: str, gemini_client: genai.Client | None = None
 ) -> AgentResponseCandidateScore:
+    if not gemini_client:
+        raise ValueError("Gemini client is not available")
+
     # Upload file to Gemini
-    file = gemini_client.files.upload(path=resume_path)
+    file = gemini_client.files.upload(file=resume_path)
 
     generate_content_config = types.GenerateContentConfig(
-        thinking_config=types.ThinkingConfig(
-            thinking_budget=-1,
-        ),
         response_mime_type="application/json",
         response_schema=_ai_so_type,
         safety_settings=_safety_settings,
@@ -86,5 +90,7 @@ def agent_generate_candidate_score(
     # Clean up uploaded file from Gemini (optional but recommended)
     gemini_client.files.delete(name=file.name)
 
-    data = response.json()
-    return AgentResponseCandidateScore(**data)
+    _llm_response = response.text
+    _candidate_score = AgentResponseCandidateScore.model_validate_json(_llm_response)
+    logger.success("Response from Gemini: %s", _candidate_score)
+    return _candidate_score

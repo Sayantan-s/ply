@@ -1,9 +1,7 @@
-import asyncio
 import json
 
-from browser_use_sdk import BrowserUse
+from browser_use_sdk import AsyncBrowserUse
 
-from app.core.config import settings
 from app.core.logging.logger import get_logger
 from app.integrations.llm.gemini import GeminiModel
 
@@ -39,20 +37,18 @@ Rules:
 """
 
 
-async def agent_extract_jd(jd_url: str) -> str:
-    logger.info(f"Starting agent_extract_jd() for {jd_url}")
+async def agent_extract_jd(browser_use_client: AsyncBrowserUse, jd_url: str) -> str:
+    logger.info("Starting agent_extract_jd() for {jd_url}", jd_url=jd_url)
 
-    client = BrowserUse(api_key=settings.BROWSER_USE_API_KEY)
+    logger.info("Navigating to {jd_url}", jd_url=jd_url)
 
-    logger.info(f"Navigating to {jd_url}")
-
-    task = client.tasks.create_task(
+    task = await browser_use_client.tasks.create_task(
         task=_browsing_prompt(jd_url),
         llm=GeminiModel.pro,  # Default model
     )
 
     # Run the blocking task completion in a separate thread
-    result = await asyncio.to_thread(task.complete)
+    result = await task.complete()
 
     extracted = result.output
 
@@ -71,13 +67,15 @@ async def agent_extract_jd(jd_url: str) -> str:
             cleaned_output = cleaned_output[:-3]
 
         extracted_json = json.loads(cleaned_output.strip())
-    except json.JSONDecodeError:
-        logger.error(f"Failed to parse JSON from agent output: {extracted}")
+    except json.JSONDecodeError as e:
+        logger.exception(
+            "Failed to parse JSON from agent output: {extracted}", extracted=extracted
+        )
         # Try to treat the whole output as data if JSON parsing fails, but respect the error protocol
         # If it failed to produce JSON, it might be a raw failure message or raw content.
         # Let's assume failure if not JSON, for safety, or wrap it.
         # But the prompt was strict.
-        raise ValueError(f"Failed to parse agent output: {extracted}")
+        raise ValueError(f"Failed to parse agent output: {extracted}") from e
 
     jd_data = (
         extracted_json.get("data")
@@ -92,10 +90,10 @@ async def agent_extract_jd(jd_url: str) -> str:
             if isinstance(extracted_json, dict)
             else "Unknown Error"
         )
-        logger.error(f"Invalid response from agent: {message}")
+        logger.error("Invalid response from agent: {message}", message=message)
         raise ValueError(message)
 
-    logger.success(f"Extracted from {jd_url}")
-    logger.info(f"Ending agent_extract_jd() for {jd_url}")
+    logger.success("Extracted from {jd_url}", jd_url=jd_url)
+    logger.info("Ending agent_extract_jd() for {jd_url}", jd_url=jd_url)
 
     return str(jd_data)

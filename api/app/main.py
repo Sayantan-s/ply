@@ -1,6 +1,8 @@
+from collections.abc import AsyncGenerator, Callable
 from contextlib import asynccontextmanager
+from typing import Any
 
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, Response
 
 from app.api.v1.api import api_router
 from app.core.config import settings
@@ -9,16 +11,17 @@ from app.integrations.db.database import init_db
 
 
 @asynccontextmanager
-async def lifespan():
+async def server_lifespan(app: FastAPI) -> AsyncGenerator[None, None]:  # noqa: ARG001
+    print("Starting database initialization...")
     init_db()
     yield
 
 
-app = FastAPI(title=settings.APP_NAME)
+app = FastAPI(title=settings.APP_NAME, lifespan=server_lifespan)
 
 
-@app.middleware("http")
-async def middleware(request: Request, call_next):
+@app.middleware("http")  # type: ignore[misc]
+async def middleware(request: Request, call_next: Callable[[Request], Any]) -> Response:
     return await request_id_middleware(request, call_next)
 
 

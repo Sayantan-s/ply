@@ -17,7 +17,6 @@ dependencies = [
     "sqlmodel>=0.0.31",
     "uvicorn>=0.38.0",
     "google-genai>=1.61.0",
-    "stagehand>=3.5.0",
     "browser-use-sdk>=2.0.14",
     "types-redis>=4.6.0.20241004",
 ]

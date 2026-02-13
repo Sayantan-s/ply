@@ -55,7 +55,6 @@ dependencies = [
     { name = "qstash" },
     { name = "redis" },
     { name = "sqlmodel" },
-    { name = "stagehand" },
     { name = "types-redis" },
     { name = "uvicorn" },
 ]
@@ -90,7 +89,6 @@ requires-dist = [
     { name = "redis", specifier = ">=7.1.0" },
     { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.8.0" },
     { name = "sqlmodel", specifier = ">=0.0.31" },
-    { name = "stagehand", specifier = ">=3.5.0" },
     { name = "types-redis", specifier = ">=4.6.0.20241004" },
     { name = "uvicorn", specifier = ">=0.38.0" },
 ]
@@ -1214,26 +1212,6 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/56/b8/e7cd6def4a773f25d6e29ffce63ccbfd6cf9488b804ab6fb9b80d334b39d/sqlmodel-0.0.31.tar.gz", hash = "sha256:2d41a8a9ee05e40736e2f9db8ea28cbfe9b5d4e5a18dd139e80605025e0c516c", size = 94952, upload-time = "2025-12-28T12:35:01.436Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/6c/72/5aa5be921800f6418a949a73c9bb7054890881143e6bc604a93d228a95a3/sqlmodel-0.0.31-py3-none-any.whl", hash = "sha256:6d946d56cac4c2db296ba1541357cee2e795d68174e2043cd138b916794b1513", size = 27093, upload-time = "2025-12-28T12:35:00.108Z" },
-]
-
-[[package]]
-name = "stagehand"
-version = "3.5.0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "anyio" },
-    { name = "distro" },
-    { name = "httpx" },
-    { name = "pydantic" },
-    { name = "sniffio" },
-    { name = "typing-extensions" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/14/e3/264f867657b62cdab967e65301e8aaa4f01cff644cb294e1ce9759c9febb/stagehand-3.5.0.tar.gz", hash = "sha256:42202ca13fde9aa75ee0af4892ad99bd4df140148a98ed2e1cc0d54a6ceec147", size = 257277, upload-time = "2026-01-29T19:44:35.792Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/a0/46/29b54897af95b9b703f9b6bb3b469d35cdb930a8fdc2ce71d30b12e08adb/stagehand-3.5.0-py3-none-macosx_10_9_x86_64.whl", hash = "sha256:315c3fc2e50f35f0a910780a6376509d41a106654d2d7147973e6b3d0f692381", size = 39772748, upload-time = "2026-01-29T19:44:22.834Z" },
-    { url = "https://files.pythonhosted.org/packages/cf/7f/ed029f9458ca6c1c07c3fff58a38fd9d85540bc8d8fe3413cb2c3e4ea077/stagehand-3.5.0-py3-none-macosx_11_0_arm64.whl", hash = "sha256:b8e0aa4cda452f1c1596dd60a59d196a5482f0bdf8cfaf52cb8092bfc1242fbe", size = 38560618, upload-time = "2026-01-29T19:44:17.748Z" },
-    { url = "https://files.pythonhosted.org/packages/b3/dd/c566406edc80bb42722f04d99cae3bf18647c9aa951dd56e9aaba0e9b7e8/stagehand-3.5.0-py3-none-manylinux2014_x86_64.whl", hash = "sha256:0cfd758ca68ee89ce88c9d7945780dec41342f37ffd9f6074bce1f37bf37a353", size = 43183092, upload-time = "2026-01-29T19:44:28.551Z" },
-    { url = "https://files.pythonhosted.org/packages/d3/a3/6bbe486106cad64b9de9fdf1abc5ba3fcf2567cd84375a0347ee653b223e/stagehand-3.5.0-py3-none-win_amd64.whl", hash = "sha256:d50b1b4dfc523dec3e6c2bedc6bfd8461ff4d2e563b736c8e415d3da4d42b33e", size = 34669832, upload-time = "2026-01-29T19:44:33.241Z" },
 ]
 
 [[package]]

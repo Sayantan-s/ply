@@ -1,9 +1,11 @@
 import json
 
+from browser_use_sdk import AsyncBrowserUse
 from fastapi import UploadFile
 from google import genai
 from qstash.client import QStash
-from redis import asyncio as aioredis
+from redis import asyncio as aioredis  # type: ignore
+from sqlmodel import Session
 
 from app.api.v1.dto.jdmatch import JdMatchResponse
 from app.core.config import settings
@@ -25,8 +27,6 @@ from app.modules.jdmatch.utils.is_jd_link_or_description import (
     is_jd_link_or_description,
 )
 from app.modules.jdmatch.utils.save_file import save_file
-
-# qstash_dependency removed since it's passed from API layer
 
 logger = get_logger("jdmatch.service")
 
@@ -74,6 +74,8 @@ async def jd_match_consumer(
     payload: ParseResumeJDInformation,
     store: aioredis.Redis | None = None,
     gemini_client: genai.Client | None = None,
+    _db_session: Session | None = None,
+    browser_use_client: AsyncBrowserUse | None = None,
 ) -> None:
     logger.info("starting jd_match_consumer()")
 
@@ -82,6 +84,9 @@ async def jd_match_consumer(
 
     if not gemini_client:
         raise ValueError("Gemini client is not available")
+
+    if not _db_session:
+        raise ValueError("Database session is not available")
 
     file_name = payload.file_name
     file_id = file_name.split("-")[0]
@@ -102,7 +107,7 @@ async def jd_match_consumer(
 
         # Extract or Analyze JD
         if is_jd_link:
-            jd = await agent_extract_jd(jd_data)
+            jd = await agent_extract_jd(browser_use_client, jd_data)
         else:
             jd = agent_analyze_jd_text_structure(jd_data, gemini_client)
 
@@ -117,6 +122,7 @@ async def jd_match_consumer(
 
         # Save to Database
         await save_jd_match_info(
+            _db_session,
             jd=jd,
             file_id=file_id,
             file_name=input_file_name,
