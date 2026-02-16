@@ -7,13 +7,14 @@ from fastapi import FastAPI, Request, Response
 from app.api.v1.api import api_router
 from app.core.config import settings
 from app.core.logging.middleware import request_id_middleware
-from app.integrations.db.database import init_db
+from app.integrations.db.database import connect_to_postgres
+from app.integrations.redis.store import connect_to_redis
 
 
 @asynccontextmanager
 async def server_lifespan(app: FastAPI) -> AsyncGenerator[None, None]:  # noqa: ARG001
-    print("Starting database initialization...")
-    init_db()
+    connect_to_postgres()
+    await connect_to_redis()
     yield
 
 

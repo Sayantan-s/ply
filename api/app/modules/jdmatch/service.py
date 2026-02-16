@@ -33,7 +33,6 @@ from app.modules.jdmatch.utils.init_file_identity import init_file_identity
 from app.modules.jdmatch.utils.is_jd_link_or_description import (
     is_jd_link_or_description,
 )
-from app.modules.jdmatch.utils.save_file import save_file
 
 logger = get_logger("jdmatch.service")
 

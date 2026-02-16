@@ -22,9 +22,6 @@ class Settings(BaseSettings):
     REDIS_HOST: str
     REDIS_PORT: str
 
-    BROWSERBASE_API_KEY: str
-    BROWSERBASE_PROJECT_ID: str
-
     BROWSER_USE_API_KEY: str
 
     SUPABASE_URL: str

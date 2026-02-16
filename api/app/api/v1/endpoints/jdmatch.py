@@ -28,7 +28,11 @@ router: APIRouter = APIRouter()
 logger = get_logger("jdmatch.api")
 
 
-@router.post("/resume/upload", status_code=status.HTTP_201_CREATED, response_model=ResumeUploadResponse)
+@router.post(
+    "/resume/upload",
+    status_code=status.HTTP_201_CREATED,
+    response_model=ResumeUploadResponse,
+)
 async def upload_resume_endpoint(
     session: Annotated[Session, Depends(get_session)],
     resume_file: UploadFile | None = None,
@@ -40,7 +44,9 @@ async def upload_resume_endpoint(
     return response
 
 
-@router.patch("/{file_id}/jd/add", status_code=status.HTTP_200_OK, response_model=JdResponse)
+@router.patch(
+    "/{file_id}/jd/add", status_code=status.HTTP_200_OK, response_model=JdResponse
+)
 async def add_jd_endpoint(
     file_id: str,
     jd_info: Annotated[str, Form()],
@@ -52,7 +58,11 @@ async def add_jd_endpoint(
     return response
 
 
-@router.post("/{file_id}/init", status_code=status.HTTP_202_ACCEPTED, response_model=JdMatchResponse)
+@router.post(
+    "/{file_id}/init",
+    status_code=status.HTTP_202_ACCEPTED,
+    response_model=JdMatchResponse,
+)
 async def jdmatch_init_endpoint(
     file_id: str,
     qstash: Annotated[QStash, Depends(get_qstash_client)],

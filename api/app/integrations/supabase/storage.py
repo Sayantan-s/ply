@@ -23,8 +23,6 @@ async def upload_file_to_supabase(file_content: bytes, file_name: str) -> str:
     )
 
     # Create signed URL (valid for 1 hour)
-    response = await supabase.storage.from_(bucket_name).create_signed_url(
+    return await supabase.storage.from_(bucket_name).create_signed_url(
         file_name, expires_in=3600
     )
-
-    return response
