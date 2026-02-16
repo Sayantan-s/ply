@@ -24,6 +24,20 @@
       "jinja": true,
       "envFile": "${workspaceFolder}/.env.local",
       "cwd": "${workspaceFolder}"
+    },
+    {
+      "name": "Ply Server - Testing Setup",
+      "type": "debugpy",
+      "request": "launch",
+      // uv usually creates the venv in the root of your project
+      "python": "${workspaceFolder}/.venv/bin/python",
+      "module": "pytest",
+      "args": ["tests", "-v", "--tb=short"],
+      "jinja": true,
+      "envFile": "${workspaceFolder}/.env.local",
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "justMyCode": true
     }
   ]
 }

@@ -28,6 +28,8 @@ class Settings(BaseSettings):
     SUPABASE_KEY: str
     SUPABASE_BUCKET: str
 
+    OPENAPI_URL: str
+
     def get_redis_url(self) -> str:
         return f"redis://{self.REDIS_HOST}:{self.REDIS_PORT}/{self.REDIS_DB}"
 

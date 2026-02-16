@@ -32,6 +32,7 @@ logger = get_logger("jdmatch.api")
     "/resume/upload",
     status_code=status.HTTP_201_CREATED,
     response_model=ResumeUploadResponse,
+    operation_id="uploadResume",
 )
 async def upload_resume_endpoint(
     session: Annotated[Session, Depends(get_session)],
@@ -45,16 +46,19 @@ async def upload_resume_endpoint(
 
 
 @router.patch(
-    "/{file_id}/jd/add", status_code=status.HTTP_200_OK, response_model=JdResponse
+    "/{file_id}/jd/add",
+    status_code=status.HTTP_200_OK,
+    response_model=JdResponse,
+    operation_id="addJd",
 )
 async def add_jd_endpoint(
     file_id: str,
     jd_info: Annotated[str, Form()],
     session: Annotated[Session, Depends(get_session)],
 ) -> JdResponse:
-    logger.info(f"starting add_jd_endpoint for {file_id}")
+    logger.info("starting add_jd_endpoint for {file_id}", file_id=file_id)
     response = await process_jd(session, file_id, jd_info)
-    logger.info(f"ending add_jd_endpoint for {file_id}")
+    logger.info("ending add_jd_endpoint for {file_id}", file_id=file_id)
     return response
 
 
@@ -62,6 +66,7 @@ async def add_jd_endpoint(
     "/{file_id}/init",
     status_code=status.HTTP_202_ACCEPTED,
     response_model=JdMatchResponse,
+    operation_id="jdMatchInit",
 )
 async def jdmatch_init_endpoint(
     file_id: str,
@@ -69,13 +74,15 @@ async def jdmatch_init_endpoint(
     store: Annotated[aioredis.Redis, Depends(get_redis_store)],
     session: Annotated[Session, Depends(get_session)],
 ) -> JdMatchResponse:
-    logger.info(f"starting jdmatch_init_endpoint for {file_id}")
+    logger.info("starting jdmatch_init_endpoint for {file_id}", file_id=file_id)
     response = await jd_match_init(file_id, qstash, store, session)
-    logger.info(f"ending jdmatch_init_endpoint for {file_id}")
+    logger.info("ending jdmatch_init_endpoint for {file_id}", file_id=file_id)
     return response
 
 
-@router.post("/consumer", status_code=status.HTTP_200_OK)
+@router.post(
+    "/consumer", status_code=status.HTTP_200_OK, operation_id="jdMatchConsumer"
+)
 async def jdmatch_consumer(
     req: Request,
     receiver: Annotated[Receiver, Depends(get_qstash_consumer)],

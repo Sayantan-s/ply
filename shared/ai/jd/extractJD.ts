@@ -18,20 +18,20 @@ const BROWSING_PROMPT = `
       > Extract only the required job description, strictly donot extract unwanted things like about the company etc.
 
       Strictly follow this json format output::
-      
+
       Success:
 
       {
         message: 'SUCCESS',
         data: "<Extracted Content Of the JD>" // for e.g. This is a key role within the Global Deal Desk team, which owns deal strategy, quote-to-cash execution, and pricing operations. You’ll work closely with sales, product, legal, and operations teams to ensure that CPQ changes reflect business prior....
       }
-      
+
       Error:
 
       {
         message: 'ERROR',
         data: "<Error Message>" // add error reason in this data property like -> UNKNOWN PAGE, DIFFICULT TO REACH, BLOCKERS CAME UP etc
-      }   
+      }
 `;
 
 const ACTION_PROMPT =

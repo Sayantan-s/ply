@@ -18,7 +18,9 @@ async def server_lifespan(app: FastAPI) -> AsyncGenerator[None, None]:  # noqa: 
     yield
 
 
-app = FastAPI(title=settings.APP_NAME, lifespan=server_lifespan)
+app = FastAPI(
+    title=settings.APP_NAME, lifespan=server_lifespan, openapi_url=settings.OPENAPI_URL
+)
 
 
 @app.middleware("http")  # type: ignore[misc]

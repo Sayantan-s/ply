@@ -1,31 +1,31 @@
 import { Type } from "@google/genai";
 
 const JD_ANALYSIS_PROMPT = (text: string) => `
-      You are recruiter who can understand the JD of a job. 
-      You are given a text structure from which you have to understand that it's a JD or not. 
+      You are recruiter who can understand the JD of a job.
+      You are given a text structure from which you have to understand that it's a JD or not.
       Please anylyse the text and respond in the below format.
 
       Text Structure:
       ${text}
-      \n    
+      \n
 
       Response Format:
-      
+
       YES:
 
       {
         isJD: true
         reason: ""
       }
-      
+
       \n
-      
+
       NO:
 
       {
         isJD: false
         reason: "<Reason why it's not a JD>"
-      }   
+      }
 `;
 
 const RESPONSE_SCHEMA = {
