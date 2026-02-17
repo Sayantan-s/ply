@@ -1,4 +1,4 @@
-from typing import Annotated, Any
+from typing import Annotated
 
 from browser_use_sdk import AsyncBrowserUse
 from fastapi import APIRouter, Body, Depends, Form, Header, UploadFile, status
@@ -44,7 +44,7 @@ async def upload_resume_endpoint(
     session: Annotated[Session, Depends(get_session)],
     resume_file: UploadFile | None = None,
     resume_url: Annotated[str | None, Form()] = None,
-) -> ResumeUploadResponse:
+) -> ResponseEnvelope[ResumeUploadResponse]:
     logger.info("starting upload_resume_endpoint()")
     response = await upload_resume(session, resume_file, resume_url)
     logger.info("ending upload_resume_endpoint()")
@@ -61,7 +61,7 @@ async def add_jd_endpoint(
     file_id: str,
     jd_info: Annotated[str, Form()],
     session: Annotated[Session, Depends(get_session)],
-) -> JdResponse:
+) -> ResponseEnvelope[JdResponse]:
     logger.info("starting add_jd_endpoint for {file_id}", file_id=file_id)
     response = await process_jd(session, file_id, jd_info)
     logger.info("ending add_jd_endpoint for {file_id}", file_id=file_id)
@@ -79,7 +79,7 @@ async def jdmatch_init_endpoint(
     qstash: Annotated[QStash, Depends(get_qstash_client)],
     store: Annotated[aioredis.Redis, Depends(get_redis_store)],
     session: Annotated[Session, Depends(get_session)],
-) -> JdMatchResponse:
+) -> ResponseEnvelope[JdMatchResponse]:
     logger.info("starting jdmatch_init_endpoint for {file_id}", file_id=file_id)
     response = await jd_match_init(file_id, qstash, store, session)
     logger.info("ending jdmatch_init_endpoint for {file_id}", file_id=file_id)
@@ -100,7 +100,7 @@ async def jdmatch_consumer(
     browser_use_client: Annotated[AsyncBrowserUse, Depends(get_browser_use_client)],
     body: Annotated[ParseResumeJDInformation, Body(embed=True)],
     headers: Annotated[WebhookHeaders, Header(embed=True)],
-) -> dict[str, Any]:
+) -> ResponseEnvelope[str]:
     logger.info("starting jdmatch_consumer()")
 
     signature = headers.upstash_signature
