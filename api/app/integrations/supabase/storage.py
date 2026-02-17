@@ -8,7 +8,7 @@ async def get_supabase_client() -> AsyncClient:
     return await create_async_client(settings.SUPABASE_URL, settings.SUPABASE_KEY)
 
 
-async def upload_file_to_supabase(file_content: bytes, file_name: str) -> str:
+async def upload_file_to_supabase(file_content: bytes, file_name: str):
     supabase = await get_supabase_client()
     bucket_name = settings.SUPABASE_BUCKET
 
@@ -22,7 +22,9 @@ async def upload_file_to_supabase(file_content: bytes, file_name: str) -> str:
         path=file_name, file=file_content, file_options={"content-type": content_type}
     )
 
-    # Create signed URL (valid for 1 hour)
-    return await supabase.storage.from_(bucket_name).create_signed_url(
-        file_name, expires_in=3600
-    )
+    # # Create signed URL (valid for 1 hour)
+    # sign_url_res = await supabase.storage.from_(bucket_name).create_signed_url(
+    #     file_name, expires_in=3600
+    # )
+
+    # return sign_url_res["signedUrl"]

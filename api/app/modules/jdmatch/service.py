@@ -50,13 +50,13 @@ async def upload_resume(
     )
 
     # Create record in DB
-    await create_jd_match_record(_db_session, file_id, filename)
+    jd_record = await create_jd_match_record(_db_session, file_id, filename)
 
     file_name_to_upload = f"{file_id}-{filename}"
-    signed_url = await upload_file_to_supabase(file_content, file_name_to_upload)
+    await upload_file_to_supabase(file_content, file_name_to_upload)
 
     logger.info("ending upload_resume()")
-    return ResumeUploadResponse(file_id=file_id, signed_url=signed_url)
+    return ResumeUploadResponse(file_id=file_id, jd_match_id=jd_record.id)
 
 
 async def process_jd(

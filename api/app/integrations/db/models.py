@@ -1,3 +1,4 @@
+import uuid
 from datetime import datetime
 
 from sqlalchemy import JSON, Column
@@ -5,7 +6,7 @@ from sqlmodel import Field, SQLModel
 
 
 class JDMatchDtl(SQLModel, table=True):
-    id: int | None = Field(default=None, primary_key=True)
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     file_id: str = Field(index=True, unique=True)
     jd: str | None = None
     score: int | None = None

@@ -21,6 +21,7 @@ dependencies = [
     "types-redis>=4.6.0.20241004",
     "supabase>=2.28.0",
     "scalar-fastapi>=1.6.2",
+    "alembic>=1.18.4",
 ]
 [project.optional-dependencies]
 dev = [

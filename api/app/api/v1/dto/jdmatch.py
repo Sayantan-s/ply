@@ -1,15 +1,24 @@
-from pydantic import BaseModel
+import uuid
+
+from pydantic import BaseModel, Field
+
+from app.api.v1.dto import UIDtoModel
 
 
-class JdMatchResponse(BaseModel):
+class JdMatchResponse(UIDtoModel):
     file_id: str
 
 
-class ResumeUploadResponse(BaseModel):
+class ResumeUploadResponse(UIDtoModel):
     file_id: str
-    signed_url: str
+    jd_match_id: uuid.UUID
 
 
-class JdResponse(BaseModel):
+class JdResponse(UIDtoModel):
     jd_info: str
     is_link: bool
+
+
+class WebhookHeaders(BaseModel):
+    # Pydantic automatically handles the hyphen-to-underscore conversion
+    upstash_signature: str = Field(alias="Upstash-Signature")

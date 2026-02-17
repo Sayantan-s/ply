@@ -3,9 +3,11 @@ from contextlib import asynccontextmanager
 from typing import Any
 
 from fastapi import FastAPI, Request, Response
+from fastapi.responses import JSONResponse
 from scalar_fastapi import get_scalar_api_reference
 
 from app.api.v1.api import api_router
+from app.api.v1.dto import ResponseEnvelope
 from app.core.config import settings
 from app.core.logging.middleware import request_id_middleware
 from app.integrations.db.database import connect_to_postgres
@@ -42,3 +44,15 @@ async def middleware(request: Request, call_next: Callable[[Request], Any]) -> R
 
 
 app.include_router(api_router, prefix="/api/v1")
+
+
+@app.exception_handler(Exception)
+async def global_exception_handler(_: Request, exc: Exception):
+    return JSONResponse(
+        status_code=500,
+        content=ResponseEnvelope(
+            success=False,
+            data=None,
+            error=[str(exc)],
+        ).model_dump(),
+    )

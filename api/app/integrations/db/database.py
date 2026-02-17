@@ -23,7 +23,6 @@ def connect_to_postgres() -> None:
     logger.success("Database initialization completed")
 
 
-@lru_cache(maxsize=1)
 def get_session() -> Generator[Session, None, None]:
     with Session(engine) as session:
         yield session

@@ -1,7 +1,9 @@
 from pydantic import BaseModel
 
+from app.api.v1.dto import UIDtoModel
 
-class ParseResumeJDInformation(BaseModel):
+
+class ParseResumeJDInformation(UIDtoModel):
     candidate_resume_path: str
     file_name: str
     jd_info: str

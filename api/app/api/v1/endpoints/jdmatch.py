@@ -1,14 +1,20 @@
 from typing import Annotated, Any
 
 from browser_use_sdk import AsyncBrowserUse
-from fastapi import APIRouter, Depends, Form, Request, UploadFile, status
+from fastapi import APIRouter, Body, Depends, Form, Header, UploadFile, status
 from google import genai
 from qstash.client import QStash
 from qstash.receiver import Receiver
 from redis import asyncio as aioredis
 from sqlmodel import Session
 
-from app.api.v1.dto.jdmatch import JdMatchResponse, JdResponse, ResumeUploadResponse
+from app.api.v1.dto import ResponseEnvelope
+from app.api.v1.dto.jdmatch import (
+    JdMatchResponse,
+    JdResponse,
+    ResumeUploadResponse,
+    WebhookHeaders,
+)
 from app.core.logging.logger import get_logger
 from app.integrations.browser_use.agent import get_browser_use_client
 from app.integrations.db.database import get_session
@@ -30,8 +36,8 @@ logger = get_logger("jdmatch.api")
 
 @router.post(
     "/resume/upload",
-    status_code=status.HTTP_201_CREATED,
-    response_model=ResumeUploadResponse,
+    status_code=status.HTTP_202_ACCEPTED,
+    response_model=ResponseEnvelope[ResumeUploadResponse],
     operation_id="uploadResume",
 )
 async def upload_resume_endpoint(
@@ -42,13 +48,13 @@ async def upload_resume_endpoint(
     logger.info("starting upload_resume_endpoint()")
     response = await upload_resume(session, resume_file, resume_url)
     logger.info("ending upload_resume_endpoint()")
-    return response
+    return ResponseEnvelope.ok(response)
 
 
 @router.patch(
     "/{file_id}/jd/add",
     status_code=status.HTTP_200_OK,
-    response_model=JdResponse,
+    response_model=ResponseEnvelope[JdResponse],
     operation_id="addJd",
 )
 async def add_jd_endpoint(
@@ -59,13 +65,13 @@ async def add_jd_endpoint(
     logger.info("starting add_jd_endpoint for {file_id}", file_id=file_id)
     response = await process_jd(session, file_id, jd_info)
     logger.info("ending add_jd_endpoint for {file_id}", file_id=file_id)
-    return response
+    return ResponseEnvelope.ok(response)
 
 
 @router.post(
     "/{file_id}/init",
-    status_code=status.HTTP_202_ACCEPTED,
-    response_model=JdMatchResponse,
+    status_code=status.HTTP_200_OK,
+    response_model=ResponseEnvelope[JdMatchResponse],
     operation_id="jdMatchInit",
 )
 async def jdmatch_init_endpoint(
@@ -77,29 +83,30 @@ async def jdmatch_init_endpoint(
     logger.info("starting jdmatch_init_endpoint for {file_id}", file_id=file_id)
     response = await jd_match_init(file_id, qstash, store, session)
     logger.info("ending jdmatch_init_endpoint for {file_id}", file_id=file_id)
-    return response
+    return ResponseEnvelope.ok(response)
 
 
 @router.post(
-    "/consumer", status_code=status.HTTP_200_OK, operation_id="jdMatchConsumer"
+    "/consumer",
+    status_code=status.HTTP_200_OK,
+    operation_id="jdMatchConsumer",
+    response_model=ResponseEnvelope[str],
 )
 async def jdmatch_consumer(
-    req: Request,
     receiver: Annotated[Receiver, Depends(get_qstash_consumer)],
     store: Annotated[aioredis.Redis, Depends(get_redis_store)],
     gemini_client: Annotated[genai.Client, Depends(get_gemini_client)],
     session: Annotated[Session, Depends(get_session)],
     browser_use_client: Annotated[AsyncBrowserUse, Depends(get_browser_use_client)],
+    body: Annotated[ParseResumeJDInformation, Body(embed=True)],
+    headers: Annotated[WebhookHeaders, Header(embed=True)],
 ) -> dict[str, Any]:
     logger.info("starting jdmatch_consumer()")
 
-    _body = await req.body()
+    signature = headers.upstash_signature
+    receiver.verify(body=body, signature=signature)
 
-    signature, req_body = req.headers["Upstash-Signature"], _body.decode()
-    receiver.verify(body=req_body, signature=signature)
-
-    payload = ParseResumeJDInformation.model_validate_json(req_body)
-    await jd_match_analyze(payload, store, gemini_client, session, browser_use_client)
+    await jd_match_analyze(body, store, gemini_client, session, browser_use_client)
     logger.info("ending jdmatch_consumer()")
 
-    return {"status": "received", "payload": payload}
+    return ResponseEnvelope.ok("success")
