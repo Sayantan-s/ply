@@ -52,37 +52,39 @@ async def upload_resume_endpoint(
 
 
 @router.patch(
-    "/{file_id}/jd/add",
-    status_code=status.HTTP_200_OK,
-    response_model=ResponseEnvelope[JdResponse],
+    "/{jd_match_id}/jd/add",
+    status_code=status.HTTP_202_ACCEPTED,
     operation_id="addJd",
 )
 async def add_jd_endpoint(
-    file_id: str,
+    jd_match_id: str,
     jd_info: Annotated[str, Form()],
     session: Annotated[Session, Depends(get_session)],
-) -> ResponseEnvelope[JdResponse]:
-    logger.info("starting add_jd_endpoint for {file_id}", file_id=file_id)
-    response = await process_jd(session, file_id, jd_info)
-    logger.info("ending add_jd_endpoint for {file_id}", file_id=file_id)
-    return ResponseEnvelope.ok(response)
+):
+    logger.info("starting add_jd_endpoint for {jd_match_id}", jd_match_id=jd_match_id)
+    await process_jd(session, jd_match_id, jd_info)
+    logger.info("ending add_jd_endpoint for {jd_match_id}", jd_match_id=jd_match_id)
 
 
 @router.post(
-    "/{file_id}/init",
+    "/{jd_match_id}/init",
     status_code=status.HTTP_200_OK,
     response_model=ResponseEnvelope[JdMatchResponse],
     operation_id="jdMatchInit",
 )
 async def jdmatch_init_endpoint(
-    file_id: str,
+    jd_match_id: str,
     qstash: Annotated[QStash, Depends(get_qstash_client)],
     store: Annotated[aioredis.Redis, Depends(get_redis_store)],
     session: Annotated[Session, Depends(get_session)],
 ) -> ResponseEnvelope[JdMatchResponse]:
-    logger.info("starting jdmatch_init_endpoint for {file_id}", file_id=file_id)
-    response = await jd_match_init(file_id, qstash, store, session)
-    logger.info("ending jdmatch_init_endpoint for {file_id}", file_id=file_id)
+    logger.info(
+        "starting jdmatch_init_endpoint for {jd_match_id}", jd_match_id=jd_match_id
+    )
+    response = await jd_match_init(jd_match_id, qstash, store, session)
+    logger.info(
+        "ending jdmatch_init_endpoint for {jd_match_id}", jd_match_id=jd_match_id
+    )
     return ResponseEnvelope.ok(response)
 
 

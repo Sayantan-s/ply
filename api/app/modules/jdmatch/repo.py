@@ -10,10 +10,12 @@ async def create_jd_match_record(
     _db_session: Session,
     file_id: str,
     file_name: str,
+    resume_url: str,
 ) -> JDMatchDtl:
     jd_match_dtl = JDMatchDtl(
         file_id=file_id,
         file_name=file_name,
+        resume_url=resume_url,
     )
     _db_session.add(jd_match_dtl)
     _db_session.commit()
@@ -23,10 +25,10 @@ async def create_jd_match_record(
 
 async def update_jd_info(
     _db_session: Session,
-    file_id: str,
+    jd_match_id: str,
     jd_info: str,
 ) -> JDMatchDtl | None:
-    statement = select(JDMatchDtl).where(JDMatchDtl.file_id == file_id)
+    statement = select(JDMatchDtl).where(JDMatchDtl.id == jd_match_id)
     results = _db_session.exec(statement)
     jd_match_dtl = results.first()
     if jd_match_dtl:
@@ -43,6 +45,15 @@ async def get_jd_match_by_file_id(
     file_id: str,
 ) -> JDMatchDtl | None:
     statement = select(JDMatchDtl).where(JDMatchDtl.file_id == file_id)
+    results = _db_session.exec(statement)
+    return results.first()
+
+
+async def get_jd_match_by_jd_match_id(
+    _db_session: Session,
+    jd_match_id: str,
+) -> JDMatchDtl | None:
+    statement = select(JDMatchDtl).where(JDMatchDtl.id == jd_match_id)
     results = _db_session.exec(statement)
     return results.first()
 

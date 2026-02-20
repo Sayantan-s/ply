@@ -16,3 +16,4 @@ class JDMatchDtl(SQLModel, table=True):
     file_name: str | None = None
     created_at: datetime = Field(default_factory=datetime.now)
     updated_at: datetime = Field(default_factory=datetime.now)
+    resume_url: str | None = None
