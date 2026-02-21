@@ -1,12 +1,10 @@
 import uuid
+from typing import Literal, Union
 
 from pydantic import BaseModel, Field
 
 from app.api.v1.dto import UIDtoModel
-
-
-class JdMatchResponse(UIDtoModel):
-    file_id: str
+from app.modules.jdmatch.constants import JdMatchStatus
 
 
 class ResumeUploadResponse(UIDtoModel):
@@ -19,6 +17,19 @@ class JdResponse(UIDtoModel):
     is_link: bool
 
 
-class WebhookHeaders(BaseModel):
-    # Pydantic automatically handles the hyphen-to-underscore conversion
-    upstash_signature: str = Field(alias="Upstash-Signature")
+class JdMatchStatusResponse(UIDtoModel):
+    status: JdMatchStatus
+
+
+class StatusStreamResponse(BaseModel):
+    type: Literal["status"] = "status"
+    status: JdMatchStatus
+
+
+class AnalysisStreamResponse(BaseModel):
+    type: Literal["analysis"] = "analysis"
+    chunk: str
+
+
+class JdMatchStreamResponse(BaseModel):
+    payload: Union[StatusStreamResponse, AnalysisStreamResponse] = Field(..., discriminator="type")

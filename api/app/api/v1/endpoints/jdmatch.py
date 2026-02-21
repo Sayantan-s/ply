@@ -1,32 +1,24 @@
 from typing import Annotated
 
 from browser_use_sdk import AsyncBrowserUse
-from fastapi import APIRouter, Body, Depends, Form, Header, UploadFile, status
+from fastapi import APIRouter, Depends, Form, Path, UploadFile, status
+from fastapi.responses import StreamingResponse
 from google import genai
-from qstash.client import QStash
-from qstash.receiver import Receiver
-from redis import asyncio as aioredis
 from sqlmodel import Session
 
 from app.api.v1.dto import ResponseEnvelope
 from app.api.v1.dto.jdmatch import (
-    JdMatchResponse,
-    JdResponse,
+    JdMatchStatusResponse,
     ResumeUploadResponse,
-    WebhookHeaders,
 )
 from app.core.logging.logger import get_logger
 from app.integrations.browser_use.agent import get_browser_use_client
 from app.integrations.db.database import get_session
 from app.integrations.llm.gemini import get_gemini_client
-from app.integrations.redis.store import get_redis_store
-from app.integrations.upstash.qstash import get_qstash_client, get_qstash_consumer
-from app.modules.jdmatch.schemas import ParseResumeJDInformation
 from app.modules.jdmatch.service import (
+    create_jd_match,
+    get_jd_match_status,
     jd_match_analyze,
-    jd_match_init,
-    process_jd,
-    upload_resume,
 )
 
 router: APIRouter = APIRouter()
@@ -35,80 +27,63 @@ logger = get_logger("jdmatch.api")
 
 
 @router.post(
-    "/resume/upload",
-    status_code=status.HTTP_202_ACCEPTED,
+    "/",
+    status_code=status.HTTP_201_CREATED,
     response_model=ResponseEnvelope[ResumeUploadResponse],
-    operation_id="uploadResume",
+    operation_id="createJdMatch",
 )
-async def upload_resume_endpoint(
+async def create_jd_match_endpoint(
     session: Annotated[Session, Depends(get_session)],
     resume_file: UploadFile | None = None,
     resume_url: Annotated[str | None, Form()] = None,
+    jd_info: Annotated[str | None, Form()] = None,
 ) -> ResponseEnvelope[ResumeUploadResponse]:
-    logger.info("starting upload_resume_endpoint()")
-    response = await upload_resume(session, resume_file, resume_url)
-    logger.info("ending upload_resume_endpoint()")
-    return ResponseEnvelope.ok(response)
-
-
-@router.patch(
-    "/{jd_match_id}/jd/add",
-    status_code=status.HTTP_202_ACCEPTED,
-    operation_id="addJd",
-)
-async def add_jd_endpoint(
-    jd_match_id: str,
-    jd_info: Annotated[str, Form()],
-    session: Annotated[Session, Depends(get_session)],
-):
-    logger.info("starting add_jd_endpoint for {jd_match_id}", jd_match_id=jd_match_id)
-    await process_jd(session, jd_match_id, jd_info)
-    logger.info("ending add_jd_endpoint for {jd_match_id}", jd_match_id=jd_match_id)
-
-
-@router.post(
-    "/{jd_match_id}/init",
-    status_code=status.HTTP_200_OK,
-    response_model=ResponseEnvelope[JdMatchResponse],
-    operation_id="jdMatchInit",
-)
-async def jdmatch_init_endpoint(
-    jd_match_id: str,
-    qstash: Annotated[QStash, Depends(get_qstash_client)],
-    store: Annotated[aioredis.Redis, Depends(get_redis_store)],
-    session: Annotated[Session, Depends(get_session)],
-) -> ResponseEnvelope[JdMatchResponse]:
-    logger.info(
-        "starting jdmatch_init_endpoint for {jd_match_id}", jd_match_id=jd_match_id
-    )
-    response = await jd_match_init(jd_match_id, qstash, store, session)
-    logger.info(
-        "ending jdmatch_init_endpoint for {jd_match_id}", jd_match_id=jd_match_id
-    )
+    logger.info("starting create_jd_match_endpoint()")
+    response = await create_jd_match(session, resume_file, resume_url, jd_info)
+    logger.info("ending create_jd_match_endpoint()")
     return ResponseEnvelope.ok(response)
 
 
 @router.post(
-    "/consumer",
+    "/{jd_match_id}/analyze",
     status_code=status.HTTP_200_OK,
-    operation_id="jdMatchConsumer",
-    response_model=ResponseEnvelope[str],
+    operation_id="analyzeJdMatch",
 )
-async def jdmatch_consumer(
-    receiver: Annotated[Receiver, Depends(get_qstash_consumer)],
-    store: Annotated[aioredis.Redis, Depends(get_redis_store)],
+async def analyze_jd_match_endpoint(
+    jd_match_id: Annotated[str, Path(...)],
     gemini_client: Annotated[genai.Client, Depends(get_gemini_client)],
     session: Annotated[Session, Depends(get_session)],
     browser_use_client: Annotated[AsyncBrowserUse, Depends(get_browser_use_client)],
-    body: Annotated[ParseResumeJDInformation, Body(embed=True)],
-    headers: Annotated[WebhookHeaders, Header(embed=True)],
-) -> ResponseEnvelope[str]:
-    logger.info("starting jdmatch_consumer()")
+) -> StreamingResponse:
+    logger.info(
+        "starting analyze_jd_match_endpoint for {jd_match_id}", jd_match_id=jd_match_id
+    )
 
-    signature = headers.upstash_signature
-    receiver.verify(body=body, signature=signature)
+    async def event_generator():
+        async for chunk in jd_match_analyze(
+            jd_match_id, gemini_client, session, browser_use_client
+        ):
+            yield chunk.model_dump_json() + "\n"
 
-    await jd_match_analyze(body, store, gemini_client, session, browser_use_client)
-    logger.info("ending jdmatch_consumer()")
+    return StreamingResponse(event_generator(), media_type="application/x-ndjson")
 
-    return ResponseEnvelope.ok("success")
+
+@router.get(
+    "/{jd_match_id}/status",
+    status_code=status.HTTP_200_OK,
+    response_model=ResponseEnvelope[JdMatchStatusResponse],
+    operation_id="getJdMatchStatus",
+)
+async def get_jd_match_status_endpoint(
+    jd_match_id: str,
+    session: Annotated[Session, Depends(get_session)],
+) -> ResponseEnvelope[JdMatchStatusResponse]:
+    logger.info(
+        "starting get_jd_match_status_endpoint for {jd_match_id}",
+        jd_match_id=jd_match_id,
+    )
+    response = await get_jd_match_status(jd_match_id, session)
+    logger.info(
+        "ending get_jd_match_status_endpoint for {jd_match_id}", jd_match_id=jd_match_id
+    )
+    return ResponseEnvelope.ok(response)

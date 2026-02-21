@@ -16,11 +16,11 @@ DEFAULT_FILENAME = "downloaded_resume.pdf"
 
 
 class JdMatchStatus(Enum):
-    PARSING = "parsing"
-    QUEUED = "queued"
-    PROCESSING = "processing"
-    EXTRACTING = "extracting"
-    ANALYZING = "analyzing"
-    THINKING = "thinking"
-    MATCHED = "matched"
-    FAILED = "failed"
+    PARSING = "warming_up"  # was PARSING
+    QUEUED = "lining_up"  # was QUEUED
+    PROCESSING = "churning"  # was PROCESSING
+    EXTRACTING = "combing"  # was EXTRACTING
+    ANALYZING = "pondering"  # was ANALYZING
+    THINKING = "cooking"  # was THINKING
+    MATCHED = "locked_in"  # was MATCHED
+    FAILED = "fumbled"  # was FAILED
