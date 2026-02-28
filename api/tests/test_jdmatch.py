@@ -1,11 +1,12 @@
-from unittest.mock import AsyncMock, patch
 import uuid
+from unittest.mock import AsyncMock, patch
+
 import pytest
 from fastapi import status
 
 
 @pytest.mark.asyncio
-async def test_create_jd_match(client):
+async def test_create_jd_match(client) -> None:
     with patch(
         "app.api.v1.endpoints.jdmatch.create_jd_match", new_callable=AsyncMock
     ) as mock_create:
@@ -26,14 +27,22 @@ async def test_create_jd_match(client):
 
 
 @pytest.mark.asyncio
-async def test_analyze_jd_match_streaming(client):
+async def test_analyze_jd_match_streaming(client) -> None:
     async def mock_generator(*args, **kwargs):
-        from app.api.v1.dto.jdmatch import JdMatchStreamResponse, StatusStreamResponse, AnalysisStreamResponse
+        from app.api.v1.dto.jdmatch import (
+            AnalysisStreamResponse,
+            JdMatchStreamResponse,
+            StatusStreamResponse,
+        )
         from app.modules.jdmatch.constants import JdMatchStatus
-        
-        yield JdMatchStreamResponse(payload=StatusStreamResponse(status=JdMatchStatus.ANALYZING))
+
+        yield JdMatchStreamResponse(
+            payload=StatusStreamResponse(status=JdMatchStatus.ANALYZING)
+        )
         yield JdMatchStreamResponse(payload=AnalysisStreamResponse(chunk="test chunk"))
-        yield JdMatchStreamResponse(payload=StatusStreamResponse(status=JdMatchStatus.MATCHED))
+        yield JdMatchStreamResponse(
+            payload=StatusStreamResponse(status=JdMatchStatus.MATCHED)
+        )
 
     with patch(
         "app.api.v1.endpoints.jdmatch.jd_match_analyze", side_effect=mock_generator
@@ -43,7 +52,7 @@ async def test_analyze_jd_match_streaming(client):
 
         assert response.status_code == status.HTTP_200_OK
         assert response.headers["content-type"] == "application/x-ndjson"
-        
+
         lines = [line for line in response.iter_lines() if line]
         assert len(lines) == 3
         mock_analyze.assert_called_once()
@@ -55,6 +64,7 @@ async def test_get_jd_match_status(client):
         "app.api.v1.endpoints.jdmatch.get_jd_match_status", new_callable=AsyncMock
     ) as mock_status:
         from app.modules.jdmatch.constants import JdMatchStatus
+
         mock_status.return_value = {"status": JdMatchStatus.MATCHED}
 
         jd_match_id = str(uuid.uuid4())

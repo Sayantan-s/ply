@@ -1,4 +1,4 @@
-from typing import AsyncGenerator
+from collections.abc import AsyncGenerator
 
 from browser_use_sdk import AsyncBrowserUse
 from fastapi import UploadFile
@@ -7,8 +7,8 @@ from sqlmodel import Session
 
 from app.api.v1.dto.jdmatch import (
     AnalysisStreamResponse,
-    JdMatchStreamResponse,
     JdMatchStatusResponse,
+    JdMatchStreamResponse,
     ResumeUploadResponse,
     StatusStreamResponse,
 )
@@ -94,11 +94,7 @@ async def jd_match_analyze(
         is_jd_link = is_jd_link_or_description(jd_data)
 
         # Update status to EXTRACTING or ANALYZING in DB
-        status = (
-            JdMatchStatus.EXTRACTING
-            if is_jd_link
-            else JdMatchStatus.ANALYZING
-        )
+        status = JdMatchStatus.EXTRACTING if is_jd_link else JdMatchStatus.ANALYZING
         await update_jd_match_status(_db_session, jd_match_id, status.value)
         yield JdMatchStreamResponse(payload=StatusStreamResponse(status=status))
 
@@ -136,7 +132,7 @@ async def jd_match_analyze(
                 full_analysis_text
             ).model_dump()
         except Exception as e:
-            logger.error(f"Failed to parse analysis JSON: {e}")
+            logger.exception("Failed to parse analysis JSON: %s", repr(e))
             raise
 
         # Save to Database (this will also update status to MATCHED)

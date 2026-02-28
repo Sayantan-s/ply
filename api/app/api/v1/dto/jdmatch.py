@@ -1,5 +1,5 @@
 import uuid
-from typing import Literal, Union
+from typing import Literal
 
 from pydantic import BaseModel, Field
 
@@ -32,4 +32,6 @@ class AnalysisStreamResponse(BaseModel):
 
 
 class JdMatchStreamResponse(BaseModel):
-    payload: Union[StatusStreamResponse, AnalysisStreamResponse] = Field(..., discriminator="type")
+    payload: StatusStreamResponse | AnalysisStreamResponse = Field(
+        ..., discriminator="type"
+    )

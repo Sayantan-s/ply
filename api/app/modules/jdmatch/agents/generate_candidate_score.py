@@ -1,4 +1,5 @@
-from typing import AsyncGenerator
+from collections.abc import AsyncGenerator
+
 from google import genai
 from google.genai import types
 
@@ -115,11 +116,11 @@ async def agent_stream_candidate_score(
         safety_settings=_safety_settings,
     )
 
-    # Note: genai client stream is not async in the current SDK version? 
+    # Note: genai client stream is not async in the current SDK version?
     # Let's check if it supports async streaming.
-    # The SDK 'genai' is the new Google GenAI SDK. 
+    # The SDK 'genai' is the new Google GenAI SDK.
     # Usually it's client.models.generate_content_stream
-    
+
     stream = gemini_client.models.generate_content_stream(
         model=GeminiModel.flash,
         contents=[file, _prompt(jd)],
