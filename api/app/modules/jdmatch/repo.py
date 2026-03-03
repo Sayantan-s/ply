@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import UTC, datetime
 from typing import Any
 
 from sqlmodel import Session, select
@@ -36,7 +36,7 @@ async def update_jd_info(
     jd_match_dtl = results.first()
     if jd_match_dtl:
         jd_match_dtl.jd = jd_info
-        jd_match_dtl.updated_at = datetime.now()
+        jd_match_dtl.updated_at = datetime.now(UTC)
         _db_session.add(jd_match_dtl)
         _db_session.commit()
         _db_session.refresh(jd_match_dtl)
@@ -53,7 +53,7 @@ async def update_jd_match_status(
     jd_match_dtl = results.first()
     if jd_match_dtl:
         jd_match_dtl.status = status
-        jd_match_dtl.updated_at = datetime.now()
+        jd_match_dtl.updated_at = datetime.now(UTC)
         _db_session.add(jd_match_dtl)
         _db_session.commit()
         _db_session.refresh(jd_match_dtl)
@@ -97,7 +97,7 @@ async def save_jd_match_info(
     jd_match_dtl.missing_skills = score_data["missing_skills"]
     jd_match_dtl.explanation = score_data["explanation"]
     jd_match_dtl.status = JdMatchStatus.MATCHED.value
-    jd_match_dtl.updated_at = datetime.now()
+    jd_match_dtl.updated_at = datetime.now(UTC)
 
     _db_session.add(jd_match_dtl)
     _db_session.commit()

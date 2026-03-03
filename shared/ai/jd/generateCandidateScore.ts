@@ -70,7 +70,7 @@ const ANALYSER_PROMPT = (jd: string) => `
 
 export default async function generateCandidateScore(
   event: H3Event<EventHandlerRequest>,
-  config: IGenerateCandidateScoreConfig
+  config: IGenerateCandidateScoreConfig,
 ): Promise<IGenerateCandidateScoreData> {
   const runtimeConfig = useRuntimeConfig(event);
 
@@ -80,9 +80,7 @@ export default async function generateCandidateScore(
 
   const ai = llm.init();
 
-  const [candidateResumeFile] = [
-    await ai.files.upload({ file: candidateResumePath }),
-  ];
+  const [candidateResumeFile] = [await ai.files.upload({ file: candidateResumePath })];
 
   const llmConfig = {
     responseMimeType: "application/json",

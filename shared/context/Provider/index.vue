@@ -22,10 +22,7 @@ interface IJDMatchStatusResponse {
 
 defineOptions({ name: "ContextProvider" });
 
-const [jdMatch, { loading }] = useMutation<IJDMatchStatusResponse>(
-  "/api/v1/jdmatch",
-  "POST"
-);
+const [jdMatch, { loading }] = useMutation<IJDMatchStatusResponse>("/api/v1/jdmatch", "POST");
 const form = useState<IJDInputForm>("jdInputForm", () => ({
   jd: "",
   file: null,
@@ -33,8 +30,5 @@ const form = useState<IJDInputForm>("jdInputForm", () => ({
 
 const fileId = useState<string | null>("fileId", () => null);
 const status = useState<JDMATCH_STATUS>("status", () => JDMATCH_STATUS.IDLE);
-const jdMatchInfo = useState<JDMatchInfoResponse>(
-  "jdMatchInfo",
-  () => ({} as JDMatchInfoResponse)
-);
+const jdMatchInfo = useState<JDMatchInfoResponse>("jdMatchInfo", () => ({}) as JDMatchInfoResponse);
 </script>

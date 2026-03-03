@@ -5,24 +5,20 @@ import type { HTTPMethods } from "@upstash/qstash";
 export default function <TData = unknown, TError = unknown>(
   url: string,
   method: HTTPMethods = "POST",
-  errorCallback?: (error: TError) => string
+  errorCallback?: (error: TError) => string,
 ): [
-  (
-    payload: RequestInit["body"] | Record<string, unknown>
-  ) => Promise<TData | null | undefined>,
+  (payload: RequestInit["body"] | Record<string, unknown>) => Promise<TData | null | undefined>,
   {
     loading: Ref<boolean, boolean>;
     error: Ref<string | null, string | null>;
     data: Ref<TData | null, TData | null>;
-  }
+  },
 ] {
   const loading = useState("loading", () => false);
   const error = useState<string | null>("error", () => null);
   const data = useState<TData | null>("data", () => null);
 
-  const mutate = async (
-    payload: RequestInit["body"] | Record<string, unknown>
-  ) => {
+  const mutate = async (payload: RequestInit["body"] | Record<string, unknown>) => {
     loading.value = true;
     error.value = null;
 

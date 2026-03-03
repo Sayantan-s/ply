@@ -5,10 +5,7 @@ interface IParseConfig {
   fileId: string;
 }
 
-export default async function (
-  event: H3Event<EventHandlerRequest>,
-  config: IParseConfig
-) {
+export default async function (event: H3Event<EventHandlerRequest>, config: IParseConfig) {
   const { logger } = Logging.client;
   logger.info(`starting parseJDInformation()`);
 
@@ -35,12 +32,7 @@ export default async function (
 
   const rootProjectPath = process.cwd();
 
-  const candidateResumePath = path.resolve(
-    rootProjectPath,
-    "public",
-    "uploads",
-    fileName
-  );
+  const candidateResumePath = path.resolve(rootProjectPath, "public", "uploads", fileName);
 
   const JD_INFO = url.data.toString("utf-8");
 

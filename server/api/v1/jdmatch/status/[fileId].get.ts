@@ -11,11 +11,9 @@ interface StatusResponse {
 
 export default defineEventHandler(async (event) => {
   const fileId = getRouterParam(event, "fileId");
-  if (!fileId)
-    throw createError({ statusCode: 404, statusMessage: "File not found!" });
+  if (!fileId) throw createError({ statusCode: 404, statusMessage: "File not found!" });
   const value = await store.get<StatusResponse>(fileId);
-  if (!value)
-    throw createError({ statusCode: 404, statusMessage: "File not found!" });
+  if (!value) throw createError({ statusCode: 404, statusMessage: "File not found!" });
   if (value.status === JDMATCH_STATUS.MATCHED) await store.del(fileId);
   if (value.status === JDMATCH_STATUS.FAILED)
     throw createError({

@@ -1,0 +1,34 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "start:client",
+      "type": "shell",
+      "command": "osascript -e 'tell application \"Terminal\" to do script \"cd \\\"${workspaceFolder}/client\\\" && yarn dev\"'",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "never",
+        "panel": "silent"
+      }
+    },
+    {
+      "label": "start:api",
+      "type": "shell",
+      "command": "osascript -e 'tell application \"Terminal\" to do script \"cd \\\"${workspaceFolder}/api\\\" && ./dev.sh\"'",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "never",
+        "panel": "silent"
+      }
+    },
+    {
+      "label": "start:all",
+      "dependsOn": ["start:client", "start:api"],
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "never",
+        "panel": "silent"
+      }
+    }
+  ]
+}

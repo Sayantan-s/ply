@@ -1,9 +1,7 @@
 <template>
   <div class="border-b-2 border-black">
     <div class="flex items-center border-2 border-black gap-4 mb-6">
-      <div :class="styles">
-        {{ score }} <sup class="text-xs text-black/60">/ 100</sup>
-      </div>
+      <div :class="styles">{{ score }} <sup class="text-xs text-black/60">/ 100</sup></div>
       <div>
         <strong>Feedback</strong>
         <p class="text-sm" v-html="computedMeta?.feedback" />

@@ -34,8 +34,7 @@ const BROWSING_PROMPT = `
       }
 `;
 
-const ACTION_PROMPT =
-  "If any popup / modal / dialog is found on the screen, strictly close it!";
+const ACTION_PROMPT = "If any popup / modal / dialog is found on the screen, strictly close it!";
 
 const EXTRACTION_SCHEMA = z.object({
   message: z.string(),
@@ -44,10 +43,7 @@ const EXTRACTION_SCHEMA = z.object({
 
 const TIMEOUT = 60000;
 
-export default async function (
-  event: H3Event<EventHandlerRequest>,
-  config: JDConfig
-) {
+export default async function (event: H3Event<EventHandlerRequest>, config: JDConfig) {
   const { url } = config;
   const runtimeConfig = useRuntimeConfig(event);
   const { logger } = Logging.client;
@@ -60,9 +56,7 @@ export default async function (
 
   const isLocal = process.env.NODE_ENV === "development";
 
-  const chromeExecutablePath = isLocal
-    ? CHROME_PATH
-    : chromium.executablePath();
+  const chromeExecutablePath = isLocal ? CHROME_PATH : chromium.executablePath();
 
   const { page, close } = await browsingAgent({
     apiKey: API_KEY,
@@ -87,8 +81,7 @@ export default async function (
 
   await close();
 
-  if (message === "ERROR")
-    throw createError({ statusCode: 400, message: data });
+  if (message === "ERROR") throw createError({ statusCode: 400, message: data });
 
   return data;
 }

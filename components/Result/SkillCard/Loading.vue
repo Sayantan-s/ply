@@ -1,11 +1,6 @@
 <template>
   <div class="flex gap-1 flex-wrap">
-    <div
-      v-for="skill in fallbackSkills"
-      :key="skill"
-      :class="styles"
-      role="button"
-    />
+    <div v-for="skill in fallbackSkills" :key="skill" :class="styles" role="button" />
   </div>
 </template>
 
@@ -17,9 +12,7 @@ interface IProps {
 
 const { skills, variant = "primary" } = defineProps<IProps>();
 
-const fallbackSkills = computed(() =>
-  Array(skills).map((_, index) => index + 1)
-);
+const fallbackSkills = computed(() => Array(skills).map((_, index) => index + 1));
 
 const computedVariant = computed(() => ({
   primary: "bg-black text-white",

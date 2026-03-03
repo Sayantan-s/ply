@@ -30,13 +30,7 @@ const handleTriggerFile = (eve: Event) => {
 
 <template>
   <div :class="inputParentClassName">
-    <input
-      ref="fileRef"
-      type="file"
-      hidden
-      v-bind="$attrs"
-      @input="handleFileChange"
-    />
+    <input ref="fileRef" type="file" hidden v-bind="$attrs" @input="handleFileChange" />
     <slot :trigger="handleTriggerFile" :remove="handleRemoveFile" />
   </div>
 </template>

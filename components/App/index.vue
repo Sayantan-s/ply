@@ -3,11 +3,9 @@ import { LinkInput } from "#components";
 import { useDataHandler, useDataSource } from "../context/DataProvider/hook";
 import { ETAB } from "../context/DataProvider/types";
 
-const { handleChange, handleReset, handleSubmit, handleChangeTabs } =
-  useDataHandler();
+const { handleChange, handleReset, handleSubmit, handleChangeTabs } = useDataHandler();
 
-const { tab, loading, jdMatchInfo, status, fileId, form, resumeLink } =
-  useDataSource();
+const { tab, loading, jdMatchInfo, status, fileId, form, resumeLink } = useDataSource();
 
 const computedStatusValues = computed(() => ({
   [JDMATCH_STATUS.MATCHED]: "bg-green-600",
@@ -22,9 +20,8 @@ const baseFileInputStyles = computed(() => [
 const baseButtonStyles = computed(() => [
   "border-2 justify-center px-8 py-2 border-black aspect-video text-shadow-md gap-2 flex items-center h-20",
   loading.value || fileId.value ? "flex-1" : "",
-  computedStatusValues.value[
-    status.value as keyof typeof computedStatusValues.value
-  ] ?? "bg-purple-600",
+  computedStatusValues.value[status.value as keyof typeof computedStatusValues.value] ??
+    "bg-purple-600",
 ]);
 
 const scoreTabStyles = computed(() => [
@@ -86,9 +83,7 @@ const icon = iconStyles.value[status.value as keyof typeof iconStyles.value];
                     @change="handleChange"
                   >
                     <template #default="{ trigger }">
-                      <button class="text-purple-400" @click="trigger">
-                        Attatch Resume
-                      </button>
+                      <button class="text-purple-400" @click="trigger">Attatch Resume</button>
                     </template>
                   </FileInput>
                   &nbsp;
@@ -120,25 +115,14 @@ const icon = iconStyles.value[status.value as keyof typeof iconStyles.value];
             <Loading
               v-if="
                 loading ||
-                (!!fileId &&
-                  status !== JDMATCH_STATUS.MATCHED &&
-                  status !== JDMATCH_STATUS.FAILED)
+                (!!fileId && status !== JDMATCH_STATUS.MATCHED && status !== JDMATCH_STATUS.FAILED)
               "
             />
             <Icon v-if="icon" :name="icon" class="size-7 text-black" />
-            {{
-              loading
-                ? "Processing"
-                : fileId
-                ? JDMATCH_STATUS_TEXT[status]
-                : "Proceed"
-            }}
+            {{ loading ? "Processing" : fileId ? JDMATCH_STATUS_TEXT[status] : "Proceed" }}
           </button>
           <button
-            v-if="
-              status === JDMATCH_STATUS.FAILED ||
-              status === JDMATCH_STATUS.MATCHED
-            "
+            v-if="status === JDMATCH_STATUS.FAILED || status === JDMATCH_STATUS.MATCHED"
             class="px-6 py-3 border-2 border-l-0 border-black min-w-xl bg-black text-white"
             @click="handleReset"
           >
@@ -148,10 +132,7 @@ const icon = iconStyles.value[status.value as keyof typeof iconStyles.value];
       </form>
     </TabsContent>
     <TabsContent :value="ETAB.TAB_2">
-      <Result
-        :data="jdMatchInfo"
-        :loading="loading || status !== JDMATCH_STATUS.MATCHED"
-      />
+      <Result :data="jdMatchInfo" :loading="loading || status !== JDMATCH_STATUS.MATCHED" />
     </TabsContent>
   </TabsRoot>
 </template>

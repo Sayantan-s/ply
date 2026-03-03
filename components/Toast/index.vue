@@ -50,17 +50,16 @@ const icon = computed(
       success: "uil:check-circle",
       info: "uil:info-circle",
       warning: "uil:exclamation-circle",
-    }[props.variant])
+    })[props.variant],
 );
 
 const baseStyles = computed(
   () =>
-    "border-2 w-[400px] border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] data-[state=open]:animate-slideIn data-[state=closed]:animate-hide data-[swipe=move]:translate-x-[var(--reka-toast-swipe-move-x)] data-[swipe=cancel]:translate-x-0 data-[swipe=cancel]:transition-[transform_200ms_ease-out] data-[swipe=end]:animate-swipeOut"
+    "border-2 w-[400px] border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] data-[state=open]:animate-slideIn data-[state=closed]:animate-hide data-[swipe=move]:translate-x-[var(--reka-toast-swipe-move-x)] data-[swipe=cancel]:translate-x-0 data-[swipe=cancel]:transition-[transform_200ms_ease-out] data-[swipe=end]:animate-swipeOut",
 );
 
 const baseIconStyles = computed(
-  () =>
-    "w-20 aspect-square flex items-center justify-center border-r-2 border-black"
+  () => "w-20 aspect-square flex items-center justify-center border-r-2 border-black",
 );
 </script>
 
@@ -72,9 +71,7 @@ const baseIconStyles = computed(
       </div>
       <div class="p-2 w-full">
         <div class="flex w-full justify-between">
-          <ToastTitle
-            class="[grid-area:_title] mb-[5px] text-slate12 text-sm font-[700]"
-          >
+          <ToastTitle class="[grid-area:_title] mb-[5px] text-slate12 text-sm font-[700]">
             {{ title }}
           </ToastTitle>
           <ToastClose

@@ -1,1 +1,5 @@
-bun test
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+# Run the common pre-commit configuration for both api and client
+pre-commit run --all-files

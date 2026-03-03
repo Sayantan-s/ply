@@ -18,17 +18,11 @@ export const getRedisClient = () => {
     });
 
     redisClient.once("error", (err) => {
-      Logging.client.logger.error(
-        `Redis client error: ${JSON.stringify(err)}`,
-        err
-      );
+      Logging.client.logger.error(`Redis client error: ${JSON.stringify(err)}`, err);
     });
 
     redisClient.ping().catch((err) => {
-      Logging.client.logger.error(
-        `Redis ping error: ${JSON.stringify(err)}`,
-        err
-      );
+      Logging.client.logger.error(`Redis ping error: ${JSON.stringify(err)}`, err);
     });
   }
   return redisClient;

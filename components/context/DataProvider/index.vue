@@ -20,10 +20,7 @@ import {
   type IJDMatchStatusResponse,
 } from "./types";
 
-const [jdMatch, { loading }] = useMutation<IJDMatchStatusResponse>(
-  "/api/v1/jdmatch",
-  "POST"
-);
+const [jdMatch, { loading }] = useMutation<IJDMatchStatusResponse>("/api/v1/jdmatch", "POST");
 const form = useState<IJDInputForm>("jdInputForm", () => ({
   jd: "",
   file: null,
@@ -34,10 +31,7 @@ const resumeLink = useState<string>("resumeLink", () => "");
 
 const fileId = useState<string | null>("fileId", () => null);
 const status = useState<JDMATCH_STATUS>("status", () => JDMATCH_STATUS.IDLE);
-const jdMatchInfo = useState<JDMatchInfoResponse>(
-  "jdMatchInfo",
-  () => ({} as JDMatchInfoResponse)
-);
+const jdMatchInfo = useState<JDMatchInfoResponse>("jdMatchInfo", () => ({}) as JDMatchInfoResponse);
 
 const tab = useState("tab", () => ETAB.TAB_1);
 

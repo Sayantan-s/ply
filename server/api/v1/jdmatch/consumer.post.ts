@@ -4,9 +4,7 @@ import { JDMATCH_STATUS } from "~/shared/constants/jd";
 import { store } from "~/shared/utils/cache";
 
 export default defineEventHandler(async (event) => {
-  const info = await readBody<
-    Awaited<ReturnType<typeof parseJDInformation>>["info"]
-  >(event);
+  const info = await readBody<Awaited<ReturnType<typeof parseJDInformation>>["info"]>(event);
 
   const storage = useStorage("uploads");
 
@@ -18,9 +16,7 @@ export default defineEventHandler(async (event) => {
 
     const isJDLink = isJdLinkOrDescription(jd_data);
 
-    const status = isJDLink
-      ? JDMATCH_STATUS.EXTRACTING
-      : JDMATCH_STATUS.ANALYZING;
+    const status = isJDLink ? JDMATCH_STATUS.EXTRACTING : JDMATCH_STATUS.ANALYZING;
 
     await store.set(fileId, { status });
 
