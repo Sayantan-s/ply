@@ -11,23 +11,8 @@
       "type": "chrome",
       "request": "launch",
       "name": "client: chrome",
-      "url": "http://localhost:3000",
-      "webRoot": "${workspaceFolder}"
-    },
-    {
-      "type": "node",
-      "request": "launch",
-      "name": "server: nuxt",
-      "outputCapture": "std",
-      "program": "${workspaceFolder}/node_modules/nuxt/bin/nuxt.mjs",
-      "args": ["dev"]
-    }
-  ],
-  "compounds": [
-    {
-      "name": "fullstack: nuxt",
-      "configurations": ["server: nuxt", "client: chrome"],
-      "preLaunchTask": "run ngrok.sh"
+      "url": "http://localhost:5173",
+      "webRoot": "${workspaceFolder}/client"
     }
   ]
 }
