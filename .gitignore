@@ -54,3 +54,6 @@ client/*.local
 *.njsproj
 *.sln
 *.sw?
+.claude/**/*
+*storybook.log
+storybook-static
