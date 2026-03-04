@@ -99,7 +99,8 @@
                   "fill": "#3B5BDB",
                   "content": "// step_01",
                   "fontFamily": "JetBrains Mono",
-                  "fontSize": 11
+                  "fontSize": 11,
+                  "fontWeight": "normal"
                 },
                 {
                   "type": "text",
@@ -122,7 +123,8 @@
                   "content": "We'll analyze it against your target job description.",
                   "lineHeight": 1.5,
                   "fontFamily": "JetBrains Mono",
-                  "fontSize": 12
+                  "fontSize": 12,
+                  "fontWeight": "normal"
                 }
               ]
             },
@@ -256,7 +258,8 @@
                       "content": ".pdf .docx — max 10mb",
                       "textAlign": "center",
                       "fontFamily": "JetBrains Mono",
-                      "fontSize": 10
+                      "fontSize": 10,
+                      "fontWeight": "normal"
                     }
                   ]
                 }
@@ -413,7 +416,8 @@
                   "fill": "#3B5BDB",
                   "content": "// step_02",
                   "fontFamily": "JetBrains Mono",
-                  "fontSize": 11
+                  "fontSize": 11,
+                  "fontWeight": "normal"
                 },
                 {
                   "type": "text",
@@ -436,7 +440,8 @@
                   "content": "Paste the job description or provide the job post URL.",
                   "lineHeight": 1.5,
                   "fontFamily": "JetBrains Mono",
-                  "fontSize": 12
+                  "fontSize": 12,
+                  "fontWeight": "normal"
                 }
               ]
             },
@@ -494,7 +499,8 @@
                           "content": "Paste the full job description here...",
                           "lineHeight": 1.6,
                           "fontFamily": "JetBrains Mono",
-                          "fontSize": 12
+                          "fontSize": 12,
+                          "fontWeight": "normal"
                         }
                       ]
                     }
@@ -554,7 +560,8 @@
                           "fill": "#AAAABC",
                           "content": "https://example.com/jobs/...",
                           "fontFamily": "JetBrains Mono",
-                          "fontSize": 12
+                          "fontSize": 12,
+                          "fontWeight": "normal"
                         }
                       ]
                     }
@@ -751,7 +758,8 @@
                   "fill": "#3B5BDB",
                   "content": "// step_03",
                   "fontFamily": "JetBrains Mono",
-                  "fontSize": 11
+                  "fontSize": 11,
+                  "fontWeight": "normal"
                 },
                 {
                   "type": "text",
@@ -774,7 +782,8 @@
                   "content": "Confirm your inputs before running the analysis.",
                   "lineHeight": 1.5,
                   "fontFamily": "JetBrains Mono",
-                  "fontSize": 12
+                  "fontSize": 12,
+                  "fontWeight": "normal"
                 }
               ]
             },
@@ -872,7 +881,8 @@
                           "fill": "#1A1B2E",
                           "content": "sarah_chen_resume.pdf",
                           "fontFamily": "JetBrains Mono",
-                          "fontSize": 11
+                          "fontSize": 11,
+                          "fontWeight": "normal"
                         },
                         {
                           "type": "text",
@@ -881,7 +891,8 @@
                           "fill": "#9999AA",
                           "content": "245 KB",
                           "fontFamily": "JetBrains Mono",
-                          "fontSize": 10
+                          "fontSize": 10,
+                          "fontWeight": "normal"
                         }
                       ]
                     }
@@ -965,7 +976,8 @@
                           "content": "Senior Frontend Engineer — We are looking for an experienced engineer with 5+ years of React...",
                           "lineHeight": 1.5,
                           "fontFamily": "JetBrains Mono",
-                          "fontSize": 11
+                          "fontSize": 11,
+                          "fontWeight": "normal"
                         }
                       ]
                     }
@@ -1263,7 +1275,8 @@
                   "content": "Strong alignment in frontend technologies and system design. Key gaps exist in backend infrastructure experience and years of leadership.",
                   "lineHeight": 1.6,
                   "fontFamily": "JetBrains Mono",
-                  "fontSize": 11
+                  "fontSize": 11,
+                  "fontWeight": "normal"
                 }
               ]
             },
@@ -1328,7 +1341,8 @@
                           "fill": "#1A1B2E",
                           "content": "React / Next.js",
                           "fontFamily": "JetBrains Mono",
-                          "fontSize": 12
+                          "fontSize": 12,
+                          "fontWeight": "normal"
                         },
                         {
                           "type": "frame",
@@ -1397,7 +1411,8 @@
                           "fill": "#1A1B2E",
                           "content": "TypeScript",
                           "fontFamily": "JetBrains Mono",
-                          "fontSize": 12
+                          "fontSize": 12,
+                          "fontWeight": "normal"
                         },
                         {
                           "type": "frame",
@@ -1459,7 +1474,8 @@
                           "fill": "#1A1B2E",
                           "content": "System Design",
                           "fontFamily": "JetBrains Mono",
-                          "fontSize": 12
+                          "fontSize": 12,
+                          "fontWeight": "normal"
                         },
                         {
                           "type": "frame",
@@ -1576,7 +1592,8 @@
                               "width": "fill_container",
                               "content": "1.5 years exp vs 5 years required",
                               "fontFamily": "JetBrains Mono",
-                              "fontSize": 10
+                              "fontSize": 10,
+                              "fontWeight": "normal"
                             }
                           ]
                         }
@@ -1637,7 +1654,8 @@
                               "width": "fill_container",
                               "content": "No direct reports mentioned in resume",
                               "fontFamily": "JetBrains Mono",
-                              "fontSize": 10
+                              "fontSize": 10,
+                              "fontWeight": "normal"
                             }
                           ]
                         }
@@ -1691,7 +1709,8 @@
                               "width": "fill_container",
                               "content": "Only basic S3 usage, no EC2 or Lambda",
                               "fontFamily": "JetBrains Mono",
-                              "fontSize": 10
+                              "fontSize": 10,
+                              "fontWeight": "normal"
                             }
                           ]
                         }
@@ -1890,7 +1909,8 @@
                   "fill": "#3B5BDB",
                   "content": "// step_01",
                   "fontFamily": "JetBrains Mono",
-                  "fontSize": 11
+                  "fontSize": 11,
+                  "fontWeight": "normal"
                 },
                 {
                   "type": "text",
@@ -1913,7 +1933,8 @@
                   "content": "We'll analyze it against your target job description.",
                   "lineHeight": 1.5,
                   "fontFamily": "JetBrains Mono",
-                  "fontSize": 12
+                  "fontSize": 12,
+                  "fontWeight": "normal"
                 }
               ]
             },
@@ -2055,7 +2076,8 @@
                           "fill": "#AAAABC",
                           "content": "https://drive.google.com/...",
                           "fontFamily": "JetBrains Mono",
-                          "fontSize": 12
+                          "fontSize": 12,
+                          "fontWeight": "normal"
                         }
                       ]
                     }
@@ -2230,7 +2252,8 @@
                       "content": "Make sure the file has public or link-shared access enabled.",
                       "lineHeight": 1.5,
                       "fontFamily": "JetBrains Mono",
-                      "fontSize": 10
+                      "fontSize": 10,
+                      "fontWeight": "normal"
                     }
                   ]
                 }
@@ -2428,7 +2451,8 @@
                   "lineHeight": 1.6,
                   "textAlign": "center",
                   "fontFamily": "JetBrains Mono",
-                  "fontSize": 12
+                  "fontSize": 12,
+                  "fontWeight": "normal"
                 }
               ]
             },
@@ -2469,7 +2493,8 @@
                   "content": "err: unsupported_format — only .pdf and .docx files are accepted. Received .png (2.3mb)",
                   "lineHeight": 1.5,
                   "fontFamily": "JetBrains Mono",
-                  "fontSize": 10
+                  "fontSize": 10,
+                  "fontWeight": "normal"
                 }
               ]
             },
@@ -2680,7 +2705,8 @@
                   "lineHeight": 1.6,
                   "textAlign": "center",
                   "fontFamily": "JetBrains Mono",
-                  "fontSize": 12
+                  "fontSize": 12,
+                  "fontWeight": "normal"
                 }
               ]
             },
@@ -2742,7 +2768,8 @@
                   "content": "The analysis engine did not respond within 30s. Your inputs have been saved — you can retry without re-uploading.",
                   "lineHeight": 1.5,
                   "fontFamily": "JetBrains Mono",
-                  "fontSize": 10
+                  "fontSize": 10,
+                  "fontWeight": "normal"
                 }
               ]
             },
@@ -2953,7 +2980,8 @@
                   "lineHeight": 1.6,
                   "textAlign": "center",
                   "fontFamily": "JetBrains Mono",
-                  "fontSize": 12
+                  "fontSize": 12,
+                  "fontWeight": "normal"
                 }
               ]
             },
@@ -3009,7 +3037,8 @@
                       "content": "Check that the JD matches your field of expertise",
                       "lineHeight": 1.5,
                       "fontFamily": "JetBrains Mono",
-                      "fontSize": 11
+                      "fontSize": 11,
+                      "fontWeight": "normal"
                     }
                   ]
                 },
@@ -3040,7 +3069,8 @@
                       "content": "Update your resume with relevant keywords",
                       "lineHeight": 1.5,
                       "fontFamily": "JetBrains Mono",
-                      "fontSize": 11
+                      "fontSize": 11,
+                      "fontWeight": "normal"
                     }
                   ]
                 },
@@ -3071,7 +3101,8 @@
                       "content": "Try a different job post with broader requirements",
                       "lineHeight": 1.5,
                       "fontFamily": "JetBrains Mono",
-                      "fontSize": 11
+                      "fontSize": 11,
+                      "fontWeight": "normal"
                     }
                   ]
                 }
@@ -3199,7 +3230,8 @@
           "fill": "#9999AA",
           "content": "// reusable components for the jd match report app",
           "fontFamily": "JetBrains Mono",
-          "fontSize": 12
+          "fontSize": 12,
+          "fontWeight": "normal"
         },
         {
           "type": "text",
@@ -3431,7 +3463,8 @@
                   "fill": "#AAAABC",
                   "content": "placeholder_text",
                   "fontFamily": "JetBrains Mono",
-                  "fontSize": 12
+                  "fontSize": 12,
+                  "fontWeight": "normal"
                 }
               ]
             }
@@ -3494,7 +3527,8 @@
                   "fill": "#1A1B2E",
                   "content": "filled_value",
                   "fontFamily": "JetBrains Mono",
-                  "fontSize": 12
+                  "fontSize": 12,
+                  "fontWeight": "normal"
                 }
               ]
             }
@@ -3549,7 +3583,8 @@
                   "content": "Write something here...",
                   "lineHeight": 1.6,
                   "fontFamily": "JetBrains Mono",
-                  "fontSize": 12
+                  "fontSize": 12,
+                  "fontWeight": "normal"
                 }
               ]
             }
@@ -3893,7 +3928,8 @@
               "content": "err: something went wrong with the operation.",
               "lineHeight": 1.5,
               "fontFamily": "JetBrains Mono",
-              "fontSize": 10
+              "fontSize": 10,
+              "fontWeight": "normal"
             }
           ]
         },
@@ -3937,7 +3973,8 @@
               "content": "warn: this action may take longer than expected.",
               "lineHeight": 1.5,
               "fontFamily": "JetBrains Mono",
-              "fontSize": 10
+              "fontSize": 10,
+              "fontWeight": "normal"
             }
           ]
         },
@@ -3981,7 +4018,8 @@
               "content": "info: your inputs have been saved automatically.",
               "lineHeight": 1.5,
               "fontFamily": "JetBrains Mono",
-              "fontSize": 10
+              "fontSize": 10,
+              "fontWeight": "normal"
             }
           ]
         },
@@ -4025,7 +4063,8 @@
               "content": "ok: analysis completed successfully.",
               "lineHeight": 1.5,
               "fontFamily": "JetBrains Mono",
-              "fontSize": 10
+              "fontSize": 10,
+              "fontWeight": "normal"
             }
           ]
         },
@@ -4199,7 +4238,8 @@
                   "content": "Card body content goes here. Supports multi-line text wrapping.",
                   "lineHeight": 1.5,
                   "fontFamily": "JetBrains Mono",
-                  "fontSize": 11
+                  "fontSize": 11,
+                  "fontWeight": "normal"
                 }
               ]
             }
@@ -4274,7 +4314,8 @@
                   "content": ".pdf .docx — max 10mb",
                   "textAlign": "center",
                   "fontFamily": "JetBrains Mono",
-                  "fontSize": 10
+                  "fontSize": 10,
+                  "fontWeight": "normal"
                 }
               ]
             }
@@ -4331,7 +4372,8 @@
               "fill": "#1A1B2E",
               "content": "Skill Name",
               "fontFamily": "JetBrains Mono",
-              "fontSize": 12
+              "fontSize": 12,
+              "fontWeight": "normal"
             },
             {
               "type": "frame",
@@ -4422,7 +4464,8 @@
                   "width": "fill_container",
                   "content": "Additional detail about the gap",
                   "fontFamily": "JetBrains Mono",
-                  "fontSize": 10
+                  "fontSize": 10,
+                  "fontWeight": "normal"
                 }
               ]
             }
@@ -4462,7 +4505,8 @@
           "fill": "#AAAABC",
           "content": "// 24px / 700 / -1 tracking",
           "fontFamily": "JetBrains Mono",
-          "fontSize": 9
+          "fontSize": 9,
+          "fontWeight": "normal"
         },
         {
           "type": "text",
@@ -4486,7 +4530,8 @@
           "fill": "#AAAABC",
           "content": "// 20px / 700 / -1 tracking",
           "fontFamily": "JetBrains Mono",
-          "fontSize": 9
+          "fontSize": 9,
+          "fontWeight": "normal"
         },
         {
           "type": "text",
@@ -4509,7 +4554,8 @@
           "fill": "#AAAABC",
           "content": "// 13px / 700 / snake_case",
           "fontFamily": "JetBrains Mono",
-          "fontSize": 9
+          "fontSize": 9,
+          "fontWeight": "normal"
         },
         {
           "type": "text",
@@ -4520,7 +4566,8 @@
           "fill": "#777788",
           "content": "Body text for descriptions and content.",
           "fontFamily": "JetBrains Mono",
-          "fontSize": 12
+          "fontSize": 12,
+          "fontWeight": "normal"
         },
         {
           "type": "text",
@@ -4531,7 +4578,8 @@
           "fill": "#AAAABC",
           "content": "// 12px / 400 / muted",
           "fontFamily": "JetBrains Mono",
-          "fontSize": 9
+          "fontSize": 9,
+          "fontWeight": "normal"
         },
         {
           "type": "text",
@@ -4554,7 +4602,8 @@
           "fill": "#AAAABC",
           "content": "// 11px / 600 / foreground",
           "fontFamily": "JetBrains Mono",
-          "fontSize": 9
+          "fontSize": 9,
+          "fontWeight": "normal"
         },
         {
           "type": "text",
@@ -4565,7 +4614,8 @@
           "fill": "#3B5BDB",
           "content": "// step_01",
           "fontFamily": "JetBrains Mono",
-          "fontSize": 11
+          "fontSize": 11,
+          "fontWeight": "normal"
         },
         {
           "type": "text",
@@ -4576,7 +4626,8 @@
           "fill": "#AAAABC",
           "content": "// 11px / 400 / accent (code comment style)",
           "fontFamily": "JetBrains Mono",
-          "fontSize": 9
+          "fontSize": 9,
+          "fontWeight": "normal"
         },
         {
           "type": "text",
@@ -4587,7 +4638,8 @@
           "fill": "#9999AA",
           "content": ".pdf .docx — max 10mb",
           "fontFamily": "JetBrains Mono",
-          "fontSize": 10
+          "fontSize": 10,
+          "fontWeight": "normal"
         },
         {
           "type": "text",
@@ -4598,7 +4650,8 @@
           "fill": "#AAAABC",
           "content": "// 10px / 400 / muted-fg (caption)",
           "fontFamily": "JetBrains Mono",
-          "fontSize": 9
+          "fontSize": 9,
+          "fontWeight": "normal"
         },
         {
           "type": "text",
@@ -4641,7 +4694,8 @@
               "fill": "#777788",
               "content": "#FBFBFB — background",
               "fontFamily": "JetBrains Mono",
-              "fontSize": 10
+              "fontSize": 10,
+              "fontWeight": "normal"
             }
           ]
         },
@@ -4669,7 +4723,8 @@
               "fill": "#777788",
               "content": "#1A1B2E — foreground",
               "fontFamily": "JetBrains Mono",
-              "fontSize": 10
+              "fontSize": 10,
+              "fontWeight": "normal"
             }
           ]
         },
@@ -4697,7 +4752,8 @@
               "fill": "#777788",
               "content": "#3B5BDB — primary/accent",
               "fontFamily": "JetBrains Mono",
-              "fontSize": 10
+              "fontSize": 10,
+              "fontWeight": "normal"
             }
           ]
         },
@@ -4725,7 +4781,8 @@
               "fill": "#777788",
               "content": "#9999AA — muted-foreground",
               "fontFamily": "JetBrains Mono",
-              "fontSize": 10
+              "fontSize": 10,
+              "fontWeight": "normal"
             }
           ]
         },
@@ -4758,7 +4815,8 @@
               "fill": "#777788",
               "content": "#D8D8DC — border",
               "fontFamily": "JetBrains Mono",
-              "fontSize": 10
+              "fontSize": 10,
+              "fontWeight": "normal"
             }
           ]
         },
@@ -4786,7 +4844,8 @@
               "fill": "#777788",
               "content": "#22AA55 — success",
               "fontFamily": "JetBrains Mono",
-              "fontSize": 10
+              "fontSize": 10,
+              "fontWeight": "normal"
             }
           ]
         },
@@ -4814,7 +4873,8 @@
               "fill": "#777788",
               "content": "#DD3333 — error/destructive",
               "fontFamily": "JetBrains Mono",
-              "fontSize": 10
+              "fontSize": 10,
+              "fontWeight": "normal"
             }
           ]
         },
@@ -4842,7 +4902,8 @@
               "fill": "#777788",
               "content": "#CC7700 — warning",
               "fontFamily": "JetBrains Mono",
-              "fontSize": 10
+              "fontSize": 10,
+              "fontWeight": "normal"
             }
           ]
         },
@@ -5128,7 +5189,8 @@
                   "fill": "#9999AA",
                   "content": "02_details",
                   "fontFamily": "JetBrains Mono",
-                  "fontSize": 12
+                  "fontSize": 12,
+                  "fontWeight": "normal"
                 },
                 {
                   "type": "frame",
@@ -5145,7 +5207,8 @@
                   "fill": "#9999AA",
                   "content": "03_review",
                   "fontFamily": "JetBrains Mono",
-                  "fontSize": 12
+                  "fontSize": 12,
+                  "fontWeight": "normal"
                 }
               ]
             },
@@ -5211,7 +5274,8 @@
                       "fill": "#3B5BDB",
                       "content": "// step_01",
                       "fontFamily": "JetBrains Mono",
-                      "fontSize": 12
+                      "fontSize": 12,
+                      "fontWeight": "normal"
                     },
                     {
                       "type": "text",
@@ -5234,7 +5298,8 @@
                       "content": "We'll analyze it against your target job description.",
                       "lineHeight": 1.5,
                       "fontFamily": "JetBrains Mono",
-                      "fontSize": 13
+                      "fontSize": 13,
+                      "fontWeight": "normal"
                     }
                   ]
                 },
@@ -5368,7 +5433,8 @@
                           "content": ".pdf .docx — max 10mb",
                           "textAlign": "center",
                           "fontFamily": "JetBrains Mono",
-                          "fontSize": 11
+                          "fontSize": 11,
+                          "fontWeight": "normal"
                         }
                       ]
                     }
@@ -5489,7 +5555,8 @@
                   "fill": "#9999AA",
                   "content": "01_upload",
                   "fontFamily": "JetBrains Mono",
-                  "fontSize": 12
+                  "fontSize": 12,
+                  "fontWeight": "normal"
                 },
                 {
                   "type": "frame",
@@ -5524,7 +5591,8 @@
                   "fill": "#9999AA",
                   "content": "03_review",
                   "fontFamily": "JetBrains Mono",
-                  "fontSize": 12
+                  "fontSize": 12,
+                  "fontWeight": "normal"
                 }
               ]
             },
@@ -5590,7 +5658,8 @@
                       "fill": "#3B5BDB",
                       "content": "// step_02",
                       "fontFamily": "JetBrains Mono",
-                      "fontSize": 12
+                      "fontSize": 12,
+                      "fontWeight": "normal"
                     },
                     {
                       "type": "text",
@@ -5613,7 +5682,8 @@
                       "content": "Paste the job description or provide the job post URL.",
                       "lineHeight": 1.5,
                       "fontFamily": "JetBrains Mono",
-                      "fontSize": 13
+                      "fontSize": 13,
+                      "fontWeight": "normal"
                     }
                   ]
                 },
@@ -5671,7 +5741,8 @@
                               "content": "Paste the full job description here...",
                               "lineHeight": 1.6,
                               "fontFamily": "JetBrains Mono",
-                              "fontSize": 12
+                              "fontSize": 12,
+                              "fontWeight": "normal"
                             }
                           ]
                         }
@@ -5731,7 +5802,8 @@
                               "fill": "#AAAABC",
                               "content": "https://example.com/jobs/...",
                               "fontFamily": "JetBrains Mono",
-                              "fontSize": 12
+                              "fontSize": 12,
+                              "fontWeight": "normal"
                             }
                           ]
                         }
@@ -5900,7 +5972,8 @@
                   "fill": "#9999AA",
                   "content": "01_upload",
                   "fontFamily": "JetBrains Mono",
-                  "fontSize": 12
+                  "fontSize": 12,
+                  "fontWeight": "normal"
                 },
                 {
                   "type": "frame",
@@ -5917,7 +5990,8 @@
                   "fill": "#9999AA",
                   "content": "02_details",
                   "fontFamily": "JetBrains Mono",
-                  "fontSize": 12
+                  "fontSize": 12,
+                  "fontWeight": "normal"
                 },
                 {
                   "type": "frame",
@@ -7081,7 +7155,8 @@
                   "fill": "#9999AA",
                   "content": "02_details",
                   "fontFamily": "JetBrains Mono",
-                  "fontSize": 12
+                  "fontSize": 12,
+                  "fontWeight": "normal"
                 },
                 {
                   "type": "frame",
@@ -7098,7 +7173,8 @@
                   "fill": "#9999AA",
                   "content": "03_review",
                   "fontFamily": "JetBrains Mono",
-                  "fontSize": 12
+                  "fontSize": 12,
+                  "fontWeight": "normal"
                 }
               ]
             },
@@ -7393,7 +7469,8 @@
                   "fill": "#9999AA",
                   "content": "01_upload",
                   "fontFamily": "JetBrains Mono",
-                  "fontSize": 12
+                  "fontSize": 12,
+                  "fontWeight": "normal"
                 },
                 {
                   "type": "frame",
@@ -7410,7 +7487,8 @@
                   "fill": "#9999AA",
                   "content": "02_details",
                   "fontFamily": "JetBrains Mono",
-                  "fontSize": 12
+                  "fontSize": 12,
+                  "fontWeight": "normal"
                 },
                 {
                   "type": "frame",

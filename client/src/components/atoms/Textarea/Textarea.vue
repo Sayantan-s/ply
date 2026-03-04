@@ -24,13 +24,13 @@ const model = defineModel<string>({ default: "" });
 .textarea-wrapper {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  width: 300px;
+  gap: 0.375rem;
+  width: 100%;
 }
 
 .textarea-label {
   font-family: var(--font);
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 600;
   color: var(--fg);
 }
@@ -38,9 +38,9 @@ const model = defineModel<string>({ default: "" });
 .textarea-box {
   background: #fff;
   border: 1px solid var(--border);
-  padding: 12px 14px;
+  padding: 0.75rem 0.875rem;
   width: 100%;
-  min-height: 140px;
+  min-height: 8.75rem;
 }
 
 .textarea-field {
@@ -48,13 +48,13 @@ const model = defineModel<string>({ default: "" });
   outline: none;
   background: transparent;
   font-family: var(--font);
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 400;
   color: var(--fg);
   line-height: 1.6;
   width: 100%;
   height: 100%;
-  min-height: 116px;
+  min-height: 7.25rem;
   resize: vertical;
 }
 

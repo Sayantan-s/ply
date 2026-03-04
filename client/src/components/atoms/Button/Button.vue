@@ -44,7 +44,7 @@ const classes = computed(() => buttonVariants({ variant: props.variant }));
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 0.5rem;
   font-family: var(--font);
   font-weight: 600;
   border: none;
@@ -53,46 +53,46 @@ const classes = computed(() => buttonVariants({ variant: props.variant }));
 }
 
 .button--primary {
-  height: 48px;
-  padding: 0 24px;
+  height: 3rem;
+  padding: 0 1.5rem;
   background: var(--fg);
   color: #fff;
-  font-size: 13px;
+  font-size: 0.8125rem;
 }
 
 .button--accent {
-  height: 48px;
-  padding: 0 24px;
+  height: 3rem;
+  padding: 0 1.5rem;
   background: var(--accent);
   color: #fff;
-  font-size: 13px;
+  font-size: 0.8125rem;
 }
 
 .button--outline {
-  height: 44px;
-  padding: 0 20px;
+  height: 2.75rem;
+  padding: 0 1.25rem;
   background: transparent;
   color: var(--fg);
-  font-size: 12px;
+  font-size: 0.75rem;
   border: 1px solid var(--border);
 }
 
 .button--ghost {
-  height: 40px;
-  padding: 0 16px;
+  height: 2.5rem;
+  padding: 0 1rem;
   background: transparent;
   color: var(--muted);
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 500;
 }
 
 .button__icon {
-  width: 16px;
-  height: 16px;
+  width: 1rem;
+  height: 1rem;
 }
 
 .button--outline .button__icon {
-  width: 14px;
-  height: 14px;
+  width: 0.875rem;
+  height: 0.875rem;
 }
 </style>

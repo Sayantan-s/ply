@@ -49,15 +49,15 @@ const iconComponent = computed(() => (props.variant === "missing" ? X : Check));
 .skill-item {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 10px 0;
-  width: 300px;
+  gap: 0.625rem;
+  padding: 0.625rem 0;
+  width: 100%;
   border-bottom: 1px solid #E8E8EC;
 }
 
 .skill-item__icon {
-  width: 16px;
-  height: 16px;
+  width: 1rem;
+  height: 1rem;
   flex-shrink: 0;
 }
 
@@ -66,7 +66,7 @@ const iconComponent = computed(() => (props.variant === "missing" ? X : Check));
 
 .skill-item__skill {
   font-family: var(--font);
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 400;
   color: var(--fg);
 }
@@ -81,23 +81,23 @@ const iconComponent = computed(() => (props.variant === "missing" ? X : Check));
 
 .skill-item__badge {
   font-family: var(--font);
-  font-size: 9px;
+  font-size: 0.5625rem;
   font-weight: 600;
   color: var(--success);
   background: var(--success-bg);
-  padding: 2px 8px;
+  padding: 0.125rem 0.5rem;
 }
 
 .skill-item__content {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 0.125rem;
   flex: 1;
 }
 
 .skill-item__detail {
   font-family: var(--font);
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 400;
   color: var(--muted);
 }

@@ -35,16 +35,16 @@ const classes = computed(() => chipVariants({ variant: props.variant }));
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  padding: 8px 14px;
+  gap: 0.375rem;
+  padding: 0.5rem 0.875rem;
   font-family: var(--font);
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 600;
 }
 
 .chip__icon {
-  width: 14px;
-  height: 14px;
+  width: 0.875rem;
+  height: 0.875rem;
 }
 
 .chip--active {

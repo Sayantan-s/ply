@@ -41,21 +41,21 @@ const prefix = computed(() => prefixMap[props.variant ?? "info"]);
 <style scoped>
 .alert {
   display: flex;
-  gap: 8px;
-  padding: 12px 14px;
-  width: 350px;
+  gap: 0.5rem;
+  padding: 0.75rem 0.875rem;
+  width: 100%;
   font-family: var(--font);
 }
 
 .alert__icon {
-  width: 14px;
-  height: 14px;
+  width: 0.875rem;
+  height: 0.875rem;
   flex-shrink: 0;
-  margin-top: 2px;
+  margin-top: 0.125rem;
 }
 
 .alert__message {
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 400;
   line-height: 1.5;
 }

@@ -11,9 +11,9 @@
 .card {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  padding: 16px;
+  gap: 0.75rem;
+  padding: 1rem;
   border: 1px solid var(--border);
-  width: 350px;
+  width: 100%;
 }
 </style>

@@ -23,7 +23,7 @@ export const Default: Story = {
       return { active, FileIcon, LinkIcon };
     },
     template: `
-      <TabBar v-model="active" style="width: 300px">
+      <TabBar v-model="active" style="width: 18.75rem">
         <Tab value="upload" :icon="FileIcon" label="active_tab" />
         <Tab value="url" :icon="LinkIcon" label="inactive_tab" />
       </TabBar>

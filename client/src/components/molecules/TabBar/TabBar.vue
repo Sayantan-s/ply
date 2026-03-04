@@ -24,8 +24,9 @@ provide("tab-bar-context", {
 <style scoped>
 .tab-bar {
   display: flex;
-  height: 40px;
-  padding: 3px;
+  width: 100%;
+  height: 2.5rem;
+  padding: 0.1875rem;
   background: var(--surface);
 }
 </style>

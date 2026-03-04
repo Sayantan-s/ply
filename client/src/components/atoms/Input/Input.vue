@@ -44,13 +44,13 @@ const boxClasses = computed(() => inputVariants({ filled: isFilled.value }));
 .input-wrapper {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  width: 300px;
+  gap: 0.375rem;
+  width: 100%;
 }
 
 .input-label {
   font-family: var(--font);
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 600;
   color: var(--fg);
 }
@@ -58,9 +58,9 @@ const boxClasses = computed(() => inputVariants({ filled: isFilled.value }));
 .input-box {
   display: flex;
   align-items: center;
-  gap: 8px;
-  height: 44px;
-  padding: 0 14px;
+  gap: 0.5rem;
+  height: 2.75rem;
+  padding: 0 0.875rem;
   background: #fff;
   width: 100%;
 }
@@ -74,8 +74,8 @@ const boxClasses = computed(() => inputVariants({ filled: isFilled.value }));
 }
 
 .input-icon {
-  width: 14px;
-  height: 14px;
+  width: 0.875rem;
+  height: 0.875rem;
   flex-shrink: 0;
 }
 
@@ -92,7 +92,7 @@ const boxClasses = computed(() => inputVariants({ filled: isFilled.value }));
   outline: none;
   background: transparent;
   font-family: var(--font);
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 400;
   color: var(--fg);
   width: 100%;

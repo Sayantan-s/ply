@@ -22,7 +22,7 @@ const dashOffset = computed(() => {
 </script>
 
 <template>
-  <div class="score-ring" :style="{ width: `${size}px`, height: `${size}px` }">
+  <div class="score-ring">
     <svg :width="size" :height="size" class="score-ring__svg">
       <circle
         class="score-ring__track"
@@ -61,6 +61,8 @@ const dashOffset = computed(() => {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  width: 7.5rem;
+  height: 7.5rem;
 }
 
 .score-ring__svg {
@@ -81,22 +83,22 @@ const dashOffset = computed(() => {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 2px;
+  gap: 0.125rem;
   z-index: 1;
 }
 
 .score-ring__value {
   font-family: var(--font);
-  font-size: 32px;
+  font-size: 2rem;
   font-weight: 700;
-  letter-spacing: -1px;
+  letter-spacing: -0.0625rem;
   color: var(--fg);
   text-align: center;
 }
 
 .score-ring__unit {
   font-family: var(--font);
-  font-size: 9px;
+  font-size: 0.5625rem;
   font-weight: 600;
   color: var(--muted);
   text-align: center;

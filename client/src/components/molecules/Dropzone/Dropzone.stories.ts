@@ -5,6 +5,10 @@ const meta = {
   title: "Molecules/Dropzone",
   component: Dropzone,
   tags: ["autodocs"],
+  argTypes: {
+    multiple: { control: "boolean" },
+    maxSize: { control: { type: "number", min: 1, max: 100 } },
+  },
 } satisfies Meta<typeof Dropzone>;
 
 export default meta;
@@ -14,9 +18,17 @@ export const Default: Story = {
   args: {},
 };
 
-export const CustomText: Story = {
+export const PdfOnly: Story = {
   args: {
-    primaryText: "upload your resume",
-    secondaryText: ".pdf only — max 5mb",
+    formats: [".pdf"],
+    maxSize: 5,
+  },
+};
+
+export const Multiple: Story = {
+  args: {
+    multiple: true,
+    formats: [".pdf", ".docx", ".txt"],
+    maxSize: 20,
   },
 };

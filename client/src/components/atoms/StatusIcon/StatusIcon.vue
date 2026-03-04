@@ -37,13 +37,13 @@ const iconComponent = computed(() => iconMap[props.variant ?? "empty"]);
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 64px;
-  height: 64px;
+  width: 4rem;
+  height: 4rem;
 }
 
 .status-icon__icon {
-  width: 28px;
-  height: 28px;
+  width: 1.75rem;
+  height: 1.75rem;
 }
 
 .status-icon--error {

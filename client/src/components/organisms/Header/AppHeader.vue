@@ -25,8 +25,8 @@ defineProps<{
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 52px;
-  padding: 0 20px;
+  height: 3.25rem;
+  padding: 0 1.25rem;
   border-bottom: 1px solid #E2E2E2;
   width: 100%;
 }
@@ -34,20 +34,20 @@ defineProps<{
 .header__logo {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 0.375rem;
 }
 
 .header__logo-icon {
-  width: 18px;
-  height: 18px;
+  width: 1.125rem;
+  height: 1.125rem;
   color: var(--fg);
 }
 
 .header__logo-text {
   font-family: var(--font);
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 600;
-  letter-spacing: -0.5px;
+  letter-spacing: -0.03125rem;
   color: var(--fg);
 }
 
@@ -58,7 +58,7 @@ defineProps<{
 
 .header__step {
   font-family: var(--font);
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 600;
   color: var(--muted);
 }

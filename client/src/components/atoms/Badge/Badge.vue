@@ -41,16 +41,16 @@ const iconComponent = computed(() => {
 .badge {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 4px 10px;
+  gap: 0.375rem;
+  padding: 0.25rem 0.625rem;
   font-family: var(--font);
-  font-size: 9px;
+  font-size: 0.5625rem;
   font-weight: 600;
 }
 
 .badge__icon {
-  width: 12px;
-  height: 12px;
+  width: 0.75rem;
+  height: 0.75rem;
 }
 
 .badge--success {

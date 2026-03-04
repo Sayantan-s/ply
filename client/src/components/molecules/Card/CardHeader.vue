@@ -20,7 +20,7 @@ defineProps<{
 .card-header {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 0.625rem;
   width: 100%;
 }
 
@@ -28,20 +28,20 @@ defineProps<{
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
+  width: 2rem;
+  height: 2rem;
   background: var(--surface);
 }
 
 .card-header__icon {
-  width: 16px;
-  height: 16px;
+  width: 1rem;
+  height: 1rem;
   color: var(--fg);
 }
 
 .card-header__title {
   font-family: var(--font);
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
   color: var(--fg);
 }

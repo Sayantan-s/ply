@@ -31,20 +31,20 @@ const isActive = computed(() => context.activeTab.value === props.value);
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: 0.375rem;
   flex: 1;
   height: 100%;
   border: none;
   cursor: pointer;
   font-family: var(--font);
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 600;
   outline: none;
 }
 
 .tab__icon {
-  width: 14px;
-  height: 14px;
+  width: 0.875rem;
+  height: 0.875rem;
 }
 
 .tab--active {
