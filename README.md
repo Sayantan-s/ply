@@ -1,4 +1,4 @@
-🖋️ ApplyMate – AI-powered job match assistant
+🖋️ Ply – AI-powered job match assistant
 
 Built to reduce application fatigue and help you focus on roles where you’re genuinely a strong fit.
 
@@ -15,7 +15,7 @@ Built to reduce application fatigue and help you focus on roles where you’re g
 &nbsp;<img src=https://cdn.svglogos.dev/logos/fastapi-icon.svg width="42">
 &nbsp;<img src="https://cdn.svgporn.com/logos/postgresql.svg" width="42">
 &nbsp;<img src="https://cdn.svgporn.com/logos/redis.svg" width="42">
-&nbsp;<img src="./assets/dark.svg" width="40" alt="stagehand">
+&nbsp;<img src="https://avatars.githubusercontent.com/u/192012301?s=48&v=4" alt="browser-use">
 &nbsp;<img src="https://cdn.svglogos.dev/logos/docker-icon.svg" width="48">
 &nbsp;<img src="https://cdn.svgporn.com/logos/playwright.svg" width="42">
 &nbsp;<img src="./assets/gemini.svg" width="40">
