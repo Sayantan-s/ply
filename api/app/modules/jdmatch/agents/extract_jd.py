@@ -66,15 +66,17 @@ async def agent_extract_jd(browser_use_client: AsyncBrowserUse, jd_url: str) -> 
         if cleaned_output.endswith("```"):
             cleaned_output = cleaned_output[:-3]
 
+        # Try to find JSON object in the output (agent may prepend/append text)
+        json_start = cleaned_output.find("{")
+        json_end = cleaned_output.rfind("}")
+        if json_start != -1 and json_end != -1 and json_end > json_start:
+            cleaned_output = cleaned_output[json_start : json_end + 1]
+
         extracted_json = json.loads(cleaned_output.strip())
     except json.JSONDecodeError as e:
-        logger.exception(
+        logger.warning(
             "Failed to parse JSON from agent output: {extracted}", extracted=extracted
         )
-        # Try to treat the whole output as data if JSON parsing fails, but respect the error protocol
-        # If it failed to produce JSON, it might be a raw failure message or raw content.
-        # Let's assume failure if not JSON, for safety, or wrap it.
-        # But the prompt was strict.
         raise ValueError(f"Failed to parse agent output: {extracted}") from e
 
     jd_data = (

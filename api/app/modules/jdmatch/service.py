@@ -156,7 +156,7 @@ async def jd_match_analyze(
         yield JdMatchStreamResponse(
             payload=StatusStreamResponse(status=JdMatchStatus.FAILED)
         )
-        raise
+        return
 
     logger.info("ending jd_match_analyze()")
 

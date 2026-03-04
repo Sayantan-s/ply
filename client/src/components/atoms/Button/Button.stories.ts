@@ -26,7 +26,8 @@ export const Primary: Story = {
   render: (args) => ({
     components: { Button, ArrowRight: markRaw(ArrowRight) },
     setup: () => ({ args }),
-    template: '<Button v-bind="args">next: job_description <ArrowRight :size="16" /></Button>',
+    template:
+      '<Button v-bind="args">next: job_description <ArrowRight :size="16" /></Button>',
   }),
 };
 
@@ -35,7 +36,8 @@ export const Accent: Story = {
   render: (args) => ({
     components: { Button, Sparkles: markRaw(Sparkles) },
     setup: () => ({ args }),
-    template: '<Button v-bind="args"><Sparkles :size="18" /> run_match_report</Button>',
+    template:
+      '<Button v-bind="args"><Sparkles :size="18" /> run_match_report</Button>',
   }),
 };
 
@@ -72,6 +74,24 @@ export const Fluid: Story = {
 
 export const Loading: Story = {
   args: { variant: "accent", loading: true, fluid: true },
+  render: (args) => ({
+    components: { Button },
+    setup: () => ({ args }),
+    template: `
+      <div style="width: 24rem">
+        <Button v-bind="args">analyzing...</Button>
+      </div>
+    `,
+  }),
+};
+
+export const Loading2: Story = {
+  args: {
+    variant: "primary",
+    loading: true,
+    fluid: true,
+    loaderVariant: "grid",
+  },
   render: (args) => ({
     components: { Button },
     setup: () => ({ args }),

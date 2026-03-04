@@ -7,3 +7,4 @@ export { default as Alert } from "./Alert/Alert.vue";
 export { default as StatusIcon } from "./StatusIcon/StatusIcon.vue";
 export { default as Heading } from "./Heading/Heading.vue";
 export { default as Text } from "./Text/Text.vue";
+export { default as MatrixLoader } from "./MatrixLoader/MatrixLoader.vue";

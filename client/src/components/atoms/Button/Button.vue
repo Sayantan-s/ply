@@ -2,7 +2,8 @@
 import { computed } from "vue";
 import { cva, type VariantProps } from "class-variance-authority";
 import { Motion } from "motion-v";
-import { LoaderCircle } from "lucide-vue-next";
+import MatrixLoader from "@/components/atoms/MatrixLoader/MatrixLoader.vue";
+import type { LoaderVariants } from "@/components/atoms/MatrixLoader/MatrixLoader.vue";
 
 const buttonVariants = cva("button", {
   variants: {
@@ -24,8 +25,21 @@ const props = withDefaults(
     disabled?: boolean;
     loading?: boolean;
     fluid?: boolean;
+    loaderVariant?: NonNullable<LoaderVariants["variant"]>;
+    loaderSize?: NonNullable<LoaderVariants["size"]>;
+    loaderTone?: NonNullable<LoaderVariants["tone"]>;
+    loaderCols?: number;
   }>(),
-  { variant: "primary", disabled: false, loading: false, fluid: false },
+  {
+    variant: "primary",
+    disabled: false,
+    loading: false,
+    fluid: false,
+    loaderVariant: "text",
+    loaderSize: "sm",
+    loaderTone: "inherit",
+    loaderCols: 3,
+  },
 );
 
 const isDisabled = computed(() => props.disabled || props.loading);
@@ -47,7 +61,12 @@ const classes = computed(() => [
     :transition="{ type: 'spring', stiffness: 400, damping: 17 }"
   >
     <template v-if="loading">
-      <LoaderCircle class="button__spinner" />
+      <MatrixLoader
+        :variant="loaderVariant"
+        :size="loaderSize"
+        :tone="loaderTone"
+        :cols="loaderCols"
+      />
       <slot />
     </template>
     <slot v-else />
@@ -108,15 +127,5 @@ const classes = computed(() => [
   color: var(--muted);
   font-size: 0.75rem;
   font-weight: 500;
-}
-
-.button__spinner {
-  width: 1rem;
-  height: 1rem;
-  animation: spin 0.8s linear infinite;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
 }
 </style>
