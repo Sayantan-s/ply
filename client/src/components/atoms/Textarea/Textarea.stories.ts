@@ -33,7 +33,8 @@ export const WithContent: Story = {
   args: {
     label: "paste_job_description",
     placeholder: "Write something here...",
-    modelValue: "We are looking for a Senior Frontend Engineer with 5+ years of experience in React or Vue...",
+    modelValue:
+      "We are looking for a Senior Frontend Engineer with 5+ years of experience in React or Vue...",
     rows: 8,
   },
 };

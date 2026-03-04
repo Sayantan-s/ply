@@ -26,8 +26,7 @@ export const Primary: Story = {
   render: (args) => ({
     components: { Button, ArrowRight: markRaw(ArrowRight) },
     setup: () => ({ args }),
-    template:
-      '<Button v-bind="args">next: job_description <ArrowRight :size="16" /></Button>',
+    template: '<Button v-bind="args">next: job_description <ArrowRight :size="16" /></Button>',
   }),
 };
 
@@ -36,8 +35,7 @@ export const Accent: Story = {
   render: (args) => ({
     components: { Button, Sparkles: markRaw(Sparkles) },
     setup: () => ({ args }),
-    template:
-      '<Button v-bind="args"><Sparkles :size="18" /> run_match_report</Button>',
+    template: '<Button v-bind="args"><Sparkles :size="18" /> run_match_report</Button>',
   }),
 };
 
