@@ -87,7 +87,7 @@ async def jd_match_analyze(
     file_content, filename, file_id = await download_resume(jd_record.resume_url)
 
     # Save file locally to get path for agent
-    parse_info = save_file(file_content, jd_data, filename, file_id)
+    parse_info = save_file(file_content, jd_data, filename, file_id, jd_match_id)
     candidate_resume_path = parse_info.candidate_resume_path
 
     try:

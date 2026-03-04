@@ -7,7 +7,7 @@ logger = get_logger("jdmatch.utils.save_file")
 
 
 def save_file(
-    file_content: bytes, jd_info: str, filename: str, file_id: str
+    file_content: bytes, jd_info: str, filename: str, file_id: str, jd_match_id: str
 ) -> ParseResumeJDInformation:
     logger.info("starting save_file()")
 
@@ -31,7 +31,8 @@ def save_file(
     logger.info("ending save_file()")
 
     return ParseResumeJDInformation(
+        jd_match_id=jd_match_id,
         candidate_resume_path=candidate_resume_path,
+        jd_path=jd_info,
         file_name=file_name,
-        jd_info=jd_info,
     )

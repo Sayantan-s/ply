@@ -7,6 +7,7 @@ const meta = {
   tags: ["autodocs"],
   argTypes: {
     multiple: { control: "boolean" },
+    disabled: { control: "boolean" },
     maxSize: { control: { type: "number", min: 1, max: 100 } },
   },
 } satisfies Meta<typeof Dropzone>;
@@ -30,5 +31,11 @@ export const Multiple: Story = {
     multiple: true,
     formats: [".pdf", ".docx", ".txt"],
     maxSize: 20,
+  },
+};
+
+export const Disabled: Story = {
+  args: {
+    disabled: true,
   },
 };

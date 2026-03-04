@@ -5,6 +5,9 @@ from app.api.v1.dto import UIDtoModel
 
 class ParseResumeJDInformation(UIDtoModel):
     jd_match_id: str
+    candidate_resume_path: str
+    jd_path: str
+    file_name: str
 
 
 class AgentResponseJDVerification(BaseModel):

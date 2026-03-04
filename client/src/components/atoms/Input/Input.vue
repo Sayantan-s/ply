@@ -1,29 +1,27 @@
 <script setup lang="ts">
-import { computed, type Component } from "vue";
-import { cva, type VariantProps } from "class-variance-authority";
+import { computed, ref, type Component } from "vue";
 
-const inputVariants = cva("input-box", {
-  variants: {
-    filled: {
-      true: "input-box--filled",
-      false: "input-box--default",
-    },
-  },
-  defaultVariants: { filled: false },
-});
-
-type InputVariants = VariantProps<typeof inputVariants>;
-
-const props = defineProps<{
-  label: string;
-  placeholder?: string;
-  icon?: Component;
-}>();
+const props = withDefaults(
+  defineProps<{
+    label: string;
+    placeholder?: string;
+    icon?: Component;
+    disabled?: boolean;
+    error?: string;
+  }>(),
+  { disabled: false },
+);
 
 const model = defineModel<string>({ default: "" });
+const isFocused = ref(false);
 
 const isFilled = computed(() => model.value.length > 0);
-const boxClasses = computed(() => inputVariants({ filled: isFilled.value }));
+
+const boxClasses = computed(() => [
+  "input-box",
+  props.error ? "input-box--error" : isFilled.value || isFocused.value ? "input-box--active" : "input-box--default",
+  props.disabled && "input-box--disabled",
+]);
 </script>
 
 <template>
@@ -31,8 +29,16 @@ const boxClasses = computed(() => inputVariants({ filled: isFilled.value }));
     <label class="input-label">{{ label }}</label>
     <div :class="boxClasses">
       <component v-if="icon" :is="icon" class="input-icon" />
-      <input v-model="model" :placeholder="placeholder" class="input-field" />
+      <input
+        v-model="model"
+        :placeholder="placeholder"
+        :disabled="disabled"
+        class="input-field"
+        @focus="isFocused = true"
+        @blur="isFocused = false"
+      />
     </div>
+    <span v-if="error" class="input-error">{{ error }}</span>
   </div>
 </template>
 
@@ -65,8 +71,18 @@ const boxClasses = computed(() => inputVariants({ filled: isFilled.value }));
   border: 1px solid var(--border);
 }
 
-.input-box--filled {
+.input-box--active {
   border: 1px solid var(--fg);
+}
+
+.input-box--error {
+  border: 1px solid var(--error);
+}
+
+.input-box--disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  background: var(--surface);
 }
 
 .input-icon {
@@ -79,8 +95,12 @@ const boxClasses = computed(() => inputVariants({ filled: isFilled.value }));
   color: var(--muted);
 }
 
-.input-box--filled .input-icon {
+.input-box--active .input-icon {
   color: var(--fg);
+}
+
+.input-box--error .input-icon {
+  color: var(--error);
 }
 
 .input-field {
@@ -96,5 +116,16 @@ const boxClasses = computed(() => inputVariants({ filled: isFilled.value }));
 
 .input-field::placeholder {
   color: var(--muted);
+}
+
+.input-field:disabled {
+  cursor: not-allowed;
+}
+
+.input-error {
+  font-family: var(--font);
+  font-size: 0.625rem;
+  font-weight: 400;
+  color: var(--error);
 }
 </style>
