@@ -15,7 +15,7 @@ Built to reduce application fatigue and help you focus on roles where you’re g
 &nbsp;<img src=https://cdn.svglogos.dev/logos/fastapi-icon.svg width="42">
 &nbsp;<img src="https://cdn.svgporn.com/logos/postgresql.svg" width="42">
 &nbsp;<img src="https://cdn.svgporn.com/logos/redis.svg" width="42">
-&nbsp;<img src="https://raw.githubusercontent.com/browserbase/stagehand/main/media/dark_logo.png" width="120" alt="stagehand">
+&nbsp;<img src="./assets/dark.svg" width="40" alt="stagehand">
 &nbsp;<img src="https://cdn.svglogos.dev/logos/docker-icon.svg" width="48">
 &nbsp;<img src="https://cdn.svgporn.com/logos/playwright.svg" width="42">
 &nbsp;<img src="./assets/gemini.svg" width="40">
