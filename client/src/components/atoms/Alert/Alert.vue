@@ -24,7 +24,12 @@ const props = defineProps<{
 
 const classes = computed(() => alertVariants({ variant: props.variant }));
 
-const iconMap = { error: CircleX, warning: TriangleAlert, info: Info, success: CircleCheck } as const;
+const iconMap = {
+  error: CircleX,
+  warning: TriangleAlert,
+  info: Info,
+  success: CircleCheck,
+} as const;
 const iconComponent = computed(() => iconMap[props.variant ?? "info"]);
 
 const prefixMap = { error: "err", warning: "warn", info: "info", success: "ok" } as const;
@@ -64,27 +69,43 @@ const prefix = computed(() => prefixMap[props.variant ?? "info"]);
   background: var(--error-bg);
   border: 1px solid var(--error-border);
 }
-.alert--error .alert__icon { color: var(--error); }
-.alert--error .alert__message { color: var(--error-text); }
+.alert--error .alert__icon {
+  color: var(--error);
+}
+.alert--error .alert__message {
+  color: var(--error-text);
+}
 
 .alert--warning {
   background: var(--warning-bg);
   border: 1px solid var(--warning-border);
 }
-.alert--warning .alert__icon { color: var(--warning); }
-.alert--warning .alert__message { color: var(--warning-text); }
+.alert--warning .alert__icon {
+  color: var(--warning);
+}
+.alert--warning .alert__message {
+  color: var(--warning-text);
+}
 
 .alert--info {
   background: var(--info-bg);
   border: 1px solid var(--info-border);
 }
-.alert--info .alert__icon { color: var(--info); }
-.alert--info .alert__message { color: var(--info-text); }
+.alert--info .alert__icon {
+  color: var(--info);
+}
+.alert--info .alert__message {
+  color: var(--info-text);
+}
 
 .alert--success {
   background: var(--success-bg);
   border: 1px solid var(--success-border);
 }
-.alert--success .alert__icon { color: var(--success); }
-.alert--success .alert__message { color: var(--success-text); }
+.alert--success .alert__icon {
+  color: var(--success);
+}
+.alert--success .alert__message {
+  color: var(--success-text);
+}
 </style>

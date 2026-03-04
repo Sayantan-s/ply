@@ -49,15 +49,21 @@ const iconComponent = computed(() => iconMap[props.variant ?? "empty"]);
 .status-icon--error {
   background: var(--error-bg);
 }
-.status-icon--error .status-icon__icon { color: var(--error); }
+.status-icon--error .status-icon__icon {
+  color: var(--error);
+}
 
 .status-icon--warning {
   background: var(--warning-bg);
 }
-.status-icon--warning .status-icon__icon { color: var(--warning); }
+.status-icon--warning .status-icon__icon {
+  color: var(--warning);
+}
 
 .status-icon--empty {
   background: var(--surface);
 }
-.status-icon--empty .status-icon__icon { color: #AAAABC; }
+.status-icon--empty .status-icon__icon {
+  color: #aaaabc;
+}
 </style>

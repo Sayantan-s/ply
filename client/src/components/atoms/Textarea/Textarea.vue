@@ -11,11 +11,7 @@ const model = defineModel<string>({ default: "" });
   <div class="textarea-wrapper">
     <label class="textarea-label">{{ label }}</label>
     <div class="textarea-box">
-      <textarea
-        v-model="model"
-        :placeholder="placeholder"
-        class="textarea-field"
-      />
+      <textarea v-model="model" :placeholder="placeholder" class="textarea-field" />
     </div>
   </div>
 </template>

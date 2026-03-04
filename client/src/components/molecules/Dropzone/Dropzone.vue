@@ -105,7 +105,7 @@ function onClick() {
 .dropzone__icon {
   width: 2rem;
   height: 2rem;
-  color: #AAAABC;
+  color: #aaaabc;
 }
 
 .dropzone__texts {

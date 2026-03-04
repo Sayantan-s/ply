@@ -31,11 +31,7 @@ const boxClasses = computed(() => inputVariants({ filled: isFilled.value }));
     <label class="input-label">{{ label }}</label>
     <div :class="boxClasses">
       <component v-if="icon" :is="icon" class="input-icon" />
-      <input
-        v-model="model"
-        :placeholder="placeholder"
-        class="input-field"
-      />
+      <input v-model="model" :placeholder="placeholder" class="input-field" />
     </div>
   </div>
 </template>
