@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { AnimatePresence, Motion } from "motion-v";
-import { TabBar, Tab, Dropzone } from "@/components/molecules";
+import { TabBar, Tab, TabContent, Dropzone } from "@/components/molecules";
 import { Input, Alert } from "@/components/atoms";
 import { File as FileIcon, Link } from "lucide-vue-next";
 import { markRaw } from "vue";
@@ -10,11 +9,19 @@ const activeTab = defineModel<"file" | "url">("activeTab", { required: true });
 const resumeUrl = defineModel<string>("resumeUrl", { required: true });
 
 defineProps<{
+  files?: File[];
   disabled?: boolean;
+  fileTabDisabled?: boolean;
+  urlTabDisabled?: boolean;
+  fileError?: string;
+  urlError?: string;
+  selectedService?: string;
+  urlPlaceholder?: string;
 }>();
 
 const emit = defineEmits<{
-  fileDrop: [files: File[]];
+  "update:files": [files: File[]];
+  "update:selectedService": [value: string];
 }>();
 
 const FileIconRaw = markRaw(FileIcon);
@@ -24,46 +31,43 @@ const LinkIconRaw = markRaw(Link);
 <template>
   <div class="resume-upload-form">
     <TabBar v-model="activeTab">
-      <Tab value="file" :icon="FileIconRaw" label="File Upload" />
-      <Tab value="url" :icon="LinkIconRaw" label="Cloud Link" />
+      <template #triggers>
+        <Tab value="file" :icon="FileIconRaw" label="File Upload" :disabled="fileTabDisabled" />
+        <Tab value="url" :icon="LinkIconRaw" label="Cloud Link" :disabled="urlTabDisabled" />
+      </template>
+
+      <TabContent value="file">
+        <div class="resume-upload-form__panel">
+          <Dropzone
+            :model-value="files"
+            :disabled="disabled"
+            @update:model-value="emit('update:files', $event)"
+          />
+          <span v-if="fileError" class="resume-upload-form__error">{{ fileError }}</span>
+        </div>
+      </TabContent>
+
+      <TabContent value="url">
+        <div class="resume-upload-form__panel">
+          <Input
+            v-model="resumeUrl"
+            label="Resume URL"
+            :placeholder="urlPlaceholder ?? 'https://drive.google.com/...'"
+            :icon="LinkIconRaw"
+            :disabled="disabled"
+            :error="urlError"
+          />
+          <CloudServicePicker
+            :model-value="selectedService"
+            @update:model-value="emit('update:selectedService', $event)"
+          />
+          <Alert
+            variant="info"
+            message="Make sure the file has public or link-shared access enabled."
+          />
+        </div>
+      </TabContent>
     </TabBar>
-
-    <AnimatePresence mode="wait">
-      <Motion
-        v-if="activeTab === 'file'"
-        key="file-panel"
-        class="resume-upload-form__panel"
-        :initial="{ opacity: 0, y: 8 }"
-        :animate="{ opacity: 1, y: 0 }"
-        :exit="{ opacity: 0, y: -8 }"
-        :transition="{ duration: 0.2 }"
-      >
-        <Dropzone :disabled="disabled" @drop="emit('fileDrop', $event)" />
-      </Motion>
-
-      <Motion
-        v-else
-        key="url-panel"
-        class="resume-upload-form__panel"
-        :initial="{ opacity: 0, y: 8 }"
-        :animate="{ opacity: 1, y: 0 }"
-        :exit="{ opacity: 0, y: -8 }"
-        :transition="{ duration: 0.2 }"
-      >
-        <Input
-          v-model="resumeUrl"
-          label="Resume URL"
-          placeholder="https://drive.google.com/..."
-          :icon="LinkIconRaw"
-          :disabled="disabled"
-        />
-        <CloudServicePicker />
-        <Alert
-          variant="info"
-          message="Make sure the file has public or link-shared access enabled."
-        />
-      </Motion>
-    </AnimatePresence>
   </div>
 </template>
 
@@ -79,5 +83,14 @@ const LinkIconRaw = markRaw(Link);
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  padding-top: 1rem;
+  min-height: 13.5rem;
+}
+
+.resume-upload-form__error {
+  font-family: var(--font);
+  font-size: 0.625rem;
+  font-weight: 400;
+  color: var(--error);
 }
 </style>

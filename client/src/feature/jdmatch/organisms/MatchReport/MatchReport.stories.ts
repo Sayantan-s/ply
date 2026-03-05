@@ -5,6 +5,12 @@ const meta = {
   title: "JdMatch/Organisms/MatchReport",
   component: MatchReport,
   tags: ["autodocs"],
+  decorators: [
+    () => ({
+      template:
+        '<div style="width: 880px; max-width: 100%; padding: 2.5rem;"><story /></div>',
+    }),
+  ],
 } satisfies Meta<typeof MatchReport>;
 
 export default meta;

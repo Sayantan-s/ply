@@ -5,6 +5,11 @@ const meta = {
   title: "JdMatch/Molecules/JdCard",
   component: JdCard,
   tags: ["autodocs"],
+  decorators: [
+    () => ({
+      template: '<div style="width: 440px;"><story /></div>',
+    }),
+  ],
 } satisfies Meta<typeof JdCard>;
 
 export default meta;
@@ -12,7 +17,6 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
-    jdPreview:
-      "We are looking for a Senior Frontend Engineer with 5+ years of experience in React or Vue. The ideal candidate will have strong TypeScript skills...",
+    jdPreview: "Senior Frontend Engineer — Acme Corp",
   },
 };

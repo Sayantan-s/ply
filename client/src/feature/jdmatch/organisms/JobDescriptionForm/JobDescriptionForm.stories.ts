@@ -32,3 +32,20 @@ export const WithError: Story = {
     jdTextError: "Job description must be at least 50 characters",
   },
 };
+
+export const TextDisabled: Story = {
+  args: {
+    jdText: "",
+    jdUrl: "https://example.com/jobs/123",
+    jdTextDisabled: true,
+  },
+};
+
+export const UrlDisabled: Story = {
+  args: {
+    jdText:
+      "We are looking for a Senior Frontend Engineer with 5+ years of experience in React or Vue. The ideal candidate will have strong TypeScript skills and experience building design systems.",
+    jdUrl: "",
+    jdUrlDisabled: true,
+  },
+};

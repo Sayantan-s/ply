@@ -4,7 +4,7 @@ import StatusMessage from "../../molecules/StatusMessage/StatusMessage.vue";
 import type { JdMatchStatus } from "../../types/api";
 
 defineProps<{
-  statusHistory: JdMatchStatus[];
+  statusHistory: readonly JdMatchStatus[];
   currentStatus: JdMatchStatus | null;
 }>();
 </script>

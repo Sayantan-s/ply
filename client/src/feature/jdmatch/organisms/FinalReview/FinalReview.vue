@@ -4,7 +4,7 @@ import JdCard from "../../molecules/JdCard/JdCard.vue";
 
 defineProps<{
   fileName: string;
-  fileSize: string;
+  fileSize?: string;
   jdPreview: string;
 }>();
 </script>
@@ -20,7 +20,7 @@ defineProps<{
 .final-review {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 0.875rem;
   width: 100%;
 }
 </style>

@@ -8,6 +8,9 @@ const jdUrl = defineModel<string>("jdUrl", { required: true });
 
 defineProps<{
   jdTextError?: string;
+  jdUrlError?: string;
+  jdTextDisabled?: boolean;
+  jdUrlDisabled?: boolean;
   disabled?: boolean;
 }>();
 
@@ -22,14 +25,15 @@ const LinkIcon = markRaw(Link);
       placeholder="Paste the full JD content here..."
       :rows="8"
       :error="jdTextError"
-      :disabled="disabled"
+      :disabled="disabled || jdTextDisabled"
     />
     <Input
       v-model="jdUrl"
       label="Job Post URL (optional)"
       placeholder="https://example.com/jobs/..."
       :icon="LinkIcon"
-      :disabled="disabled"
+      :error="jdUrlError"
+      :disabled="disabled || jdUrlDisabled"
     />
   </div>
 </template>

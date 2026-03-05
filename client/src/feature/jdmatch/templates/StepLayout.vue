@@ -1,24 +1,41 @@
 <script setup lang="ts">
-import { AppHeader } from "@/components/organisms";
+import WizardNavBar from "../molecules/WizardNavBar/WizardNavBar.vue";
 
 defineProps<{
-  stepLabel?: string | null;
+  navVariant: "wizard" | "report" | "empty";
+  activeStep?: number;
+  navTitle?: string;
+  cardWidth?: number;
+  noCard?: boolean;
+}>();
+
+defineEmits<{
+  navBack: [];
+  navShare: [];
+  navDownload: [];
 }>();
 </script>
 
 <template>
   <div class="step-layout">
-    <AppHeader :step-label="stepLabel ?? undefined">
-      <template #default>
-        <slot name="header-right" />
-      </template>
-    </AppHeader>
-    <main class="step-layout__content">
-      <slot />
+    <WizardNavBar
+      :variant="navVariant"
+      :active-step="activeStep"
+      :nav-title="navTitle"
+      @back="$emit('navBack')"
+      @share="$emit('navShare')"
+      @download="$emit('navDownload')"
+    />
+    <main class="step-layout__body">
+      <div
+        v-if="!noCard"
+        class="step-layout__card"
+        :style="cardWidth ? { width: `${cardWidth}px` } : undefined"
+      >
+        <slot />
+      </div>
+      <slot v-else />
     </main>
-    <footer v-if="$slots.footer" class="step-layout__footer">
-      <slot name="footer" />
-    </footer>
   </div>
 </template>
 
@@ -28,33 +45,36 @@ defineProps<{
   flex-direction: column;
   min-height: 100vh;
   width: 100%;
+  background: var(--surface);
 }
 
-.step-layout__content {
+.step-layout__body {
   display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
   flex: 1;
-  width: 100%;
-  max-width: 28rem;
-  margin: 0 auto;
-  padding: 1.5rem 1.25rem;
+  align-items: center;
+  justify-content: center;
+  padding: 2.5rem;
 }
 
-.step-layout__footer {
+.step-layout__card {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
-  width: 100%;
-  max-width: 28rem;
-  margin: 0 auto;
-  padding: 0 1.25rem 1.5rem;
+  gap: 1.75rem;
+  width: 32.5rem;
+  padding: 2.5rem;
+  background: var(--bg);
+  border: 1px solid #e2e2e2;
 }
 
 @media (max-width: 640px) {
-  .step-layout__content,
-  .step-layout__footer {
-    max-width: 100%;
+  .step-layout__body {
+    padding: 1.25rem;
+    align-items: flex-start;
+  }
+
+  .step-layout__card {
+    width: 100%;
+    padding: 1.5rem;
   }
 }
 </style>

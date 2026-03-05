@@ -5,6 +5,11 @@ const meta = {
   title: "JdMatch/Organisms/FinalReview",
   component: FinalReview,
   tags: ["autodocs"],
+  decorators: [
+    () => ({
+      template: '<div style="width: 440px;"><story /></div>',
+    }),
+  ],
 } satisfies Meta<typeof FinalReview>;
 
 export default meta;
@@ -12,9 +17,8 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
-    fileName: "sarah_chen_resume.pdf",
-    fileSize: "2.3 MB",
-    jdPreview:
-      "We are looking for a Senior Frontend Engineer with 5+ years of experience in React or Vue. The ideal candidate will have strong TypeScript skills...",
+    fileName: "john_doe_resume_2024.pdf",
+    fileSize: "245 KB",
+    jdPreview: "Senior Frontend Engineer — Acme Corp",
   },
 };

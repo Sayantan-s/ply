@@ -1,24 +1,30 @@
 <script setup lang="ts">
-import { provide, computed } from "vue";
+import { TabsRoot, TabsList } from "reka-ui";
 
-const props = defineProps<{
-  modelValue: string;
-}>();
+withDefaults(
+  defineProps<{
+    modelValue: string;
+    unmountOnHide?: boolean;
+  }>(),
+  { unmountOnHide: false },
+);
 
 const emit = defineEmits<{
   "update:modelValue": [value: string];
 }>();
-
-provide("tab-bar-context", {
-  activeTab: computed(() => props.modelValue),
-  setTab: (value: string) => emit("update:modelValue", value),
-});
 </script>
 
 <template>
-  <div class="tab-bar">
+  <TabsRoot
+    :model-value="modelValue"
+    :unmount-on-hide="unmountOnHide"
+    @update:model-value="emit('update:modelValue', $event as string)"
+  >
+    <TabsList class="tab-bar">
+      <slot name="triggers" />
+    </TabsList>
     <slot />
-  </div>
+  </TabsRoot>
 </template>
 
 <style scoped>

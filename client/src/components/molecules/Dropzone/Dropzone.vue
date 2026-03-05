@@ -5,12 +5,14 @@ import { Upload, FileText, X } from "lucide-vue-next";
 
 const props = withDefaults(
   defineProps<{
+    modelValue?: File[];
     formats?: string[];
     maxSize?: number;
     multiple?: boolean;
     disabled?: boolean;
   }>(),
   {
+    modelValue: undefined,
     formats: () => [".pdf", ".docx"],
     maxSize: 10,
     multiple: false,
@@ -19,11 +21,17 @@ const props = withDefaults(
 );
 
 const emit = defineEmits<{
+  "update:modelValue": [files: File[]];
   drop: [files: File[]];
 }>();
 
 const isDragOver = ref(false);
-const acceptedFiles = ref<File[]>([]);
+const internalFiles = ref<File[]>([]);
+
+const isControlled = computed(() => props.modelValue !== undefined);
+const acceptedFiles = computed(() =>
+  isControlled.value ? props.modelValue! : internalFiles.value,
+);
 
 const acceptString = computed(() => props.formats.join(","));
 
@@ -53,13 +61,24 @@ function handleFiles(raw: File[]) {
   const valid = filterValid(raw);
   if (!valid.length) return;
   const result = props.multiple ? valid : [valid[0]];
-  acceptedFiles.value = result;
+  if (isControlled.value) {
+    emit("update:modelValue", result);
+  } else {
+    internalFiles.value = result;
+  }
   emit("drop", result);
 }
 
 function removeFile(index: number) {
-  acceptedFiles.value.splice(index, 1);
-  emit("drop", [...acceptedFiles.value]);
+  if (isControlled.value) {
+    const next = [...acceptedFiles.value];
+    next.splice(index, 1);
+    emit("update:modelValue", next);
+    emit("drop", next);
+  } else {
+    internalFiles.value.splice(index, 1);
+    emit("drop", [...internalFiles.value]);
+  }
 }
 
 function onDragOver(e: DragEvent) {

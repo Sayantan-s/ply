@@ -1,29 +1,20 @@
 <script setup lang="ts">
-import { computed, inject, type Component, type ComputedRef } from "vue";
+import type { Component } from "vue";
+import { TabsTrigger } from "reka-ui";
 
-interface TabBarContext {
-  activeTab: ComputedRef<string>;
-  setTab: (value: string) => void;
-}
-
-const props = defineProps<{
+defineProps<{
   value: string;
   icon?: Component;
   label: string;
+  disabled?: boolean;
 }>();
-
-const context = inject<TabBarContext>("tab-bar-context")!;
-const isActive = computed(() => context.activeTab.value === props.value);
 </script>
 
 <template>
-  <button
-    :class="['tab', isActive ? 'tab--active' : 'tab--inactive']"
-    @click="context.setTab(value)"
-  >
+  <TabsTrigger :value="value" :disabled="disabled" class="tab">
     <component v-if="icon" :is="icon" class="tab__icon" />
     <span class="tab__label">{{ label }}</span>
-  </button>
+  </TabsTrigger>
 </template>
 
 <style scoped>
@@ -47,13 +38,18 @@ const isActive = computed(() => context.activeTab.value === props.value);
   height: 0.875rem;
 }
 
-.tab--active {
+.tab[data-state="active"] {
   background: #fff;
   color: var(--fg);
 }
 
-.tab--inactive {
+.tab[data-state="inactive"] {
   background: transparent;
   color: var(--muted);
+}
+
+.tab[data-disabled] {
+  opacity: 0.4;
+  cursor: not-allowed;
 }
 </style>
