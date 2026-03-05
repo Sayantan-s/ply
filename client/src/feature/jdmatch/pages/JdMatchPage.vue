@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, markRaw } from "vue";
+import { computed, ref, watch, markRaw } from "vue";
 import { AnimatePresence, Motion } from "motion-v";
 import { ArrowRight, ArrowLeft, Sparkles } from "lucide-vue-next";
 import { Button } from "@/components/atoms";
@@ -72,12 +72,32 @@ const isErrorOrEmpty = computed(() =>
 const cardWidth = computed(() => (isErrorOrEmpty.value ? 480 : undefined));
 const noCard = computed(() => wizard.step.value === WizardStep.Report);
 
-const transition = {
-  initial: { opacity: 0, y: 16 },
-  animate: { opacity: 1, y: 0 },
-  exit: { opacity: 0, y: -16 },
-  transition: { duration: 0.25 },
+const stepOrder: Record<WizardStep, number> = {
+  [WizardStep.ResumeUpload]: 1,
+  [WizardStep.UploadError]: 1,
+  [WizardStep.JobDescription]: 2,
+  [WizardStep.FinalReview]: 3,
+  [WizardStep.Analyzing]: 4,
+  [WizardStep.AnalysisError]: 4,
+  [WizardStep.Report]: 5,
+  [WizardStep.EmptyResult]: 5,
 };
+
+const direction = ref(1);
+
+watch(
+  () => wizard.step.value,
+  (next, prev) => {
+    direction.value = stepOrder[next] >= stepOrder[prev] ? 1 : -1;
+  },
+);
+
+const transition = computed(() => ({
+  initial: { opacity: 0, x: 24 * direction.value },
+  animate: { opacity: 1, x: 0 },
+  exit: { opacity: 0, x: -24 * direction.value },
+  transition: { duration: 0.25 },
+}));
 </script>
 
 <template>

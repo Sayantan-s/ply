@@ -1,22 +1,22 @@
+import json
+
 from google import genai
 from google.genai import types
 
 from app.integrations.llm.gemini import GeminiModel
 from app.modules.jdmatch.schemas import AgentResponseJDVerification
 
-_ai_so_type = (
-    genai.types.Schema(
-        type=genai.types.Type.OBJECT,
-        required=["is_jd", "reason"],
-        properties={
-            "is_jd": genai.types.Schema(
-                type=genai.types.Type.BOOLEAN,
-            ),
-            "reason": genai.types.Schema(
-                type=genai.types.Type.STRING,
-            ),
-        },
-    ),
+_ai_so_type = genai.types.Schema(
+    type=genai.types.Type.OBJECT,
+    required=["is_jd", "reason"],
+    properties={
+        "is_jd": genai.types.Schema(
+            type=genai.types.Type.BOOLEAN,
+        ),
+        "reason": genai.types.Schema(
+            type=genai.types.Type.STRING,
+        ),
+    },
 )
 
 _safety_settings = [
@@ -94,7 +94,7 @@ def agent_analyze_jd_text_structure(
         config=generate_content_config,
     )
 
-    data = response.json()
+    data = json.loads(response.text)
     agent_response = AgentResponseJDVerification(**data)
 
     if not agent_response.is_jd:

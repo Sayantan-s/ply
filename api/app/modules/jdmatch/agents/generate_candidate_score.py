@@ -122,7 +122,7 @@ async def agent_stream_candidate_score(
     # Usually it's client.models.generate_content_stream
 
     stream = gemini_client.models.generate_content_stream(
-        model=GeminiModel.flash,
+        model=GeminiModel.pro,
         contents=[file, _prompt(jd)],
         config=generate_content_config,
     )

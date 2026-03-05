@@ -1,10 +1,16 @@
 import uuid
+from enum import Enum
 from typing import Literal
 
-from pydantic import BaseModel, Field
+from pydantic import Field
 
 from app.api.v1.dto import UIDtoModel
 from app.modules.jdmatch.constants import JdMatchStatus
+
+
+class StreamType(str, Enum):
+    STATUS = "status"
+    ANALYSIS = "analysis"
 
 
 class ResumeUploadResponse(UIDtoModel):
@@ -21,17 +27,17 @@ class JdMatchStatusResponse(UIDtoModel):
     status: JdMatchStatus
 
 
-class StatusStreamResponse(BaseModel):
-    type: Literal["status"] = "status"
+class StatusStreamResponse(UIDtoModel):
+    type: Literal[StreamType.STATUS] = StreamType.STATUS
     status: JdMatchStatus
 
 
-class AnalysisStreamResponse(BaseModel):
-    type: Literal["analysis"] = "analysis"
+class AnalysisStreamResponse(UIDtoModel):
+    type: Literal[StreamType.ANALYSIS] = StreamType.ANALYSIS
     chunk: str
 
 
-class JdMatchStreamResponse(BaseModel):
+class JdMatchStreamResponse(UIDtoModel):
     payload: StatusStreamResponse | AnalysisStreamResponse = Field(
         ..., discriminator="type"
     )
