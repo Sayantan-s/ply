@@ -122,13 +122,14 @@ async def agent_stream_candidate_score(
     # Usually it's client.models.generate_content_stream
 
     stream = gemini_client.models.generate_content_stream(
-        model=GeminiModel.pro,
+        model=GeminiModel.flash,
         contents=[file, _prompt(jd)],
         config=generate_content_config,
     )
 
     for chunk in stream:
         if chunk.text:
+            logger.info("Chunk from Gemini: %s", chunk.text)
             yield chunk.text
 
     # Clean up uploaded file from Gemini
