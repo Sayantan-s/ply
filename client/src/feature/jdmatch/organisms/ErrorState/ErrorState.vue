@@ -2,7 +2,7 @@
 import { computed, markRaw } from "vue";
 import { Motion } from "motion-v";
 import { FileX, ZapOff, TriangleAlert, RefreshCw } from "lucide-vue-next";
-import { Button } from "@/components/atoms";
+import { Button, ButtonIcon, ButtonContent } from "@/components/atoms";
 
 const props = defineProps<{
   variant: "upload" | "analysis";
@@ -84,11 +84,11 @@ const detailColor = computed(() =>
 
     <div class="error-state__actions">
       <Button variant="primary" fluid @click="$emit('retry')">
-        <component :is="RefreshIcon" :size="14" />
-        {{ variant === "upload" ? "Try Again" : "Retry Analysis" }}
+        <ButtonIcon :icon="RefreshIcon" position="pre" :size="14" />
+        <ButtonContent>{{ variant === "upload" ? "Try Again" : "Retry Analysis" }}</ButtonContent>
       </Button>
       <Button variant="ghost" fluid @click="$emit('goBack')">
-        {{ variant === "upload" ? "Go Back" : "Start Over" }}
+        <ButtonContent>{{ variant === "upload" ? "Go Back" : "Start Over" }}</ButtonContent>
       </Button>
     </div>
   </Motion>

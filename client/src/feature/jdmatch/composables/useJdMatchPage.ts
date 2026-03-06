@@ -1,3 +1,4 @@
+import { useRouter } from "vue-router";
 import type { CreateJdMatchPayload } from "../types/api";
 import { useJdMatchWizard } from "./useJdMatchWizard";
 import { useResumeUpload } from "./useResumeUpload";
@@ -6,6 +7,7 @@ import { useCreateJdMatch } from "./useCreateJdMatch";
 import { useAnalyzeJdMatch } from "./useAnalyzeJdMatch";
 
 export function useJdMatchPage() {
+  const router = useRouter();
   const wizard = useJdMatchWizard();
   const resumeUpload = useResumeUpload();
   const jobDescription = useJobDescription();
@@ -46,7 +48,7 @@ export function useJdMatchPage() {
     }
 
     wizard.setAnalysis(analysis);
-    wizard.showReport();
+    router.push({ name: "jdmatch-report", params: { jdMatchId: result.jdMatchId } });
   }
 
   function handleStartOver() {

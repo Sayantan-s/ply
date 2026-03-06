@@ -1,5 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
 import Dropzone from "./Dropzone.vue";
+import DropzoneEmpty from "./DropzoneEmpty.vue";
+import DropzoneFileList from "./DropzoneFileList.vue";
 
 const meta = {
   title: "Molecules/Dropzone",
@@ -17,6 +19,16 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {},
+  render: (args) => ({
+    components: { Dropzone, DropzoneEmpty, DropzoneFileList },
+    setup: () => ({ args }),
+    template: `
+      <Dropzone v-bind="args">
+        <DropzoneFileList />
+        <DropzoneEmpty />
+      </Dropzone>
+    `,
+  }),
 };
 
 export const PdfOnly: Story = {
@@ -24,6 +36,16 @@ export const PdfOnly: Story = {
     formats: [".pdf"],
     maxSize: 5,
   },
+  render: (args) => ({
+    components: { Dropzone, DropzoneEmpty, DropzoneFileList },
+    setup: () => ({ args }),
+    template: `
+      <Dropzone v-bind="args">
+        <DropzoneFileList />
+        <DropzoneEmpty />
+      </Dropzone>
+    `,
+  }),
 };
 
 export const Multiple: Story = {
@@ -32,10 +54,30 @@ export const Multiple: Story = {
     formats: [".pdf", ".docx", ".txt"],
     maxSize: 20,
   },
+  render: (args) => ({
+    components: { Dropzone, DropzoneEmpty, DropzoneFileList },
+    setup: () => ({ args }),
+    template: `
+      <Dropzone v-bind="args">
+        <DropzoneFileList />
+        <DropzoneEmpty />
+      </Dropzone>
+    `,
+  }),
 };
 
 export const Disabled: Story = {
   args: {
     disabled: true,
   },
+  render: (args) => ({
+    components: { Dropzone, DropzoneEmpty, DropzoneFileList },
+    setup: () => ({ args }),
+    template: `
+      <Dropzone v-bind="args">
+        <DropzoneFileList />
+        <DropzoneEmpty />
+      </Dropzone>
+    `,
+  }),
 };

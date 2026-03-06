@@ -1,5 +1,8 @@
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
 import Button from "./Button.vue";
+import ButtonLoading from "./ButtonLoading.vue";
+import ButtonIcon from "./ButtonIcon.vue";
+import ButtonContent from "./ButtonContent.vue";
 import { ArrowRight, Sparkles, Download, ArrowLeft } from "lucide-vue-next";
 import { markRaw } from "vue";
 
@@ -24,47 +27,47 @@ type Story = StoryObj<typeof meta>;
 export const Primary: Story = {
   args: { variant: "primary" },
   render: (args) => ({
-    components: { Button, ArrowRight: markRaw(ArrowRight) },
-    setup: () => ({ args }),
-    template: '<Button v-bind="args">next: job_description <ArrowRight :size="16" /></Button>',
+    components: { Button, ButtonContent, ButtonIcon },
+    setup: () => ({ args, ArrowRight: markRaw(ArrowRight) }),
+    template: '<Button v-bind="args"><ButtonContent>next: job_description</ButtonContent><ButtonIcon :icon="ArrowRight" position="post" :size="16" /></Button>',
   }),
 };
 
 export const Accent: Story = {
   args: { variant: "accent" },
   render: (args) => ({
-    components: { Button, Sparkles: markRaw(Sparkles) },
-    setup: () => ({ args }),
-    template: '<Button v-bind="args"><Sparkles :size="18" /> run_match_report</Button>',
+    components: { Button, ButtonContent, ButtonIcon },
+    setup: () => ({ args, Sparkles: markRaw(Sparkles) }),
+    template: '<Button v-bind="args"><ButtonIcon :icon="Sparkles" position="pre" :size="18" /><ButtonContent>run_match_report</ButtonContent></Button>',
   }),
 };
 
 export const Outline: Story = {
   args: { variant: "outline" },
   render: (args) => ({
-    components: { Button, Download: markRaw(Download) },
-    setup: () => ({ args }),
-    template: '<Button v-bind="args"><Download :size="14" /> download</Button>',
+    components: { Button, ButtonContent, ButtonIcon },
+    setup: () => ({ args, Download: markRaw(Download) }),
+    template: '<Button v-bind="args"><ButtonIcon :icon="Download" position="pre" :size="14" /><ButtonContent>download</ButtonContent></Button>',
   }),
 };
 
 export const Ghost: Story = {
   args: { variant: "ghost" },
   render: (args) => ({
-    components: { Button },
+    components: { Button, ButtonContent },
     setup: () => ({ args }),
-    template: '<Button v-bind="args">go_back</Button>',
+    template: '<Button v-bind="args"><ButtonContent>go_back</ButtonContent></Button>',
   }),
 };
 
 export const Fluid: Story = {
   args: { variant: "primary", fluid: true },
   render: (args) => ({
-    components: { Button, ArrowRight: markRaw(ArrowRight) },
-    setup: () => ({ args }),
+    components: { Button, ButtonContent, ButtonIcon },
+    setup: () => ({ args, ArrowRight: markRaw(ArrowRight) }),
     template: `
       <div style="width: 24rem">
-        <Button v-bind="args">next: job_description <ArrowRight :size="16" /></Button>
+        <Button v-bind="args"><ButtonContent>next: job_description</ButtonContent><ButtonIcon :icon="ArrowRight" position="post" :size="16" /></Button>
       </div>
     `,
   }),
@@ -73,29 +76,32 @@ export const Fluid: Story = {
 export const Loading: Story = {
   args: { variant: "accent", loading: true, fluid: true },
   render: (args) => ({
-    components: { Button },
-    setup: () => ({ args }),
+    components: { Button, ButtonLoading, ButtonIcon, ButtonContent },
+    setup: () => ({ args, Sparkles: markRaw(Sparkles) }),
     template: `
       <div style="width: 24rem">
-        <Button v-bind="args">analyzing...</Button>
+        <Button v-bind="args">
+          <ButtonLoading>analyzing...</ButtonLoading>
+          <ButtonIcon :icon="Sparkles" position="pre" :size="18" />
+          <ButtonContent>run_match_report</ButtonContent>
+        </Button>
       </div>
     `,
   }),
 };
 
-export const Loading2: Story = {
-  args: {
-    variant: "primary",
-    loading: true,
-    fluid: true,
-    loaderVariant: "grid",
-  },
+export const LoadingGrid: Story = {
+  args: { variant: "primary", loading: true, fluid: true },
   render: (args) => ({
-    components: { Button },
-    setup: () => ({ args }),
+    components: { Button, ButtonLoading, ButtonIcon, ButtonContent },
+    setup: () => ({ args, Sparkles: markRaw(Sparkles) }),
     template: `
       <div style="width: 24rem">
-        <Button v-bind="args">analyzing...</Button>
+        <Button v-bind="args">
+          <ButtonLoading variant="grid">analyzing...</ButtonLoading>
+          <ButtonIcon :icon="Sparkles" position="pre" :size="18" />
+          <ButtonContent>run_match_report</ButtonContent>
+        </Button>
       </div>
     `,
   }),
@@ -104,11 +110,11 @@ export const Loading2: Story = {
 export const Disabled: Story = {
   args: { variant: "primary", disabled: true, fluid: true },
   render: (args) => ({
-    components: { Button, ArrowRight: markRaw(ArrowRight) },
-    setup: () => ({ args }),
+    components: { Button, ButtonContent, ButtonIcon },
+    setup: () => ({ args, ArrowRight: markRaw(ArrowRight) }),
     template: `
       <div style="width: 24rem">
-        <Button v-bind="args">next: job_description <ArrowRight :size="16" /></Button>
+        <Button v-bind="args"><ButtonContent>next: job_description</ButtonContent><ButtonIcon :icon="ArrowRight" position="post" :size="16" /></Button>
       </div>
     `,
   }),
@@ -117,11 +123,11 @@ export const Disabled: Story = {
 export const BackOutline: Story = {
   args: { variant: "outline", fluid: true },
   render: (args) => ({
-    components: { Button, ArrowLeft: markRaw(ArrowLeft) },
-    setup: () => ({ args }),
+    components: { Button, ButtonContent, ButtonIcon },
+    setup: () => ({ args, ArrowLeft: markRaw(ArrowLeft) }),
     template: `
       <div style="width: 24rem">
-        <Button v-bind="args"><ArrowLeft :size="14" /> back</Button>
+        <Button v-bind="args"><ButtonIcon :icon="ArrowLeft" position="pre" :size="14" /><ButtonContent>back</ButtonContent></Button>
       </div>
     `,
   }),

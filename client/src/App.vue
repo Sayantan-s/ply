@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { MotionConfig } from "motion-v";
-import { JdMatchPage } from "@/feature/jdmatch";
+import { RouterView } from "vue-router";
 </script>
 
 <template>
   <MotionConfig reduce-motion="user">
-    <JdMatchPage />
+    <RouterView />
   </MotionConfig>
 </template>

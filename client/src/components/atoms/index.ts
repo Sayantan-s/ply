@@ -1,4 +1,7 @@
 export { default as Button } from "./Button/Button.vue";
+export { default as ButtonLoading } from "./Button/ButtonLoading.vue";
+export { default as ButtonIcon } from "./Button/ButtonIcon.vue";
+export { default as ButtonContent } from "./Button/ButtonContent.vue";
 export { default as Input } from "./Input/Input.vue";
 export { default as Textarea } from "./Textarea/Textarea.vue";
 export { default as Badge } from "./Badge/Badge.vue";

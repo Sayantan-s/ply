@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, provide } from "vue";
 import { cva, type VariantProps } from "class-variance-authority";
 import { Motion } from "motion-v";
-import MatrixLoader from "@/components/atoms/MatrixLoader/MatrixLoader.vue";
-import type { LoaderVariants } from "@/components/atoms/MatrixLoader/MatrixLoader.vue";
+import { BUTTON_CONTEXT_KEY } from "./button.context";
 
 const buttonVariants = cva("button", {
   variants: {
@@ -25,30 +24,25 @@ const props = withDefaults(
     disabled?: boolean;
     loading?: boolean;
     fluid?: boolean;
-    loaderVariant?: NonNullable<LoaderVariants["variant"]>;
-    loaderSize?: NonNullable<LoaderVariants["size"]>;
-    loaderTone?: NonNullable<LoaderVariants["tone"]>;
-    loaderCols?: number;
   }>(),
   {
     variant: "primary",
     disabled: false,
     loading: false,
     fluid: false,
-    loaderVariant: "text",
-    loaderSize: "sm",
-    loaderTone: "inherit",
-    loaderCols: 3,
   },
 );
 
 const isDisabled = computed(() => props.disabled || props.loading);
+const loading = computed(() => props.loading);
 
 const classes = computed(() => [
   buttonVariants({ variant: props.variant }),
   props.fluid && "button--fluid",
   isDisabled.value && "button--disabled",
 ]);
+
+provide(BUTTON_CONTEXT_KEY, { loading, isDisabled });
 </script>
 
 <template>
@@ -60,16 +54,7 @@ const classes = computed(() => [
     :press="isDisabled ? undefined : { scale: 0.97 }"
     :transition="{ type: 'spring', stiffness: 400, damping: 17 }"
   >
-    <template v-if="loading">
-      <MatrixLoader
-        :variant="loaderVariant"
-        :size="loaderSize"
-        :tone="loaderTone"
-        :cols="loaderCols"
-      />
-      <slot />
-    </template>
-    <slot v-else />
+    <slot />
   </Motion>
 </template>
 

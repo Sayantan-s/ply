@@ -12,7 +12,7 @@ defineProps<{
   <div class="step-headline">
     <Text variant="comment">{{ stepComment }}</Text>
     <Heading :level="2">{{ title }}</Heading>
-    <Text v-if="subtitle" variant="muted">{{ subtitle }}</Text>
+    <Text v-if="subtitle" variant="caption">{{ subtitle }}</Text>
   </div>
 </template>
 

@@ -8,6 +8,7 @@ from sqlmodel import Session
 
 from app.api.v1.dto import ResponseEnvelope
 from app.api.v1.dto.jdmatch import (
+    JdMatchAnalysisResponse,
     JdMatchStatusResponse,
     ResumeUploadResponse,
 )
@@ -17,6 +18,7 @@ from app.integrations.db.database import get_session
 from app.integrations.llm.gemini import get_gemini_client
 from app.modules.jdmatch.service import (
     create_jd_match,
+    get_jd_match_analysis,
     get_jd_match_status,
     jd_match_analyze,
 )
@@ -63,9 +65,27 @@ async def analyze_jd_match_endpoint(
         async for chunk in jd_match_analyze(
             jd_match_id, gemini_client, session, browser_use_client
         ):
-            yield chunk.model_dump_json() + "\n"
+            yield chunk.model_dump_json(by_alias=True) + "\n"
 
     return StreamingResponse(event_generator(), media_type="application/x-ndjson")
+
+
+@router.get(
+    "/{jd_match_id}",
+    status_code=status.HTTP_200_OK,
+    response_model=ResponseEnvelope[JdMatchAnalysisResponse],
+    operation_id="getJdMatchAnalysis",
+)
+async def get_jd_match_analysis_endpoint(
+    jd_match_id: str,
+    session: Annotated[Session, Depends(get_session)],
+) -> ResponseEnvelope[JdMatchAnalysisResponse]:
+    logger.info(
+        "starting get_jd_match_analysis_endpoint for {jd_match_id}",
+        jd_match_id=jd_match_id,
+    )
+    response = await get_jd_match_analysis(jd_match_id, session)
+    return ResponseEnvelope.ok(response)
 
 
 @router.get(

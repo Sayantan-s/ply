@@ -20,3 +20,9 @@ class AgentResponseCandidateScore(BaseModel):
     matching_skills: list[str]
     missing_skills: list[str]
     explanation: str
+
+
+class AgentResponseStructuredScore(BaseModel):
+    score: int
+    matching_skills: list[str]
+    missing_skills: list[str]

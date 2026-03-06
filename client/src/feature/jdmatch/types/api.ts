@@ -34,7 +34,23 @@ export interface AnalysisStreamPayload {
   chunk: string;
 }
 
-export type StreamPayload = StatusStreamPayload | AnalysisStreamPayload;
+export interface ResultStreamPayload {
+  type: "result";
+  score: number;
+  matchingSkills: string[];
+  missingSkills: string[];
+}
+
+export interface ExplanationStreamPayload {
+  type: "explanation";
+  chunk: string;
+}
+
+export type StreamPayload =
+  | StatusStreamPayload
+  | AnalysisStreamPayload
+  | ResultStreamPayload
+  | ExplanationStreamPayload;
 
 export interface JdMatchStreamLine {
   payload: StreamPayload;
@@ -52,6 +68,15 @@ export interface RawMatchAnalysis {
   matching_skills: string[];
   missing_skills: string[];
   explanation: string;
+}
+
+export interface JdMatchAnalysisData {
+  jdMatchId: string;
+  status: string;
+  score: number | null;
+  matchingSkills: string[] | null;
+  missingSkills: string[] | null;
+  explanation: string | null;
 }
 
 export interface CreateJdMatchPayload {

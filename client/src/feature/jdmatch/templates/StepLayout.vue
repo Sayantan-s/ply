@@ -1,31 +1,13 @@
 <script setup lang="ts">
-import WizardNavBar from "../molecules/WizardNavBar/WizardNavBar.vue";
-
 defineProps<{
-  navVariant: "wizard" | "report" | "empty";
-  activeStep?: number;
-  navTitle?: string;
   cardWidth?: number;
   noCard?: boolean;
-}>();
-
-defineEmits<{
-  navBack: [];
-  navShare: [];
-  navDownload: [];
 }>();
 </script>
 
 <template>
   <div class="step-layout">
-    <WizardNavBar
-      :variant="navVariant"
-      :active-step="activeStep"
-      :nav-title="navTitle"
-      @back="$emit('navBack')"
-      @share="$emit('navShare')"
-      @download="$emit('navDownload')"
-    />
+    <slot name="nav" />
     <main class="step-layout__body">
       <div
         v-if="!noCard"

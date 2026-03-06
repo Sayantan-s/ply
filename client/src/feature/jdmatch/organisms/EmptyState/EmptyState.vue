@@ -2,7 +2,7 @@
 import { markRaw } from "vue";
 import { Motion } from "motion-v";
 import { SearchX, Sparkles, ArrowLeft } from "lucide-vue-next";
-import { Button } from "@/components/atoms";
+import { Button, ButtonIcon, ButtonContent } from "@/components/atoms";
 
 defineEmits<{
   newMatch: [];
@@ -51,12 +51,12 @@ const suggestions = [
 
     <div class="empty-state__actions">
       <Button variant="accent" fluid @click="$emit('newMatch')">
-        <component :is="SparklesIcon" :size="14" />
-        Start New Match
+        <ButtonIcon :icon="SparklesIcon" position="pre" :size="14" />
+        <ButtonContent>Start New Match</ButtonContent>
       </Button>
       <Button variant="ghost" fluid @click="$emit('goHome')">
-        <component :is="ArrowLeftIcon" :size="14" />
-        Back to Home
+        <ButtonIcon :icon="ArrowLeftIcon" position="pre" :size="14" />
+        <ButtonContent>Back to Home</ButtonContent>
       </Button>
     </div>
   </Motion>

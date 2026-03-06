@@ -11,6 +11,8 @@ from app.modules.jdmatch.constants import JdMatchStatus
 class StreamType(str, Enum):
     STATUS = "status"
     ANALYSIS = "analysis"
+    RESULT = "result"
+    EXPLANATION = "explanation"
 
 
 class ResumeUploadResponse(UIDtoModel):
@@ -37,7 +39,31 @@ class AnalysisStreamResponse(UIDtoModel):
     chunk: str
 
 
+class ResultStreamResponse(UIDtoModel):
+    type: Literal[StreamType.RESULT] = StreamType.RESULT
+    score: int
+    matching_skills: list[str]
+    missing_skills: list[str]
+
+
+class ExplanationStreamResponse(UIDtoModel):
+    type: Literal[StreamType.EXPLANATION] = StreamType.EXPLANATION
+    chunk: str
+
+
 class JdMatchStreamResponse(UIDtoModel):
-    payload: StatusStreamResponse | AnalysisStreamResponse = Field(
-        ..., discriminator="type"
-    )
+    payload: (
+        StatusStreamResponse
+        | AnalysisStreamResponse
+        | ResultStreamResponse
+        | ExplanationStreamResponse
+    ) = Field(..., discriminator="type")
+
+
+class JdMatchAnalysisResponse(UIDtoModel):
+    jd_match_id: uuid.UUID
+    status: str
+    score: int | None = None
+    matching_skills: list[str] | None = None
+    missing_skills: list[str] | None = None
+    explanation: str | None = None

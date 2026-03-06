@@ -2,6 +2,7 @@ import type {
   CreateJdMatchPayload,
   ResumeUploadData,
   JdMatchStatusData,
+  JdMatchAnalysisData,
   JdMatchStreamLine,
   ResponseEnvelope,
 } from "../types/api";
@@ -33,4 +34,10 @@ export async function getJdMatchStatus(
   jdMatchId: string,
 ): Promise<ResponseEnvelope<JdMatchStatusData>> {
   return apiGet<JdMatchStatusData>(`/api/v1/jdmatch/${jdMatchId}/status`);
+}
+
+export async function getJdMatchAnalysis(
+  jdMatchId: string,
+): Promise<ResponseEnvelope<JdMatchAnalysisData>> {
+  return apiGet<JdMatchAnalysisData>(`/api/v1/jdmatch/${jdMatchId}`);
 }

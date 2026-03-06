@@ -18,6 +18,14 @@ export default defineConfig({
       '@': path.resolve(dirname, 'src'),
     },
   },
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://localhost:7153',
+        changeOrigin: true,
+      },
+    },
+  },
   test: {
     globals: true,
     environment: 'jsdom',

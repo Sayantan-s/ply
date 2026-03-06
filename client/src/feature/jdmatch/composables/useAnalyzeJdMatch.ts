@@ -2,6 +2,12 @@ import { ref, readonly } from "vue";
 import type { JdMatchStatus, MatchAnalysis, RawMatchAnalysis } from "../types/api";
 import { analyzeJdMatch } from "../api/jdmatch";
 
+export interface PartialResult {
+  score: number;
+  matchingSkills: string[];
+  missingSkills: string[];
+}
+
 export function useAnalyzeJdMatch() {
   const isStreaming = ref(false);
   const currentStatus = ref<JdMatchStatus | null>(null);
@@ -9,12 +15,19 @@ export function useAnalyzeJdMatch() {
   const analysis = ref<MatchAnalysis | null>(null);
   const error = ref<string | null>(null);
 
+  const partialResult = ref<PartialResult | null>(null);
+  const streamedExplanation = ref("");
+  const isExplanationStreaming = ref(false);
+
   async function execute(jdMatchId: string): Promise<MatchAnalysis | null> {
     isStreaming.value = true;
     error.value = null;
     statusHistory.value = [];
     analysis.value = null;
     currentStatus.value = null;
+    partialResult.value = null;
+    streamedExplanation.value = "";
+    isExplanationStreaming.value = false;
 
     const chunks: string[] = [];
 
@@ -30,20 +43,42 @@ export function useAnalyzeJdMatch() {
             error.value = "Analysis failed";
             return null;
           }
+        } else if (payload.type === "result") {
+          partialResult.value = {
+            score: payload.score,
+            matchingSkills: payload.matchingSkills,
+            missingSkills: payload.missingSkills,
+          };
+          isExplanationStreaming.value = true;
+        } else if (payload.type === "explanation") {
+          streamedExplanation.value += payload.chunk;
         } else if (payload.type === "analysis") {
+          // Backward compat: old-style JSON chunks
           chunks.push(payload.chunk);
         }
       }
 
-      const rawJson = chunks.join("");
-      if (rawJson) {
-        const raw: RawMatchAnalysis = JSON.parse(rawJson);
+      isExplanationStreaming.value = false;
+
+      // Build final analysis from new split flow or legacy flow
+      if (partialResult.value) {
         analysis.value = {
-          score: raw.score,
-          matchingSkills: raw.matching_skills,
-          missingSkills: raw.missing_skills,
-          explanation: raw.explanation,
+          score: partialResult.value.score,
+          matchingSkills: [...partialResult.value.matchingSkills],
+          missingSkills: [...partialResult.value.missingSkills],
+          explanation: streamedExplanation.value,
         };
+      } else {
+        const rawJson = chunks.join("");
+        if (rawJson) {
+          const raw: RawMatchAnalysis = JSON.parse(rawJson);
+          analysis.value = {
+            score: raw.score,
+            matchingSkills: raw.matching_skills,
+            missingSkills: raw.missing_skills,
+            explanation: raw.explanation,
+          };
+        }
       }
 
       return analysis.value;
@@ -52,6 +87,7 @@ export function useAnalyzeJdMatch() {
       return null;
     } finally {
       isStreaming.value = false;
+      isExplanationStreaming.value = false;
     }
   }
 
@@ -62,5 +98,8 @@ export function useAnalyzeJdMatch() {
     statusHistory: readonly(statusHistory),
     analysis: readonly(analysis),
     error: readonly(error),
+    partialResult: readonly(partialResult),
+    streamedExplanation: readonly(streamedExplanation),
+    isExplanationStreaming: readonly(isExplanationStreaming),
   };
 }

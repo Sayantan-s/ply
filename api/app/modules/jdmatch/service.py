@@ -6,9 +6,11 @@ from google import genai
 from sqlmodel import Session
 
 from app.api.v1.dto.jdmatch import (
-    AnalysisStreamResponse,
+    ExplanationStreamResponse,
+    JdMatchAnalysisResponse,
     JdMatchStatusResponse,
     JdMatchStreamResponse,
+    ResultStreamResponse,
     ResumeUploadResponse,
     StatusStreamResponse,
 )
@@ -19,7 +21,8 @@ from app.modules.jdmatch.agents.analyze_jd_text_structure import (
 )
 from app.modules.jdmatch.agents.extract_jd import agent_extract_jd
 from app.modules.jdmatch.agents.generate_candidate_score import (
-    agent_stream_candidate_score,
+    agent_generate_structured_score,
+    agent_stream_explanation,
 )
 from app.modules.jdmatch.constants import JdMatchStatus
 from app.modules.jdmatch.repo import (
@@ -116,24 +119,37 @@ async def jd_match_analyze(
             payload=StatusStreamResponse(status=JdMatchStatus.THINKING)
         )
 
-        # Generate Candidate Score (Streaming)
-        full_analysis_text = ""
-        async for chunk in agent_stream_candidate_score(
+        # Phase 1: Generate structured score (non-streaming)
+        structured_result = agent_generate_structured_score(
             jd, candidate_resume_path, gemini_client
+        )
+
+        # Yield structured result immediately
+        yield JdMatchStreamResponse(
+            payload=ResultStreamResponse(
+                score=structured_result.score,
+                matching_skills=structured_result.matching_skills,
+                missing_skills=structured_result.missing_skills,
+            )
+        )
+
+        # Phase 2: Stream explanation text
+        full_explanation = ""
+        for chunk in agent_stream_explanation(
+            jd, candidate_resume_path, structured_result, gemini_client
         ):
-            full_analysis_text += chunk
-            yield JdMatchStreamResponse(payload=AnalysisStreamResponse(chunk=chunk))
+            full_explanation += chunk
+            yield JdMatchStreamResponse(
+                payload=ExplanationStreamResponse(chunk=chunk)
+            )
 
-        # Parse the final aggregated text to JSON
-        try:
-            from app.modules.jdmatch.schemas import AgentResponseCandidateScore
-
-            score_data = AgentResponseCandidateScore.model_validate_json(
-                full_analysis_text
-            ).model_dump()
-        except Exception as e:
-            logger.exception("Failed to parse analysis JSON: %s", repr(e))
-            raise
+        # Build score_data for DB save
+        score_data = {
+            "score": structured_result.score,
+            "matching_skills": structured_result.matching_skills,
+            "missing_skills": structured_result.missing_skills,
+            "explanation": full_explanation,
+        }
 
         # Save to Database (this will also update status to MATCHED)
         await save_jd_match_info(
@@ -172,3 +188,25 @@ async def get_jd_match_status(
         raise ValueError(f"No record found for jd_match_id: {jd_match_id}")
 
     return JdMatchStatusResponse(status=jd_record.status)
+
+
+async def get_jd_match_analysis(
+    jd_match_id: str,
+    _db_session: Session,
+) -> JdMatchAnalysisResponse:
+    logger.info(
+        "getting analysis for {jd_match_id}", jd_match_id=jd_match_id
+    )
+
+    jd_record = await get_jd_match_by_jd_match_id(_db_session, jd_match_id)
+    if not jd_record:
+        raise ValueError(f"No record found for jd_match_id: {jd_match_id}")
+
+    return JdMatchAnalysisResponse(
+        jd_match_id=jd_record.id,
+        status=jd_record.status,
+        score=jd_record.score,
+        matching_skills=jd_record.matching_skills,
+        missing_skills=jd_record.missing_skills,
+        explanation=jd_record.explanation,
+    )

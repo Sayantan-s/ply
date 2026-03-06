@@ -1,19 +1,27 @@
 <script setup lang="ts">
 import { computed, ref, watch, markRaw } from "vue";
 import { AnimatePresence, Motion } from "motion-v";
-import { ArrowRight, ArrowLeft, Sparkles } from "lucide-vue-next";
-import { Button } from "@/components/atoms";
+import { ArrowRight, ArrowLeft, Sparkles, Link } from "lucide-vue-next";
+import { Button, ButtonIcon, ButtonContent, ButtonLoading, Input, Textarea, Alert } from "@/components/atoms";
+import { Dropzone, DropzoneEmpty, DropzoneFileList } from "@/components/molecules";
 import { WizardStep } from "../types/wizard";
 import { useJdMatchPage } from "../composables/useJdMatchPage";
 import StepLayout from "../templates/StepLayout.vue";
 import StepHeadline from "../molecules/StepHeadline/StepHeadline.vue";
+import {
+  WizardNavBarWizard,
+  WizardNavBarReport,
+  WizardNavBarEmpty,
+} from "../molecules/WizardNavBar";
 import ResumeUploadForm from "../organisms/ResumeUploadForm/ResumeUploadForm.vue";
 import JobDescriptionForm from "../organisms/JobDescriptionForm/JobDescriptionForm.vue";
 import FinalReview from "../organisms/FinalReview/FinalReview.vue";
 import AnalysisLoading from "../organisms/AnalysisLoading/AnalysisLoading.vue";
-import MatchReport from "../organisms/MatchReport/MatchReport.vue";
+import MatchReportSkeleton from "../organisms/MatchReport/MatchReportSkeleton.vue";
+import StreamingMatchReport from "../organisms/MatchReport/StreamingMatchReport.vue";
 import ErrorState from "../organisms/ErrorState/ErrorState.vue";
 import EmptyState from "../organisms/EmptyState/EmptyState.vue";
+import CloudServicePicker from "../molecules/CloudServicePicker/CloudServicePicker.vue";
 
 const {
   wizard,
@@ -28,6 +36,7 @@ const {
 const ArrowRightIcon = markRaw(ArrowRight);
 const ArrowLeftIcon = markRaw(ArrowLeft);
 const SparklesIcon = markRaw(Sparkles);
+const LinkIcon = markRaw(Link);
 
 const isSubmitting = computed(
   () => createMutation.isLoading.value || analyzeMutation.isStreaming.value,
@@ -45,11 +54,14 @@ function handleNextFromJd() {
   }
 }
 
-const navVariant = computed(() => {
-  if (wizard.step.value === WizardStep.Report) return "report" as const;
-  if (wizard.step.value === WizardStep.EmptyResult) return "empty" as const;
-  return "wizard" as const;
-});
+const isAnalyzingWithResult = computed(
+  () => wizard.step.value === WizardStep.Analyzing && !!analyzeMutation.partialResult.value,
+);
+const isWizardStep = computed(() =>
+  wizard.step.value !== WizardStep.Report && wizard.step.value !== WizardStep.EmptyResult && !isAnalyzingWithResult.value,
+);
+const isReportStep = computed(() => wizard.step.value === WizardStep.Report || isAnalyzingWithResult.value);
+const isEmptyStep = computed(() => wizard.step.value === WizardStep.EmptyResult);
 
 const activeNavStep = computed(() => {
   const map: Partial<Record<WizardStep, number>> = {
@@ -64,13 +76,15 @@ const activeNavStep = computed(() => {
 });
 
 const isErrorOrEmpty = computed(() =>
-  [WizardStep.UploadError, WizardStep.AnalysisError, WizardStep.EmptyResult].includes(
-    wizard.step.value,
-  ),
+  [
+    WizardStep.UploadError,
+    WizardStep.AnalysisError,
+    WizardStep.EmptyResult,
+  ].includes(wizard.step.value),
 );
 
 const cardWidth = computed(() => (isErrorOrEmpty.value ? 480 : undefined));
-const noCard = computed(() => wizard.step.value === WizardStep.Report);
+const noCard = computed(() => wizard.step.value === WizardStep.Report || isAnalyzingWithResult.value);
 
 const stepOrder: Record<WizardStep, number> = {
   [WizardStep.ResumeUpload]: 1,
@@ -101,13 +115,14 @@ const transition = computed(() => ({
 </script>
 
 <template>
-  <StepLayout
-    :nav-variant="navVariant"
-    :active-step="activeNavStep"
-    :card-width="cardWidth"
-    :no-card="noCard"
-    @nav-back="handleStartOver"
-  >
+  <StepLayout :card-width="cardWidth" :no-card="noCard">
+    <template #nav>
+      <WizardNavBarWizard v-if="isWizardStep" :active-step="activeNavStep" />
+      <WizardNavBarEmpty v-else-if="isAnalyzingWithResult" />
+      <WizardNavBarReport v-else-if="isReportStep" @back="handleStartOver" />
+      <WizardNavBarEmpty v-else-if="isEmptyStep" @back="handleStartOver" />
+    </template>
+
     <AnimatePresence mode="wait">
       <!-- Step 1: Resume Upload -->
       <Motion
@@ -122,26 +137,48 @@ const transition = computed(() => ({
           subtitle="We'll analyze it against your target job description."
         />
         <ResumeUploadForm
-          v-model:active-tab="resumeUpload.activeTab.value"
-          v-model:resume-url="resumeUpload.resumeUrl.value"
-          :files="resumeUpload.files.value"
+          v-model="resumeUpload.activeTab.value"
           :file-tab-disabled="resumeUpload.isFileTabDisabled.value"
           :url-tab-disabled="resumeUpload.isUrlTabDisabled.value"
-          :selected-service="resumeUpload.selectedService.value"
-          :url-placeholder="resumeUpload.urlPlaceholder.value"
-          :file-error="resumeUpload.errors.value.file"
-          :url-error="resumeUpload.errors.value.resumeUrl ?? resumeUpload.urlDomainError.value"
-          @update:files="resumeUpload.onFilesUpdate"
-          @update:selected-service="resumeUpload.selectedService.value = $event"
-        />
+        >
+          <template #file>
+            <Dropzone
+              :model-value="resumeUpload.files.value"
+              @update:model-value="resumeUpload.onFilesUpdate"
+            >
+              <DropzoneFileList />
+              <DropzoneEmpty />
+            </Dropzone>
+            <span v-if="resumeUpload.errors.value.file" class="field-error">
+              {{ resumeUpload.errors.value.file }}
+            </span>
+          </template>
+          <template #url>
+            <Input
+              v-model="resumeUpload.resumeUrl.value"
+              label="Resume URL"
+              :placeholder="resumeUpload.urlPlaceholder.value"
+              :icon="LinkIcon"
+              :error="resumeUpload.errors.value.resumeUrl ?? resumeUpload.urlDomainError.value"
+            />
+            <CloudServicePicker
+              :model-value="resumeUpload.selectedService.value"
+              @update:model-value="resumeUpload.selectedService.value = $event"
+            />
+            <Alert
+              variant="info"
+              message="Make sure the file has public or link-shared access enabled."
+            />
+          </template>
+        </ResumeUploadForm>
         <Button
           variant="primary"
           fluid
           :disabled="!resumeUpload.isValid.value"
           @click="handleNextFromResume()"
         >
-          next: job_description
-          <component :is="ArrowRightIcon" :size="18" />
+          <ButtonContent>next: job_description</ButtonContent>
+          <ButtonIcon :icon="ArrowRightIcon" position="post" :size="18" />
         </Button>
       </Motion>
 
@@ -157,18 +194,32 @@ const transition = computed(() => ({
           title="Job Details"
           subtitle="Paste the job description or provide the job post URL."
         />
-        <JobDescriptionForm
-          v-model:jd-text="jobDescription.jdText.value"
-          v-model:jd-url="jobDescription.jdUrl.value"
-          :jd-text-error="jobDescription.errors.value.jdText"
-          :jd-url-error="jobDescription.errors.value.jdUrl"
-          :jd-text-disabled="jobDescription.isJdTextDisabled.value"
-          :jd-url-disabled="jobDescription.isJdUrlDisabled.value"
-        />
+        <JobDescriptionForm>
+          <template #text-field>
+            <Textarea
+              v-model="jobDescription.jdText.value"
+              label="Paste Job Description"
+              placeholder="Paste the full JD content here..."
+              :rows="8"
+              :error="jobDescription.errors.value.jdText"
+              :disabled="jobDescription.isJdTextDisabled.value"
+            />
+          </template>
+          <template #url-field>
+            <Input
+              v-model="jobDescription.jdUrl.value"
+              label="Job Post URL (optional)"
+              placeholder="https://example.com/jobs/..."
+              :icon="LinkIcon"
+              :error="jobDescription.errors.value.jdUrl"
+              :disabled="jobDescription.isJdUrlDisabled.value"
+            />
+          </template>
+        </JobDescriptionForm>
         <div class="step-footer-row">
           <Button variant="outline" fluid @click="wizard.backToResume()">
-            <component :is="ArrowLeftIcon" :size="14" />
-            back
+            <ButtonIcon :icon="ArrowLeftIcon" position="pre" :size="14" />
+            <ButtonContent>back</ButtonContent>
           </Button>
           <Button
             variant="primary"
@@ -176,8 +227,8 @@ const transition = computed(() => ({
             :disabled="!jobDescription.isValid.value"
             @click="handleNextFromJd()"
           >
-            next: review
-            <component :is="ArrowRightIcon" :size="18" />
+            <ButtonContent>next: review</ButtonContent>
+            <ButtonIcon :icon="ArrowRightIcon" position="post" :size="18" />
           </Button>
         </div>
       </Motion>
@@ -207,11 +258,12 @@ const transition = computed(() => ({
             :disabled="isSubmitting"
             @click="handleSubmitAndAnalyze"
           >
-            <component :is="SparklesIcon" :size="18" />
-            Run Match Report
+            <ButtonLoading variant="grid">analyzing...</ButtonLoading>
+            <ButtonIcon :icon="SparklesIcon" position="pre" :size="18" />
+            <ButtonContent>Run Match Report</ButtonContent>
           </Button>
           <Button variant="ghost" fluid @click="wizard.backToJd()">
-            go_back
+            <ButtonContent>go_back</ButtonContent>
           </Button>
         </div>
       </Motion>
@@ -220,30 +272,30 @@ const transition = computed(() => ({
       <Motion
         v-else-if="wizard.step.value === WizardStep.Analyzing"
         key="analyzing"
-        class="step-content"
         v-bind="transition"
       >
-        <StepHeadline
-          step-comment="// analyzing"
-          title="Running Analysis"
-          subtitle="Sit tight while we crunch the numbers."
-        />
-        <AnalysisLoading
-          :status-history="analyzeMutation.statusHistory.value"
-          :current-status="analyzeMutation.currentStatus.value"
-        />
-      </Motion>
+        <!-- Phase A: Before structured result arrives -->
+        <template v-if="!analyzeMutation.partialResult.value">
+          <div class="step-content">
+            <StepHeadline
+              step-comment="// analyzing"
+              title="Running Analysis"
+              subtitle="Sit tight while we crunch the numbers."
+            />
+            <AnalysisLoading
+              :status-history="analyzeMutation.statusHistory.value"
+              :current-status="analyzeMutation.currentStatus.value"
+            />
+          </div>
+          <MatchReportSkeleton />
+        </template>
 
-      <!-- Match Report -->
-      <Motion
-        v-else-if="wizard.step.value === WizardStep.Report && wizard.analysis.value"
-        key="report"
-        v-bind="transition"
-      >
-        <MatchReport
-          :analysis="wizard.analysis.value"
-          @new-match="handleStartOver"
-          @download="() => {}"
+        <!-- Phase B: Structured result arrived, streaming explanation -->
+        <StreamingMatchReport
+          v-else
+          :partial-result="analyzeMutation.partialResult.value"
+          :streamed-explanation="analyzeMutation.streamedExplanation.value"
+          :is-explanation-streaming="analyzeMutation.isExplanationStreaming.value"
         />
       </Motion>
 
@@ -281,10 +333,7 @@ const transition = computed(() => ({
         key="empty"
         v-bind="transition"
       >
-        <EmptyState
-          @new-match="handleStartOver"
-          @go-home="handleStartOver"
-        />
+        <EmptyState @new-match="handleStartOver" @go-home="handleStartOver" />
       </Motion>
     </AnimatePresence>
   </StepLayout>
@@ -309,5 +358,12 @@ const transition = computed(() => ({
   flex-direction: column;
   gap: 0.625rem;
   width: 100%;
+}
+
+.field-error {
+  font-family: var(--font);
+  font-size: 0.625rem;
+  font-weight: 400;
+  color: var(--error);
 }
 </style>

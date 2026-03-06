@@ -3,7 +3,7 @@ import { Motion } from "motion-v";
 import { Download, Plus } from "lucide-vue-next";
 import { markRaw } from "vue";
 import { ScoreRing, SkillItem } from "@/components/molecules";
-import { Button, Text } from "@/components/atoms";
+import { Button, ButtonIcon, ButtonContent, Text } from "@/components/atoms";
 import type { MatchAnalysis } from "../../types/api";
 
 defineProps<{
@@ -45,9 +45,17 @@ const itemVariants = {
 
     <!-- Right Column: Skills + Footer -->
     <div class="match-report__right">
-      <div v-if="analysis.matchingSkills.length > 0" class="match-report__section">
+      <div
+        v-if="analysis.matchingSkills.length > 0"
+        class="match-report__section"
+      >
         <span class="match-report__section-title">matching_skills</span>
-        <Motion as="div" initial="hidden" animate="visible" :variants="listVariants">
+        <Motion
+          as="div"
+          initial="hidden"
+          animate="visible"
+          :variants="listVariants"
+        >
           <Motion
             v-for="skill in analysis.matchingSkills"
             :key="skill"
@@ -58,9 +66,17 @@ const itemVariants = {
         </Motion>
       </div>
 
-      <div v-if="analysis.missingSkills.length > 0" class="match-report__section">
+      <div
+        v-if="analysis.missingSkills.length > 0"
+        class="match-report__section"
+      >
         <span class="match-report__section-title">missing_skills</span>
-        <Motion as="div" initial="hidden" animate="visible" :variants="listVariants">
+        <Motion
+          as="div"
+          initial="hidden"
+          animate="visible"
+          :variants="listVariants"
+        >
           <Motion
             v-for="skill in analysis.missingSkills"
             :key="skill"
@@ -74,12 +90,12 @@ const itemVariants = {
       <div class="match-report__divider" />
       <div class="match-report__footer">
         <Button variant="outline" fluid @click="$emit('download')">
-          <component :is="DownloadIcon" :size="14" />
-          Download Report
+          <ButtonIcon :icon="DownloadIcon" position="pre" :size="14" />
+          <ButtonContent>Download Report</ButtonContent>
         </Button>
         <Button variant="primary" fluid @click="$emit('newMatch')">
-          <component :is="PlusIcon" :size="14" />
-          New Match
+          <ButtonIcon :icon="PlusIcon" position="pre" :size="14" />
+          <ButtonContent>New Match</ButtonContent>
         </Button>
       </div>
     </div>
@@ -100,6 +116,9 @@ const itemVariants = {
   gap: 1.75rem;
   width: 25rem;
   flex-shrink: 0;
+  background-color: var(--bg);
+  padding: 1.25rem;
+  height: max-content;
 }
 
 .match-report__right {
@@ -108,6 +127,7 @@ const itemVariants = {
   gap: 1.75rem;
   width: 25rem;
   flex-shrink: 0;
+  padding: 1.25rem;
 }
 
 .match-report__score {

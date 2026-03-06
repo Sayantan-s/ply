@@ -5,6 +5,8 @@ export { default as Card } from "./Card/Card.vue";
 export { default as CardHeader } from "./Card/CardHeader.vue";
 export { default as CardBody } from "./Card/CardBody.vue";
 export { default as Dropzone } from "./Dropzone/Dropzone.vue";
+export { default as DropzoneEmpty } from "./Dropzone/DropzoneEmpty.vue";
+export { default as DropzoneFileList } from "./Dropzone/DropzoneFileList.vue";
 export { default as SkillItem } from "./SkillItem/SkillItem.vue";
 export { default as ScoreRing } from "./ScoreRing/ScoreRing.vue";
 export { default as ToggleGroup } from "./ToggleGroup/ToggleGroup.vue";
