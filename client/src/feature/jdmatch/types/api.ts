@@ -24,49 +24,114 @@ export type JdMatchStatus =
   | "locked_in"
   | "fumbled";
 
-export interface StatusStreamPayload {
-  type: "status";
-  status: JdMatchStatus;
-}
+// --- SSE Event Types ---
 
-export interface AnalysisStreamPayload {
-  type: "analysis";
-  chunk: string;
-}
+export type SSEEventType =
+  | "analysis_start"
+  | "status_update"
+  | "content_block_start"
+  | "content_block_delta"
+  | "content_block_stop"
+  | "analysis_delta"
+  | "analysis_stop"
+  | "error";
 
-export interface ResultStreamPayload {
-  type: "result";
+export type ContentBlockType = "result" | "explanation";
+
+export type StopReason = "complete" | "error";
+
+// --- Delta Types ---
+
+export interface ResultDelta {
+  type: "result_delta";
   score: number;
   matchingSkills: string[];
   missingSkills: string[];
 }
 
-export interface ExplanationStreamPayload {
+export interface TextDelta {
+  type: "text_delta";
+  text: string;
+}
+
+export type Delta = ResultDelta | TextDelta;
+
+// --- Content Block Markers ---
+
+export interface ResultContentBlock {
+  type: "result";
+}
+
+export interface ExplanationContentBlock {
   type: "explanation";
-  chunk: string;
 }
 
-export type StreamPayload =
-  | StatusStreamPayload
-  | AnalysisStreamPayload
-  | ResultStreamPayload
-  | ExplanationStreamPayload;
+export type ContentBlock = ResultContentBlock | ExplanationContentBlock;
 
-export interface JdMatchStreamLine {
-  payload: StreamPayload;
+// --- SSE Event Models ---
+
+export interface AnalysisStartEvent {
+  type: "analysis_start";
+  analysisId: string;
 }
+
+export interface StatusUpdateEvent {
+  type: "status_update";
+  status: JdMatchStatus;
+}
+
+export interface ContentBlockStartEvent {
+  type: "content_block_start";
+  index: number;
+  contentBlock: ContentBlock;
+}
+
+export interface ContentBlockDeltaEvent {
+  type: "content_block_delta";
+  index: number;
+  delta: Delta;
+}
+
+export interface ContentBlockStopEvent {
+  type: "content_block_stop";
+  index: number;
+}
+
+export interface AnalysisDeltaEvent {
+  type: "analysis_delta";
+  stopReason: StopReason;
+}
+
+export interface AnalysisStopEvent {
+  type: "analysis_stop";
+}
+
+export interface ErrorEvent {
+  type: "error";
+  message: string;
+}
+
+export type SSEEvent =
+  | AnalysisStartEvent
+  | StatusUpdateEvent
+  | ContentBlockStartEvent
+  | ContentBlockDeltaEvent
+  | ContentBlockStopEvent
+  | AnalysisDeltaEvent
+  | AnalysisStopEvent
+  | ErrorEvent;
+
+export interface ParsedSSEEvent {
+  event: SSEEventType;
+  data: SSEEvent;
+}
+
+// --- Non-streaming Types (unchanged) ---
 
 export interface MatchAnalysis {
   score: number;
   matchingSkills: readonly string[];
   missingSkills: readonly string[];
-  explanation: string;
-}
-
-export interface RawMatchAnalysis {
-  score: number;
-  matching_skills: string[];
-  missing_skills: string[];
   explanation: string;
 }
 

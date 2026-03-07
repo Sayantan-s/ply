@@ -88,14 +88,14 @@ const pulseTransition = {
   display: flex;
   gap: 2.5rem;
   width: 100%;
-  max-width: 50rem;
+  max-width: 80rem;
 }
 
 .skeleton__left {
   display: flex;
   flex-direction: column;
   gap: 1.75rem;
-  width: 25rem;
+  flex: 0.5;
   flex-shrink: 0;
   background-color: var(--bg);
   padding: 1.25rem;
@@ -105,8 +105,9 @@ const pulseTransition = {
   display: flex;
   flex-direction: column;
   gap: 1.75rem;
-  width: 25rem;
+  flex: 0.5;
   flex-shrink: 0;
+  padding: 1.25rem;
 }
 
 .skeleton__score {

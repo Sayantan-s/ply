@@ -1,4 +1,4 @@
-import type { ResponseEnvelope, JdMatchStreamLine } from "../types/api";
+import type { ResponseEnvelope, ParsedSSEEvent, SSEEventType, SSEEvent } from "../types/api";
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "";
 
@@ -32,7 +32,7 @@ export async function apiGet<T>(url: string): Promise<ResponseEnvelope<T>> {
   return response.json() as Promise<ResponseEnvelope<T>>;
 }
 
-export async function* streamNdjson(url: string): AsyncGenerator<JdMatchStreamLine> {
+export async function* streamSSE(url: string): AsyncGenerator<ParsedSSEEvent> {
   const response = await fetch(`${BASE_URL}${url}`, { method: "POST" });
 
   if (!response.ok) {
@@ -49,17 +49,44 @@ export async function* streamNdjson(url: string): AsyncGenerator<JdMatchStreamLi
     if (done) break;
 
     buffer += decoder.decode(value, { stream: true });
-    const lines = buffer.split("\n");
-    buffer = lines.pop() ?? "";
+    const blocks = buffer.split("\n\n");
+    buffer = blocks.pop() ?? "";
 
-    for (const line of lines) {
-      if (line.trim()) {
-        yield JSON.parse(line) as JdMatchStreamLine;
+    for (const block of blocks) {
+      const trimmed = block.trim();
+      if (!trimmed) continue;
+
+      let event: SSEEventType | undefined;
+      let data: string | undefined;
+
+      for (const line of trimmed.split("\n")) {
+        if (line.startsWith("event: ")) {
+          event = line.slice(7) as SSEEventType;
+        } else if (line.startsWith("data: ")) {
+          data = line.slice(6);
+        }
+      }
+
+      if (event && data) {
+        yield { event, data: JSON.parse(data) as SSEEvent };
       }
     }
   }
 
   if (buffer.trim()) {
-    yield JSON.parse(buffer) as JdMatchStreamLine;
+    let event: SSEEventType | undefined;
+    let data: string | undefined;
+
+    for (const line of buffer.trim().split("\n")) {
+      if (line.startsWith("event: ")) {
+        event = line.slice(7) as SSEEventType;
+      } else if (line.startsWith("data: ")) {
+        data = line.slice(6);
+      }
+    }
+
+    if (event && data) {
+      yield { event, data: JSON.parse(data) as SSEEvent };
+    }
   }
 }

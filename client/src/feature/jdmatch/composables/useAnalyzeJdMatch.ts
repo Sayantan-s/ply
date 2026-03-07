@@ -1,5 +1,10 @@
 import { ref, readonly } from "vue";
-import type { JdMatchStatus, MatchAnalysis, RawMatchAnalysis } from "../types/api";
+import type {
+  JdMatchStatus,
+  MatchAnalysis,
+  ContentBlockDeltaEvent,
+  ContentBlockStartEvent,
+} from "../types/api";
 import { analyzeJdMatch } from "../api/jdmatch";
 
 export interface PartialResult {
@@ -14,6 +19,7 @@ export function useAnalyzeJdMatch() {
   const statusHistory = ref<JdMatchStatus[]>([]);
   const analysis = ref<MatchAnalysis | null>(null);
   const error = ref<string | null>(null);
+  const analysisId = ref<string | null>(null);
 
   const partialResult = ref<PartialResult | null>(null);
   const streamedExplanation = ref("");
@@ -25,42 +31,71 @@ export function useAnalyzeJdMatch() {
     statusHistory.value = [];
     analysis.value = null;
     currentStatus.value = null;
+    analysisId.value = null;
     partialResult.value = null;
     streamedExplanation.value = "";
     isExplanationStreaming.value = false;
 
-    const chunks: string[] = [];
-
     try {
-      for await (const line of analyzeJdMatch(jdMatchId)) {
-        const { payload } = line;
+      for await (const { event, data } of analyzeJdMatch(jdMatchId)) {
+        switch (event) {
+          case "analysis_start":
+            if (data.type === "analysis_start") {
+              analysisId.value = data.analysisId;
+            }
+            break;
 
-        if (payload.type === "status") {
-          currentStatus.value = payload.status;
-          statusHistory.value = [...statusHistory.value, payload.status];
+          case "status_update":
+            if (data.type === "status_update") {
+              currentStatus.value = data.status;
+              statusHistory.value = [...statusHistory.value, data.status];
+            }
+            break;
 
-          if (payload.status === "fumbled") {
-            error.value = "Analysis failed";
-            return null;
+          case "content_block_start": {
+            const startData = data as ContentBlockStartEvent;
+            if (startData.contentBlock.type === "explanation") {
+              isExplanationStreaming.value = true;
+            }
+            break;
           }
-        } else if (payload.type === "result") {
-          partialResult.value = {
-            score: payload.score,
-            matchingSkills: payload.matchingSkills,
-            missingSkills: payload.missingSkills,
-          };
-          isExplanationStreaming.value = true;
-        } else if (payload.type === "explanation") {
-          streamedExplanation.value += payload.chunk;
-        } else if (payload.type === "analysis") {
-          // Backward compat: old-style JSON chunks
-          chunks.push(payload.chunk);
+
+          case "content_block_delta": {
+            const deltaData = data as ContentBlockDeltaEvent;
+            if (deltaData.delta.type === "result_delta") {
+              partialResult.value = {
+                score: deltaData.delta.score,
+                matchingSkills: deltaData.delta.matchingSkills,
+                missingSkills: deltaData.delta.missingSkills,
+              };
+            } else if (deltaData.delta.type === "text_delta") {
+              streamedExplanation.value += deltaData.delta.text;
+            }
+            break;
+          }
+
+          case "content_block_stop": {
+            const stopData = data as { type: "content_block_stop"; index: number };
+            if (stopData.index === 1) {
+              isExplanationStreaming.value = false;
+            }
+            break;
+          }
+
+          case "error":
+            if (data.type === "error") {
+              error.value = data.message;
+              return null;
+            }
+            break;
+
+          case "analysis_delta":
+          case "analysis_stop":
+            break;
         }
       }
 
-      isExplanationStreaming.value = false;
-
-      // Build final analysis from new split flow or legacy flow
+      // Build final analysis
       if (partialResult.value) {
         analysis.value = {
           score: partialResult.value.score,
@@ -68,17 +103,6 @@ export function useAnalyzeJdMatch() {
           missingSkills: [...partialResult.value.missingSkills],
           explanation: streamedExplanation.value,
         };
-      } else {
-        const rawJson = chunks.join("");
-        if (rawJson) {
-          const raw: RawMatchAnalysis = JSON.parse(rawJson);
-          analysis.value = {
-            score: raw.score,
-            matchingSkills: raw.matching_skills,
-            missingSkills: raw.missing_skills,
-            explanation: raw.explanation,
-          };
-        }
       }
 
       return analysis.value;
@@ -98,6 +122,7 @@ export function useAnalyzeJdMatch() {
     statusHistory: readonly(statusHistory),
     analysis: readonly(analysis),
     error: readonly(error),
+    analysisId: readonly(analysisId),
     partialResult: readonly(partialResult),
     streamedExplanation: readonly(streamedExplanation),
     isExplanationStreaming: readonly(isExplanationStreaming),

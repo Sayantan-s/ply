@@ -34,6 +34,14 @@ const itemVariants = {
 
 <template>
   <div class="streaming-report">
+    <!-- Status indicator (top) -->
+    <div v-if="currentStatus" class="streaming-report__status">
+      <MatrixLoader variant="text" size="md" tone="accent" />
+      <StatusMessage :status="currentStatus" :is-active="true" />
+    </div>
+
+    <!-- Two-column layout -->
+    <div class="streaming-report__columns">
     <!-- Left Column: Score + Summary -->
     <div class="streaming-report__left">
       <!-- Score: real or skeleton -->
@@ -80,11 +88,6 @@ const itemVariants = {
         </template>
       </div>
 
-      <!-- Status indicator -->
-      <div v-if="currentStatus" class="streaming-report__status">
-        <MatrixLoader variant="text" size="md" tone="accent" />
-        <StatusMessage :status="currentStatus" :is-active="true" />
-      </div>
     </div>
 
     <!-- Right Column: Skills -->
@@ -169,15 +172,23 @@ const itemVariants = {
         />
       </div>
     </div>
+    </div>
   </div>
 </template>
 
 <style scoped>
 .streaming-report {
   display: flex;
-  gap: 2.5rem;
+  flex-direction: column;
+  gap: 1.25rem;
   width: 100%;
   max-width: 80rem;
+}
+
+.streaming-report__columns {
+  display: flex;
+  gap: 2.5rem;
+  width: 100%;
 }
 
 .streaming-report__left {
@@ -273,9 +284,8 @@ const itemVariants = {
 }
 
 @media (max-width: 768px) {
-  .streaming-report {
+  .streaming-report__columns {
     flex-direction: column;
-    max-width: 100%;
   }
 
   .streaming-report__left,

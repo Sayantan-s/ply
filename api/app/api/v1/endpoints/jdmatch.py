@@ -11,6 +11,8 @@ from app.api.v1.dto.jdmatch import (
     JdMatchAnalysisResponse,
     JdMatchStatusResponse,
     ResumeUploadResponse,
+    SSEEvent,
+    SSEEventType,
 )
 from app.core.logging.logger import get_logger
 from app.integrations.browser_use.agent import get_browser_use_client
@@ -26,6 +28,10 @@ from app.modules.jdmatch.service import (
 router: APIRouter = APIRouter()
 
 logger = get_logger("jdmatch.api")
+
+
+def format_sse(event_type: SSEEventType, data: SSEEvent) -> str:
+    return f"event: {event_type.value}\ndata: {data.model_dump_json(by_alias=True)}\n\n"
 
 
 @router.post(
@@ -62,12 +68,20 @@ async def analyze_jd_match_endpoint(
     )
 
     async def event_generator():
-        async for chunk in jd_match_analyze(
+        async for event_type, event_data in jd_match_analyze(
             jd_match_id, gemini_client, session, browser_use_client
         ):
-            yield chunk.model_dump_json(by_alias=True) + "\n"
+            yield format_sse(event_type, event_data)
 
-    return StreamingResponse(event_generator(), media_type="application/x-ndjson")
+    return StreamingResponse(
+        event_generator(),
+        media_type="text/event-stream",
+        headers={
+            "Cache-Control": "no-cache",
+            "Connection": "keep-alive",
+            "X-Accel-Buffering": "no",
+        },
+    )
 
 
 @router.get(

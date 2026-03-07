@@ -3,10 +3,10 @@ import type {
   ResumeUploadData,
   JdMatchStatusData,
   JdMatchAnalysisData,
-  JdMatchStreamLine,
+  ParsedSSEEvent,
   ResponseEnvelope,
 } from "../types/api";
-import { apiPost, apiGet, streamNdjson } from "./client";
+import { apiPost, apiGet, streamSSE } from "./client";
 
 export async function createJdMatch(
   payload: CreateJdMatchPayload,
@@ -26,8 +26,8 @@ export async function createJdMatch(
   return apiPost<ResumeUploadData>("/api/v1/jdmatch/", formData);
 }
 
-export async function* analyzeJdMatch(jdMatchId: string): AsyncGenerator<JdMatchStreamLine> {
-  yield* streamNdjson(`/api/v1/jdmatch/${jdMatchId}/analyze`);
+export async function* analyzeJdMatch(jdMatchId: string): AsyncGenerator<ParsedSSEEvent> {
+  yield* streamSSE(`/api/v1/jdmatch/${jdMatchId}/analyze`);
 }
 
 export async function getJdMatchStatus(

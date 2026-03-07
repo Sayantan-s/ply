@@ -30,19 +30,26 @@ async def test_create_jd_match(client) -> None:
 async def test_analyze_jd_match_streaming(client) -> None:
     async def mock_generator(*args, **kwargs):
         from app.api.v1.dto.jdmatch import (
-            AnalysisStreamResponse,
-            JdMatchStreamResponse,
-            StatusStreamResponse,
+            AnalysisStartEvent,
+            AnalysisStopEvent,
+            SSEEventType,
+            StatusUpdateEvent,
         )
         from app.modules.jdmatch.constants import JdMatchStatus
 
-        yield JdMatchStreamResponse(
-            payload=StatusStreamResponse(status=JdMatchStatus.ANALYZING)
+        yield (
+            SSEEventType.ANALYSIS_START,
+            AnalysisStartEvent(analysis_id="test-123"),
         )
-        yield JdMatchStreamResponse(payload=AnalysisStreamResponse(chunk="test chunk"))
-        yield JdMatchStreamResponse(
-            payload=StatusStreamResponse(status=JdMatchStatus.MATCHED)
+        yield (
+            SSEEventType.STATUS_UPDATE,
+            StatusUpdateEvent(status=JdMatchStatus.ANALYZING),
         )
+        yield (
+            SSEEventType.STATUS_UPDATE,
+            StatusUpdateEvent(status=JdMatchStatus.MATCHED),
+        )
+        yield (SSEEventType.ANALYSIS_STOP, AnalysisStopEvent())
 
     with patch(
         "app.api.v1.endpoints.jdmatch.jd_match_analyze", side_effect=mock_generator
@@ -51,10 +58,11 @@ async def test_analyze_jd_match_streaming(client) -> None:
         response = await client.post(f"/api/v1/jdmatch/{jd_match_id}/analyze")
 
         assert response.status_code == status.HTTP_200_OK
-        assert response.headers["content-type"] == "application/x-ndjson"
+        assert response.headers["content-type"] == "text/event-stream; charset=utf-8"
 
-        lines = [line for line in response.iter_lines() if line]
-        assert len(lines) == 3
+        body = response.text
+        events = [b for b in body.split("\n\n") if b.strip()]
+        assert len(events) == 4
         mock_analyze.assert_called_once()
 
 

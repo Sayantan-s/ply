@@ -6,13 +6,24 @@ from google import genai
 from sqlmodel import Session
 
 from app.api.v1.dto.jdmatch import (
-    ExplanationStreamResponse,
+    AnalysisDeltaEvent,
+    AnalysisStartEvent,
+    AnalysisStopEvent,
+    ContentBlockDeltaEvent,
+    ContentBlockStartEvent,
+    ContentBlockStopEvent,
+    ErrorEvent,
+    ExplanationContentBlock,
     JdMatchAnalysisResponse,
     JdMatchStatusResponse,
-    JdMatchStreamResponse,
-    ResultStreamResponse,
+    ResultContentBlock,
+    ResultDelta,
     ResumeUploadResponse,
-    StatusStreamResponse,
+    SSEEvent,
+    SSEEventType,
+    StatusUpdateEvent,
+    StopReason,
+    TextDelta,
 )
 from app.core.logging.logger import get_logger
 from app.integrations.supabase.storage import upload_file_to_supabase
@@ -74,7 +85,7 @@ async def jd_match_analyze(
     gemini_client: genai.Client,
     _db_session: Session,
     browser_use_client: AsyncBrowserUse | None = None,
-) -> AsyncGenerator[JdMatchStreamResponse, None]:
+) -> AsyncGenerator[tuple[SSEEventType, SSEEvent], None]:
     logger.info("starting jd_match_analyze()")
 
     # Fetch jd_match record
@@ -94,12 +105,18 @@ async def jd_match_analyze(
     candidate_resume_path = parse_info.candidate_resume_path
 
     try:
+        # analysis_start
+        yield (
+            SSEEventType.ANALYSIS_START,
+            AnalysisStartEvent(analysis_id=jd_match_id),
+        )
+
         is_jd_link = is_jd_link_or_description(jd_data)
 
         # Update status to EXTRACTING or ANALYZING in DB
         status = JdMatchStatus.EXTRACTING if is_jd_link else JdMatchStatus.ANALYZING
         await update_jd_match_status(_db_session, jd_match_id, status.value)
-        yield JdMatchStreamResponse(payload=StatusStreamResponse(status=status))
+        yield (SSEEventType.STATUS_UPDATE, StatusUpdateEvent(status=status))
 
         # Extract or Analyze JD
         if is_jd_link:
@@ -115,8 +132,9 @@ async def jd_match_analyze(
         await update_jd_match_status(
             _db_session, jd_match_id, JdMatchStatus.THINKING.value
         )
-        yield JdMatchStreamResponse(
-            payload=StatusStreamResponse(status=JdMatchStatus.THINKING)
+        yield (
+            SSEEventType.STATUS_UPDATE,
+            StatusUpdateEvent(status=JdMatchStatus.THINKING),
         )
 
         # Phase 1: Generate structured score (non-streaming)
@@ -124,13 +142,30 @@ async def jd_match_analyze(
             jd, candidate_resume_path, gemini_client
         )
 
-        # Yield structured result immediately
-        yield JdMatchStreamResponse(
-            payload=ResultStreamResponse(
-                score=structured_result.score,
-                matching_skills=structured_result.matching_skills,
-                missing_skills=structured_result.missing_skills,
-            )
+        # Content block 0: result
+        yield (
+            SSEEventType.CONTENT_BLOCK_START,
+            ContentBlockStartEvent(index=0, content_block=ResultContentBlock()),
+        )
+        yield (
+            SSEEventType.CONTENT_BLOCK_DELTA,
+            ContentBlockDeltaEvent(
+                index=0,
+                delta=ResultDelta(
+                    score=structured_result.score,
+                    matching_skills=structured_result.matching_skills,
+                    missing_skills=structured_result.missing_skills,
+                ),
+            ),
+        )
+        yield (SSEEventType.CONTENT_BLOCK_STOP, ContentBlockStopEvent(index=0))
+
+        # Content block 1: explanation (streamed)
+        yield (
+            SSEEventType.CONTENT_BLOCK_START,
+            ContentBlockStartEvent(
+                index=1, content_block=ExplanationContentBlock()
+            ),
         )
 
         # Phase 2: Stream explanation text
@@ -139,9 +174,12 @@ async def jd_match_analyze(
             jd, candidate_resume_path, structured_result, gemini_client
         ):
             full_explanation += chunk
-            yield JdMatchStreamResponse(
-                payload=ExplanationStreamResponse(chunk=chunk)
+            yield (
+                SSEEventType.CONTENT_BLOCK_DELTA,
+                ContentBlockDeltaEvent(index=1, delta=TextDelta(text=chunk)),
             )
+
+        yield (SSEEventType.CONTENT_BLOCK_STOP, ContentBlockStopEvent(index=1))
 
         # Build score_data for DB save
         score_data = {
@@ -158,20 +196,34 @@ async def jd_match_analyze(
             jd=jd,
             score_data=score_data,
         )
-        yield JdMatchStreamResponse(
-            payload=StatusStreamResponse(status=JdMatchStatus.MATCHED)
+        yield (
+            SSEEventType.STATUS_UPDATE,
+            StatusUpdateEvent(status=JdMatchStatus.MATCHED),
         )
 
         cleanup_file(candidate_resume_path)
+
+        # analysis_delta + analysis_stop
+        yield (
+            SSEEventType.ANALYSIS_DELTA,
+            AnalysisDeltaEvent(stop_reason=StopReason.COMPLETE),
+        )
+        yield (SSEEventType.ANALYSIS_STOP, AnalysisStopEvent())
 
     except Exception:
         logger.exception("Error in jd_match_analyze")
         await update_jd_match_status(
             _db_session, jd_match_id, JdMatchStatus.FAILED.value
         )
-        yield JdMatchStreamResponse(
-            payload=StatusStreamResponse(status=JdMatchStatus.FAILED)
+        yield (
+            SSEEventType.ERROR,
+            ErrorEvent(message="Analysis failed"),
         )
+        yield (
+            SSEEventType.ANALYSIS_DELTA,
+            AnalysisDeltaEvent(stop_reason=StopReason.ERROR),
+        )
+        yield (SSEEventType.ANALYSIS_STOP, AnalysisStopEvent())
         return
 
     logger.info("ending jd_match_analyze()")
@@ -194,9 +246,7 @@ async def get_jd_match_analysis(
     jd_match_id: str,
     _db_session: Session,
 ) -> JdMatchAnalysisResponse:
-    logger.info(
-        "getting analysis for {jd_match_id}", jd_match_id=jd_match_id
-    )
+    logger.info("getting analysis for {jd_match_id}", jd_match_id=jd_match_id)
 
     jd_record = await get_jd_match_by_jd_match_id(_db_session, jd_match_id)
     if not jd_record:
