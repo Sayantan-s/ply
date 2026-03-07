@@ -58,8 +58,8 @@ export interface JdMatchStreamLine {
 
 export interface MatchAnalysis {
   score: number;
-  matchingSkills: string[];
-  missingSkills: string[];
+  matchingSkills: readonly string[];
+  missingSkills: readonly string[];
   explanation: string;
 }
 

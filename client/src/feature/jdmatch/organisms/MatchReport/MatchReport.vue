@@ -1,8 +1,8 @@
 <script setup lang="ts">
+import { ref, markRaw } from "vue";
 import { Motion } from "motion-v";
 import { Download, Plus } from "lucide-vue-next";
-import { markRaw } from "vue";
-import { ScoreRing, SkillItem } from "@/components/molecules";
+import { ScoreRing, SkillItem, Modal, ModalHeader, ModalBody } from "@/components/molecules";
 import { Button, ButtonIcon, ButtonContent, Text } from "@/components/atoms";
 import type { MatchAnalysis } from "../../types/api";
 
@@ -17,6 +17,8 @@ defineEmits<{
 
 const DownloadIcon = markRaw(Download);
 const PlusIcon = markRaw(Plus);
+
+const summaryOpen = ref(false);
 
 const listVariants = {
   hidden: { opacity: 0 },
@@ -39,7 +41,16 @@ const itemVariants = {
       </div>
       <div class="match-report__summary">
         <Text variant="comment">// summary</Text>
-        <p class="match-report__summary-text">{{ analysis.explanation }}</p>
+        <p class="match-report__summary-text">
+          {{ analysis.explanation }}
+        </p>
+        <button
+          v-if="analysis.explanation.length > 0"
+          class="match-report__read-more"
+          @click="summaryOpen = true"
+        >
+          read_more
+        </button>
       </div>
     </div>
 
@@ -99,6 +110,14 @@ const itemVariants = {
         </Button>
       </div>
     </div>
+
+    <!-- Summary Modal -->
+    <Modal v-model="summaryOpen" size="lg">
+      <ModalHeader title="// summary" />
+      <ModalBody>
+        <p class="match-report__modal-text">{{ analysis.explanation }}</p>
+      </ModalBody>
+    </Modal>
   </div>
 </template>
 
@@ -107,25 +126,24 @@ const itemVariants = {
   display: flex;
   gap: 2.5rem;
   width: 100%;
-  max-width: 50rem;
+  max-width: 80rem;
 }
 
 .match-report__left {
   display: flex;
   flex-direction: column;
   gap: 1.75rem;
-  width: 25rem;
+  flex: 0.5;
   flex-shrink: 0;
   background-color: var(--bg);
   padding: 1.25rem;
-  height: max-content;
 }
 
 .match-report__right {
   display: flex;
   flex-direction: column;
   gap: 1.75rem;
-  width: 25rem;
+  flex: 0.5;
   flex-shrink: 0;
   padding: 1.25rem;
 }
@@ -153,6 +171,31 @@ const itemVariants = {
   font-weight: 400;
   line-height: 1.6;
   color: #444455;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+  overflow: hidden;
+}
+
+.match-report__read-more {
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: var(--font);
+  font-size: 0.625rem;
+  font-weight: 600;
+  color: var(--accent);
+  cursor: pointer;
+}
+
+.match-report__modal-text {
+  font-family: var(--font);
+  font-size: 0.8125rem;
+  font-weight: 400;
+  line-height: 1.7;
+  color: var(--fg);
+  white-space: pre-wrap;
+  margin: 0;
 }
 
 .match-report__section {

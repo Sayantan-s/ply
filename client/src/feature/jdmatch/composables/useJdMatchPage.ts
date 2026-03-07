@@ -1,4 +1,3 @@
-import { useRouter } from "vue-router";
 import type { CreateJdMatchPayload } from "../types/api";
 import { useJdMatchWizard } from "./useJdMatchWizard";
 import { useResumeUpload } from "./useResumeUpload";
@@ -7,7 +6,6 @@ import { useCreateJdMatch } from "./useCreateJdMatch";
 import { useAnalyzeJdMatch } from "./useAnalyzeJdMatch";
 
 export function useJdMatchPage() {
-  const router = useRouter();
   const wizard = useJdMatchWizard();
   const resumeUpload = useResumeUpload();
   const jobDescription = useJobDescription();
@@ -23,7 +21,8 @@ export function useJdMatchPage() {
     const payload: CreateJdMatchPayload = {
       resumeFile: source.type === "file" ? source.file : undefined,
       resumeUrl: source.type === "url" ? source.url : undefined,
-      jdInfo: jobDescription.jdText.value || jobDescription.jdUrl.value || undefined,
+      jdInfo:
+        jobDescription.jdText.value || jobDescription.jdUrl.value || undefined,
     };
 
     const result = await createMutation.execute(payload);
@@ -37,7 +36,9 @@ export function useJdMatchPage() {
 
     const analysis = await analyzeMutation.execute(result.jdMatchId);
     if (!analysis) {
-      wizard.showAnalysisError(analyzeMutation.error.value ?? "Analysis failed");
+      wizard.showAnalysisError(
+        analyzeMutation.error.value ?? "Analysis failed",
+      );
       return;
     }
 
@@ -48,7 +49,7 @@ export function useJdMatchPage() {
     }
 
     wizard.setAnalysis(analysis);
-    router.push({ name: "jdmatch-report", params: { jdMatchId: result.jdMatchId } });
+    wizard.showReport();
   }
 
   function handleStartOver() {

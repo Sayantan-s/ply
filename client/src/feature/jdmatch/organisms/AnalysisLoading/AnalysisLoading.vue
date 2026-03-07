@@ -2,25 +2,29 @@
 import { MatrixLoader } from "@/components/atoms";
 import StatusMessage from "../../molecules/StatusMessage/StatusMessage.vue";
 import type { JdMatchStatus } from "../../types/api";
+import { computed, type ComputedRef } from "vue";
+import type { LoaderVariants } from "@/components/atoms/MatrixLoader/MatrixLoader.vue";
 
-defineProps<{
+const props = defineProps<{
   statusHistory: readonly JdMatchStatus[];
   currentStatus: JdMatchStatus | null;
 }>();
+
+const TONE = computed(() => ({
+  locked_in: "success",
+  fumbled: "danger",
+}));
+
+const tone: ComputedRef<NonNullable<LoaderVariants["tone"]>> = computed(() =>
+  props.currentStatus ? TONE.value[props.currentStatus] : "accent",
+);
 </script>
 
 <template>
   <div class="analysis-loading">
     <div class="analysis-loading__statuses">
-      <StatusMessage
-        v-for="(status, i) in statusHistory"
-        :key="i"
-        :status="status"
-        :is-active="status === currentStatus"
-      />
-    </div>
-    <div class="analysis-loading__loader">
-      <MatrixLoader variant="grid" size="md" tone="accent" />
+      <MatrixLoader variant="text" size="md" :tone="tone" />
+      <StatusMessage :status="currentStatus!" :is-active="true" />
     </div>
   </div>
 </template>
@@ -37,8 +41,9 @@ defineProps<{
 
 .analysis-loading__statuses {
   display: flex;
-  flex-direction: column;
   width: 100%;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .analysis-loading__loader {

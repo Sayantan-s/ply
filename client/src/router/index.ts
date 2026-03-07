@@ -10,7 +10,7 @@ const router = createRouter({
       component: JdMatchPage,
     },
     {
-      path: "/jdmatch/:jdMatchId",
+      path: "/jd/:jdMatchId",
       name: "jdmatch-report",
       component: () => import("@/feature/jdmatch/pages/JdMatchReportPage.vue"),
       props: true,

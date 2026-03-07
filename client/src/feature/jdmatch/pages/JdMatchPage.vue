@@ -2,8 +2,20 @@
 import { computed, ref, watch, markRaw } from "vue";
 import { AnimatePresence, Motion } from "motion-v";
 import { ArrowRight, ArrowLeft, Sparkles, Link } from "lucide-vue-next";
-import { Button, ButtonIcon, ButtonContent, ButtonLoading, Input, Textarea, Alert } from "@/components/atoms";
-import { Dropzone, DropzoneEmpty, DropzoneFileList } from "@/components/molecules";
+import {
+  Button,
+  ButtonIcon,
+  ButtonContent,
+  ButtonLoading,
+  Input,
+  Textarea,
+  Alert,
+} from "@/components/atoms";
+import {
+  Dropzone,
+  DropzoneEmpty,
+  DropzoneFileList,
+} from "@/components/molecules";
 import { WizardStep } from "../types/wizard";
 import { useJdMatchPage } from "../composables/useJdMatchPage";
 import StepLayout from "../templates/StepLayout.vue";
@@ -16,9 +28,8 @@ import {
 import ResumeUploadForm from "../organisms/ResumeUploadForm/ResumeUploadForm.vue";
 import JobDescriptionForm from "../organisms/JobDescriptionForm/JobDescriptionForm.vue";
 import FinalReview from "../organisms/FinalReview/FinalReview.vue";
-import AnalysisLoading from "../organisms/AnalysisLoading/AnalysisLoading.vue";
-import MatchReportSkeleton from "../organisms/MatchReport/MatchReportSkeleton.vue";
 import StreamingMatchReport from "../organisms/MatchReport/StreamingMatchReport.vue";
+import MatchReport from "../organisms/MatchReport/MatchReport.vue";
 import ErrorState from "../organisms/ErrorState/ErrorState.vue";
 import EmptyState from "../organisms/EmptyState/EmptyState.vue";
 import CloudServicePicker from "../molecules/CloudServicePicker/CloudServicePicker.vue";
@@ -54,14 +65,23 @@ function handleNextFromJd() {
   }
 }
 
-const isAnalyzingWithResult = computed(
-  () => wizard.step.value === WizardStep.Analyzing && !!analyzeMutation.partialResult.value,
+const isWizardStep = computed(
+  () =>
+    ![
+      WizardStep.Analyzing,
+      WizardStep.Report,
+      WizardStep.EmptyResult,
+    ].includes(wizard.step.value),
 );
-const isWizardStep = computed(() =>
-  wizard.step.value !== WizardStep.Report && wizard.step.value !== WizardStep.EmptyResult && !isAnalyzingWithResult.value,
+const isReportStep = computed(
+  () => wizard.step.value === WizardStep.Report,
 );
-const isReportStep = computed(() => wizard.step.value === WizardStep.Report || isAnalyzingWithResult.value);
-const isEmptyStep = computed(() => wizard.step.value === WizardStep.EmptyResult);
+const isAnalyzing = computed(
+  () => wizard.step.value === WizardStep.Analyzing,
+);
+const isEmptyStep = computed(
+  () => wizard.step.value === WizardStep.EmptyResult,
+);
 
 const activeNavStep = computed(() => {
   const map: Partial<Record<WizardStep, number>> = {
@@ -84,7 +104,11 @@ const isErrorOrEmpty = computed(() =>
 );
 
 const cardWidth = computed(() => (isErrorOrEmpty.value ? 480 : undefined));
-const noCard = computed(() => wizard.step.value === WizardStep.Report || isAnalyzingWithResult.value);
+const noCard = computed(
+  () =>
+    wizard.step.value === WizardStep.Report ||
+    wizard.step.value === WizardStep.Analyzing,
+);
 
 const stepOrder: Record<WizardStep, number> = {
   [WizardStep.ResumeUpload]: 1,
@@ -118,7 +142,7 @@ const transition = computed(() => ({
   <StepLayout :card-width="cardWidth" :no-card="noCard">
     <template #nav>
       <WizardNavBarWizard v-if="isWizardStep" :active-step="activeNavStep" />
-      <WizardNavBarEmpty v-else-if="isAnalyzingWithResult" />
+      <WizardNavBarEmpty v-else-if="isAnalyzing" />
       <WizardNavBarReport v-else-if="isReportStep" @back="handleStartOver" />
       <WizardNavBarEmpty v-else-if="isEmptyStep" @back="handleStartOver" />
     </template>
@@ -159,7 +183,10 @@ const transition = computed(() => ({
               label="Resume URL"
               :placeholder="resumeUpload.urlPlaceholder.value"
               :icon="LinkIcon"
-              :error="resumeUpload.errors.value.resumeUrl ?? resumeUpload.urlDomainError.value"
+              :error="
+                resumeUpload.errors.value.resumeUrl ??
+                resumeUpload.urlDomainError.value
+              "
             />
             <CloudServicePicker
               :model-value="resumeUpload.selectedService.value"
@@ -268,34 +295,32 @@ const transition = computed(() => ({
         </div>
       </Motion>
 
-      <!-- Analyzing -->
+      <!-- Analyzing: unified progressive view -->
       <Motion
         v-else-if="wizard.step.value === WizardStep.Analyzing"
         key="analyzing"
         v-bind="transition"
       >
-        <!-- Phase A: Before structured result arrives -->
-        <template v-if="!analyzeMutation.partialResult.value">
-          <div class="step-content">
-            <StepHeadline
-              step-comment="// analyzing"
-              title="Running Analysis"
-              subtitle="Sit tight while we crunch the numbers."
-            />
-            <AnalysisLoading
-              :status-history="analyzeMutation.statusHistory.value"
-              :current-status="analyzeMutation.currentStatus.value"
-            />
-          </div>
-          <MatchReportSkeleton />
-        </template>
-
-        <!-- Phase B: Structured result arrived, streaming explanation -->
         <StreamingMatchReport
-          v-else
-          :partial-result="analyzeMutation.partialResult.value"
+          :score="analyzeMutation.partialResult.value?.score ?? null"
+          :matching-skills="analyzeMutation.partialResult.value?.matchingSkills ?? null"
+          :missing-skills="analyzeMutation.partialResult.value?.missingSkills ?? null"
           :streamed-explanation="analyzeMutation.streamedExplanation.value"
           :is-explanation-streaming="analyzeMutation.isExplanationStreaming.value"
+          :current-status="analyzeMutation.currentStatus.value"
+        />
+      </Motion>
+
+      <!-- Match Report (after analysis complete) -->
+      <Motion
+        v-else-if="wizard.step.value === WizardStep.Report && wizard.analysis.value"
+        key="report"
+        v-bind="transition"
+      >
+        <MatchReport
+          :analysis="wizard.analysis.value"
+          @new-match="handleStartOver"
+          @download="() => {}"
         />
       </Motion>
 

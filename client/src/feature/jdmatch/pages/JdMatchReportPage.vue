@@ -20,7 +20,7 @@ function handleNewMatch() {
 </script>
 
 <template>
-  <StepLayout no-card>
+  <StepLayout no-card page>
     <template #nav>
       <WizardNavBarReport @back="handleNewMatch" />
     </template>

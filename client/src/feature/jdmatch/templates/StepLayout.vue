@@ -1,14 +1,19 @@
 <script setup lang="ts">
-defineProps<{
+import { computed } from "vue";
+
+const props = defineProps<{
   cardWidth?: number;
   noCard?: boolean;
+  page?: boolean;
 }>();
+
+const isPage = computed(() => props.page);
 </script>
 
 <template>
   <div class="step-layout">
     <slot name="nav" />
-    <main class="step-layout__body">
+    <main :class="['step-layout__body', { 'step-layout__body--page': isPage }]">
       <div
         v-if="!noCard"
         class="step-layout__card"
@@ -33,9 +38,13 @@ defineProps<{
 .step-layout__body {
   display: flex;
   flex: 1;
-  align-items: center;
   justify-content: center;
   padding: 2.5rem;
+  align-items: center;
+}
+
+.step-layout__body.step-layout__body--page {
+  align-items: flex-start;
 }
 
 .step-layout__card {

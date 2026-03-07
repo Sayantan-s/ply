@@ -15,12 +15,14 @@ const labelMap: Record<JdMatchStatus, string> = {
   combing: "Combing through details...",
   pondering: "Pondering...",
   cooking: "Cooking...",
-  locked_in: "Locked in!",
-  fumbled: "Something went wrong",
+  locked_in: "Brewed!",
+  fumbled: "Slipped!",
 };
 
 const label = computed(() => labelMap[props.status]);
-const isFinal = computed(() => props.status === "locked_in" || props.status === "fumbled");
+const isFinal = computed(
+  () => props.status === "locked_in" || props.status === "fumbled",
+);
 const isError = computed(() => props.status === "fumbled");
 </script>
 
@@ -36,7 +38,6 @@ const isError = computed(() => props.status === "fumbled");
       isError && 'status-message--error',
     ]"
   >
-    <span class="status-message__dot" />
     <span class="status-message__label">{{ label }}</span>
   </Motion>
 </template>
