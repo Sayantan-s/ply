@@ -97,7 +97,7 @@ provide(BUTTON_CONTEXT_KEY, { loading, isDisabled });
 }
 
 .button--outline {
-  height: 2.75rem;
+  height: 3rem;
   padding: 0 1.25rem;
   background: transparent;
   color: var(--fg);
@@ -106,7 +106,7 @@ provide(BUTTON_CONTEXT_KEY, { loading, isDisabled });
 }
 
 .button--ghost {
-  height: 2.5rem;
+  height: 3rem;
   padding: 0 1rem;
   background: transparent;
   color: var(--muted);

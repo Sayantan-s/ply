@@ -29,6 +29,10 @@ import ResumeUploadForm from "../organisms/ResumeUploadForm/ResumeUploadForm.vue
 import JobDescriptionForm from "../organisms/JobDescriptionForm/JobDescriptionForm.vue";
 import FinalReview from "../organisms/FinalReview/FinalReview.vue";
 import StreamingMatchReport from "../organisms/MatchReport/StreamingMatchReport.vue";
+import StreamingReportStatus from "../organisms/MatchReport/StreamingReportStatus.vue";
+import StreamingReportScore from "../organisms/MatchReport/StreamingReportScore.vue";
+import StreamingReportSummary from "../organisms/MatchReport/StreamingReportSummary.vue";
+import StreamingReportSkills from "../organisms/MatchReport/StreamingReportSkills.vue";
 import MatchReport from "../organisms/MatchReport/MatchReport.vue";
 import ErrorState from "../organisms/ErrorState/ErrorState.vue";
 import EmptyState from "../organisms/EmptyState/EmptyState.vue";
@@ -67,18 +71,12 @@ function handleNextFromJd() {
 
 const isWizardStep = computed(
   () =>
-    ![
-      WizardStep.Analyzing,
-      WizardStep.Report,
-      WizardStep.EmptyResult,
-    ].includes(wizard.step.value),
+    ![WizardStep.Analyzing, WizardStep.Report, WizardStep.EmptyResult].includes(
+      wizard.step.value,
+    ),
 );
-const isReportStep = computed(
-  () => wizard.step.value === WizardStep.Report,
-);
-const isAnalyzing = computed(
-  () => wizard.step.value === WizardStep.Analyzing,
-);
+const isReportStep = computed(() => wizard.step.value === WizardStep.Report);
+const isAnalyzing = computed(() => wizard.step.value === WizardStep.Analyzing);
 const isEmptyStep = computed(
   () => wizard.step.value === WizardStep.EmptyResult,
 );
@@ -205,7 +203,7 @@ const transition = computed(() => ({
           @click="handleNextFromResume()"
         >
           <ButtonContent>next: job_description</ButtonContent>
-          <ButtonIcon :icon="ArrowRightIcon" position="post" :size="18" />
+          <ButtonIcon :icon="ArrowRightIcon" position="post" :size="14" />
         </Button>
       </Motion>
 
@@ -255,7 +253,7 @@ const transition = computed(() => ({
             @click="handleNextFromJd()"
           >
             <ButtonContent>next: review</ButtonContent>
-            <ButtonIcon :icon="ArrowRightIcon" position="post" :size="18" />
+            <ButtonIcon :icon="ArrowRightIcon" position="post" :size="14" />
           </Button>
         </div>
       </Motion>
@@ -286,7 +284,7 @@ const transition = computed(() => ({
             @click="handleSubmitAndAnalyze"
           >
             <ButtonLoading variant="grid">analyzing...</ButtonLoading>
-            <ButtonIcon :icon="SparklesIcon" position="pre" :size="18" />
+            <ButtonIcon :icon="SparklesIcon" position="pre" :size="14" />
             <ButtonContent>Run Match Report</ButtonContent>
           </Button>
           <Button variant="ghost" fluid @click="wizard.backToJd()">
@@ -303,17 +301,36 @@ const transition = computed(() => ({
       >
         <StreamingMatchReport
           :score="analyzeMutation.partialResult.value?.score ?? null"
-          :matching-skills="analyzeMutation.partialResult.value?.matchingSkills ?? null"
-          :missing-skills="analyzeMutation.partialResult.value?.missingSkills ?? null"
+          :matching-skills="
+            analyzeMutation.partialResult.value?.matchingSkills ?? null
+          "
+          :missing-skills="
+            analyzeMutation.partialResult.value?.missingSkills ?? null
+          "
           :streamed-explanation="analyzeMutation.streamedExplanation.value"
-          :is-explanation-streaming="analyzeMutation.isExplanationStreaming.value"
+          :is-explanation-streaming="
+            analyzeMutation.isExplanationStreaming.value
+          "
           :current-status="analyzeMutation.currentStatus.value"
-        />
+        >
+          <StreamingReportStatus />
+          <div class="analysis-columns">
+            <div class="analysis-columns__left">
+              <StreamingReportScore />
+              <StreamingReportSummary />
+            </div>
+            <div class="analysis-columns__right">
+              <StreamingReportSkills />
+            </div>
+          </div>
+        </StreamingMatchReport>
       </Motion>
 
       <!-- Match Report (after analysis complete) -->
       <Motion
-        v-else-if="wizard.step.value === WizardStep.Report && wizard.analysis.value"
+        v-else-if="
+          wizard.step.value === WizardStep.Report && wizard.analysis.value
+        "
         key="report"
         v-bind="transition"
       >
@@ -390,5 +407,43 @@ const transition = computed(() => ({
   font-size: 0.625rem;
   font-weight: 400;
   color: var(--error);
+}
+
+.analysis-columns {
+  display: flex;
+  gap: 2.5rem;
+  width: 100%;
+}
+
+.analysis-columns__left {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+  flex: 0.5;
+  flex-shrink: 0;
+  background-color: var(--bg);
+  padding: 1.25rem;
+  height: max-content;
+}
+
+.analysis-columns__right {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+  flex: 0.5;
+  overflow: auto;
+  flex-shrink: 0;
+  padding: 1.25rem;
+}
+
+@media (max-width: 768px) {
+  .analysis-columns {
+    flex-direction: column;
+  }
+
+  .analysis-columns__left,
+  .analysis-columns__right {
+    width: 100%;
+  }
 }
 </style>
