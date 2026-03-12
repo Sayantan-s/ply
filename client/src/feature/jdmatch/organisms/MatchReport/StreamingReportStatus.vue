@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { inject } from "vue";
-import { AnimatePresence, Motion } from "motion-v";
+import { Motion } from "motion-v";
 import { MatrixLoader } from "@/components/atoms";
 import StatusMessage from "../../molecules/StatusMessage/StatusMessage.vue";
 import { STREAMING_REPORT_CONTEXT_KEY } from "./streaming-report.context";
@@ -10,16 +10,14 @@ const ctx = inject(STREAMING_REPORT_CONTEXT_KEY)!;
 </script>
 
 <template>
-  <AnimatePresence>
+  <div class="streaming-report-status">
     <Motion
       v-if="ctx.currentStatus.value"
-      key="status"
       as="div"
-      class="streaming-report-status"
-      :initial="{ opacity: 0, y: -8 }"
-      :animate="{ opacity: 1, y: 0 }"
-      :exit="{ opacity: 0, y: -8 }"
-      :transition="{ type: 'spring', stiffness: 300, damping: 24 }"
+      class="streaming-report-status__content"
+      :initial="{ opacity: 0 }"
+      :animate="{ opacity: 1 }"
+      :transition="{ duration: 0.2 }"
     >
       <MatrixLoader
         v-if="
@@ -40,11 +38,15 @@ const ctx = inject(STREAMING_REPORT_CONTEXT_KEY)!;
       />
       <StatusMessage :status="ctx.currentStatus.value" :is-active="true" />
     </Motion>
-  </AnimatePresence>
+  </div>
 </template>
 
 <style scoped>
 .streaming-report-status {
+  min-height: 1.5rem;
+}
+
+.streaming-report-status__content {
   display: flex;
   align-items: center;
   gap: 0.5rem;

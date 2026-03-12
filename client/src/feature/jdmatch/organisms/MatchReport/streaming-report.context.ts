@@ -9,6 +9,7 @@ export type StreamingReportContext = {
   isExplanationStreaming: ComputedRef<boolean>;
   currentStatus: ComputedRef<JdMatchStatus | null>;
   isLoading: ComputedRef<boolean>;
+  isComplete: ComputedRef<boolean>;
 };
 
 export const STREAMING_REPORT_CONTEXT_KEY: InjectionKey<StreamingReportContext> =

@@ -33,7 +33,7 @@ import StreamingReportStatus from "../organisms/MatchReport/StreamingReportStatu
 import StreamingReportScore from "../organisms/MatchReport/StreamingReportScore.vue";
 import StreamingReportSummary from "../organisms/MatchReport/StreamingReportSummary.vue";
 import StreamingReportSkills from "../organisms/MatchReport/StreamingReportSkills.vue";
-import MatchReport from "../organisms/MatchReport/MatchReport.vue";
+import StreamingReportActions from "../organisms/MatchReport/StreamingReportActions.vue";
 import ErrorState from "../organisms/ErrorState/ErrorState.vue";
 import EmptyState from "../organisms/EmptyState/EmptyState.vue";
 import CloudServicePicker from "../molecules/CloudServicePicker/CloudServicePicker.vue";
@@ -295,7 +295,10 @@ const transition = computed(() => ({
 
       <!-- Analyzing: unified progressive view -->
       <Motion
-        v-else-if="wizard.step.value === WizardStep.Analyzing"
+        v-else-if="
+          wizard.step.value === WizardStep.Analyzing ||
+          (wizard.step.value === WizardStep.Report && wizard.analysis.value)
+        "
         key="analyzing"
         v-bind="transition"
       >
@@ -321,24 +324,13 @@ const transition = computed(() => ({
             </div>
             <div class="analysis-columns__right">
               <StreamingReportSkills />
+              <StreamingReportActions
+                @download="() => {}"
+                @new-match="handleStartOver"
+              />
             </div>
           </div>
         </StreamingMatchReport>
-      </Motion>
-
-      <!-- Match Report (after analysis complete) -->
-      <Motion
-        v-else-if="
-          wizard.step.value === WizardStep.Report && wizard.analysis.value
-        "
-        key="report"
-        v-bind="transition"
-      >
-        <MatchReport
-          :analysis="wizard.analysis.value"
-          @new-match="handleStartOver"
-          @download="() => {}"
-        />
       </Motion>
 
       <!-- Upload Error -->
@@ -411,19 +403,19 @@ const transition = computed(() => ({
 
 .analysis-columns {
   display: flex;
-  gap: 2.5rem;
+  gap: 1.5rem;
   width: 100%;
+  position: relative;
 }
 
 .analysis-columns__left {
   display: flex;
   flex-direction: column;
-  gap: 1.75rem;
+  gap: 1.5rem;
   flex: 0.5;
   flex-shrink: 0;
-  background-color: var(--bg);
-  padding: 1.25rem;
   height: max-content;
+  position: relative;
 }
 
 .analysis-columns__right {
@@ -434,6 +426,11 @@ const transition = computed(() => ({
   overflow: auto;
   flex-shrink: 0;
   padding: 1.25rem;
+  background-color: var(--bg);
+  padding: 1.25rem;
+  height: max-content;
+  position: sticky;
+  top: 1.5rem;
 }
 
 @media (max-width: 768px) {

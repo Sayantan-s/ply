@@ -42,10 +42,10 @@ const steps = [
   justify-content: space-between;
   height: 3.5rem;
   padding: 0 2.5rem;
-  background: var(--bg);
   border-bottom: 1px solid #e2e2e2;
   width: 100%;
   flex-shrink: 0;
+  background-color: var(--bg);
 }
 
 .wizard-nav__logo {

@@ -10,12 +10,13 @@ const jdSchema = z
     (data) =>
       data.jdText.trim().length >= 50 ||
       (data.jdUrl.trim().length > 0 && /^https?:\/\/.+/.test(data.jdUrl)),
-    { message: "Provide a job description (min 50 chars) or a valid job post URL" },
+    {
+      message:
+        "Provide a job description (min 50 chars) or a valid job post URL",
+    },
   );
 
-const jdUrlFormatSchema = z
-  .string()
-  .url("Please enter a valid URL");
+const jdUrlFormatSchema = z.string().url("Please enter a valid URL");
 
 export function useJobDescription() {
   const jdText = ref("");
@@ -30,7 +31,7 @@ export function useJobDescription() {
   const isJdUrlDisabled = computed(() => jdText.value.trim().length > 0);
 
   const jdPreview = computed(() => {
-    const text = jdText.value.trim();
+    const text = jdText.value.trim() || jdUrl.value.trim();
     if (text.length <= 150) return text;
     return `${text.slice(0, 150)}...`;
   });

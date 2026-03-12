@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { inject } from "vue";
-import { AnimatePresence, Motion } from "motion-v";
+import { Motion } from "motion-v";
 import { SkillItem } from "@/components/molecules";
 import { STREAMING_REPORT_CONTEXT_KEY } from "./streaming-report.context";
 
@@ -26,120 +26,94 @@ const itemVariants = {
 <template>
   <div class="streaming-report-skills">
     <!-- Matching Skills -->
-    <AnimatePresence mode="wait">
-      <template v-if="ctx.matchingSkills.value !== null">
-        <Motion
-          v-if="ctx.matchingSkills.value.length > 0"
-          key="matching"
-          as="div"
-          class="streaming-report-skills__section"
-          :initial="{ opacity: 0 }"
-          :animate="{ opacity: 1 }"
-          :exit="{ opacity: 0 }"
-          :transition="{ duration: 0.25 }"
-        >
-          <span class="streaming-report-skills__title">matching_skills</span>
-          <Motion
-            as="div"
-            initial="hidden"
-            animate="visible"
-            :variants="listVariants"
-          >
-            <Motion
-              v-for="skill in ctx.matchingSkills.value"
-              :key="skill"
-              :variants="itemVariants"
-            >
-              <SkillItem variant="match" :skill="skill" />
-            </Motion>
-          </Motion>
-        </Motion>
-      </template>
-
+    <template v-if="ctx.matchingSkills.value !== null">
       <Motion
-        v-else
-        key="matching-skeleton"
+        v-if="ctx.matchingSkills.value.length > 0"
         as="div"
         class="streaming-report-skills__section"
         :initial="{ opacity: 0 }"
         :animate="{ opacity: 1 }"
-        :exit="{ opacity: 0 }"
-        :transition="{ duration: 0.2 }"
+        :transition="{ duration: 0.25 }"
       >
+        <span class="streaming-report-skills__title">matching_skills</span>
         <Motion
           as="div"
-          class="streaming-report-skills__bar-title"
-          :animate="{ opacity: [0.15, 0.35] }"
-          :transition="pulseTransition"
-        />
-        <Motion
-          v-for="i in 3"
-          :key="`ms-${i}`"
-          as="div"
-          class="streaming-report-skills__chip"
-          :animate="{ opacity: [0.15, 0.35] }"
-          :transition="{ ...pulseTransition, delay: i * 0.1 }"
-        />
+          initial="hidden"
+          animate="visible"
+          :variants="listVariants"
+        >
+          <Motion
+            v-for="skill in ctx.matchingSkills.value"
+            :key="skill"
+            :variants="itemVariants"
+          >
+            <SkillItem variant="match" :skill="skill" />
+          </Motion>
+        </Motion>
       </Motion>
-    </AnimatePresence>
+    </template>
+
+    <div v-else class="streaming-report-skills__section">
+      <Motion
+        as="div"
+        class="streaming-report-skills__bar-title"
+        :animate="{ opacity: [0.15, 0.35] }"
+        :transition="pulseTransition"
+      />
+      <Motion
+        v-for="i in 3"
+        :key="`ms-${i}`"
+        as="div"
+        class="streaming-report-skills__chip"
+        :animate="{ opacity: [0.15, 0.35] }"
+        :transition="{ ...pulseTransition, delay: i * 0.1 }"
+      />
+    </div>
 
     <!-- Missing Skills -->
-    <AnimatePresence mode="wait">
-      <template v-if="ctx.missingSkills.value !== null">
-        <Motion
-          v-if="ctx.missingSkills.value.length > 0"
-          key="missing"
-          as="div"
-          class="streaming-report-skills__section"
-          :initial="{ opacity: 0 }"
-          :animate="{ opacity: 1 }"
-          :exit="{ opacity: 0 }"
-          :transition="{ duration: 0.25 }"
-        >
-          <span class="streaming-report-skills__title">missing_skills</span>
-          <Motion
-            as="div"
-            initial="hidden"
-            animate="visible"
-            :variants="listVariants"
-          >
-            <Motion
-              v-for="skill in ctx.missingSkills.value"
-              :key="skill"
-              :variants="itemVariants"
-            >
-              <SkillItem variant="missing" :skill="skill" />
-            </Motion>
-          </Motion>
-        </Motion>
-      </template>
-
+    <template v-if="ctx.missingSkills.value !== null">
       <Motion
-        v-else
-        key="missing-skeleton"
+        v-if="ctx.missingSkills.value.length > 0"
         as="div"
         class="streaming-report-skills__section"
         :initial="{ opacity: 0 }"
         :animate="{ opacity: 1 }"
-        :exit="{ opacity: 0 }"
-        :transition="{ duration: 0.2 }"
+        :transition="{ duration: 0.25 }"
       >
+        <span class="streaming-report-skills__title">missing_skills</span>
         <Motion
           as="div"
-          class="streaming-report-skills__bar-title"
-          :animate="{ opacity: [0.15, 0.35] }"
-          :transition="pulseTransition"
-        />
-        <Motion
-          v-for="i in 2"
-          :key="`mss-${i}`"
-          as="div"
-          class="streaming-report-skills__chip"
-          :animate="{ opacity: [0.15, 0.35] }"
-          :transition="{ ...pulseTransition, delay: i * 0.1 }"
-        />
+          initial="hidden"
+          animate="visible"
+          :variants="listVariants"
+        >
+          <Motion
+            v-for="skill in ctx.missingSkills.value"
+            :key="skill"
+            :variants="itemVariants"
+          >
+            <SkillItem variant="missing" :skill="skill" />
+          </Motion>
+        </Motion>
       </Motion>
-    </AnimatePresence>
+    </template>
+
+    <div v-else class="streaming-report-skills__section">
+      <Motion
+        as="div"
+        class="streaming-report-skills__bar-title"
+        :animate="{ opacity: [0.15, 0.35] }"
+        :transition="pulseTransition"
+      />
+      <Motion
+        v-for="i in 2"
+        :key="`mss-${i}`"
+        as="div"
+        class="streaming-report-skills__chip"
+        :animate="{ opacity: [0.15, 0.35] }"
+        :transition="{ ...pulseTransition, delay: i * 0.1 }"
+      />
+    </div>
   </div>
 </template>
 

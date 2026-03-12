@@ -41,14 +41,7 @@ const isPage = computed(() => props.page);
   justify-content: center;
   padding: 2.5rem;
   align-items: center;
-  background-color: var(--surface);
-  background-image: radial-gradient(var(--info-border) 1px, transparent 1px);
-  background-size: 16px 16px;
-  mask-image: radial-gradient(
-    ellipse 50% 50% at 50% 50%,
-    #000 70%,
-    transparent 100%
-  );
+  background: var(--surface);
 }
 
 .step-layout__body.step-layout__body--page {

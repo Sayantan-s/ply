@@ -40,6 +40,7 @@ provide(STREAMING_REPORT_CONTEXT_KEY, {
   isExplanationStreaming: computed(() => props.isExplanationStreaming),
   currentStatus: computed(() => props.currentStatus),
   isLoading: computed(() => props.score === null),
+  isComplete: computed(() => props.currentStatus === "locked_in"),
 });
 </script>
 
@@ -58,8 +59,7 @@ provide(STREAMING_REPORT_CONTEXT_KEY, {
 <style scoped>
 .streaming-report {
   display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
+  gap: 2.5rem;
   width: 100%;
   max-width: 80rem;
 }
