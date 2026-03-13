@@ -137,7 +137,7 @@ const transition = computed(() => ({
 </script>
 
 <template>
-  <StepLayout :card-width="cardWidth" :no-card="noCard">
+  <StepLayout :card-width="cardWidth" :no-card="noCard" :page="noCard">
     <template #nav>
       <WizardNavBarWizard v-if="isWizardStep" :active-step="activeNavStep" />
       <WizardNavBarEmpty v-else-if="isAnalyzing" />
@@ -427,7 +427,6 @@ const transition = computed(() => ({
   flex-shrink: 0;
   padding: 1.25rem;
   background-color: var(--bg);
-  padding: 1.25rem;
   height: max-content;
   position: sticky;
   top: 1.5rem;
