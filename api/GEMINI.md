@@ -77,7 +77,7 @@ Long-running tasks (like resume parsing/matching) are handled asynchronously:
 1.  **Start Infrastructure:**
 
     ```bash
-    docker compose up -d
+    docker-compose up -d
     ```
 
     This spins up Postgres (port 5432), Redis (6379), Gotenberg (3001), and management UIs.

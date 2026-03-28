@@ -1,17 +1,12 @@
-import os
 from collections.abc import Generator
 from functools import lru_cache
 
-from dotenv import load_dotenv
+from app.core.config import settings
 from sqlmodel import Session, SQLModel, create_engine
 
 from app.core.logging.logger import get_logger
 
-load_dotenv()
-
-db_url = os.getenv("DB_URI")
-
-engine = create_engine(db_url)
+engine = create_engine(settings.DB_URI)
 
 logger = get_logger("db.database")
 
