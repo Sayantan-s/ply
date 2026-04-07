@@ -86,6 +86,7 @@ Long-running tasks (like resume parsing/matching) are handled asynchronously:
     Ensure `.env.local` exists. It is loaded automatically by `dev.sh`.
 
 3.  **Run Application:**
+
     ```bash
     ./dev.sh
     ```
