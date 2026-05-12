@@ -210,14 +210,15 @@ async def jd_match_analyze(
         )
         yield (SSEEventType.ANALYSIS_STOP, AnalysisStopEvent())
 
-    except Exception:
+    except Exception as e:
         logger.exception("Error in jd_match_analyze")
         await update_jd_match_status(
             _db_session, jd_match_id, JdMatchStatus.FAILED.value
         )
+        error_message = str(e) if str(e) else "Analysis failed"
         yield (
             SSEEventType.ERROR,
-            ErrorEvent(message="Analysis failed"),
+            ErrorEvent(message=error_message),
         )
         yield (
             SSEEventType.ANALYSIS_DELTA,
